@@ -118,4 +118,5 @@ defaultproperties
       XPos=50
       YPos=40
       ClientClass=Class'UTChatTabWindow'
+}
 
