@@ -43,11 +43,7 @@ class CDModMenuItem expands UMenuModMenuItem;
  {
  	local UWindowWindow ChatDiamondWindowFrame;
 
- 	ChatDiamondWindowFrame = MenuItem.Owner.Root.CreateWindow(class'CDModMenuWindowFrame', 50, 50, 400, 200);
- 	ChatDiamondWindowFrame.bLeaveOnscreen=false;
- 	ChatDiamondWindowFrame.SetSize(Max(550, ChatDiamondWindowFrame.WinWidth), Max(400, ChatDiamondWindowFrame.WinHeight));
-
- 	ChatDiamondWindowFrame.bLeaveOnscreen=True;
+ 	ChatDiamondWindowFrame = MenuItem.Owner.Root.CreateWindow(class'CDModMenuWindowFrame', 50, 50, 395, 322);
  	ChatDiamondWindowFrame.ShowWindow();
  }
 

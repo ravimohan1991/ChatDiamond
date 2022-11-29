@@ -1,8 +1,8 @@
 /*
- *   --------------------------
- *  |  UTChatWindowEmojis.uc
- *   --------------------------
- *   This file is part of ChatDiamond for UT99.
+ *   -------------------
+ *  |  CDAboutWindow.uc
+ *   -------------------
+ *   This file is part of CDAboutWindow for UT99.
  *
  *   ChatDiamond is free software: you can redistribute and/or modify
  *   it under the terms of the Open Unreal Mod License version 1.1.
@@ -22,116 +22,69 @@
  *                 (https://ut99.org/viewtopic.php?f=7&t=14356&start=30#p139510)
  */
 
-//================================================================================
-// UTChatWindowEmojis
+//==============================================================================
+// CDAboutWindow
 //
-// - Flashing of availabule emojis
-// - Resizing of the window as per need
-//================================================================================
+//- For the display of involved parties
+//==============================================================================
 
-class UTChatWindowEmojis extends UWindowPageWindow config (ChatDiamond);
-
- struct ControlDimensions
- {
-   var() float LeftCoordinate;
-   var() float TopCoordinate;
-   var() float Width;
-   var() float Height;
- };
-
- // Caching page variables
- var() config bool bIsCacheFilled;// Assumption: INI is not manually manipulated
- var() config float PageWidth, PageHeight;
- var() config ControlDimensions ButtonCD, TypingWindowCD;
-
- var UTChatWRI UTWRI;
-
- var UWindowSmallButton ButClose;
- var UTChatWinControl   EditMesg;
+class CDAboutWindow expands UWindowPageWindow;
 
  var color WhiteColor, GrayColor;
 
  var float  PrevWinWidth, PrevWinHeight;
  var string DetailMode;
 
- var bool bFirstResize;
+ var CDUWindowCreditsControl CDCreditsControl;
 
- function Created ()
+ function Created()
  {
  	Super.Created();
-
- 	if ( UTWRI == none )
- 	{
- 		foreach GetPlayerOwner().AllActors(class'UTChatWRI', UTWRI)
- 		break;
- 	}
-
- 	DetailMode = GetPlayerOwner().ConsoleCommand("get ini:Engine.Engine.ViewportManager TextureDetail");
-
- 	if(!bIsCacheFilled)
- 	{
- 		ButClose = UWindowSmallButton(CreateControl(Class'UWindowSmallButton', 320, 229, 60, 25));
- 	}
- 	else
- 	{
- 		ButClose = UWindowSmallButton(CreateControl(Class'UWindowSmallButton', ButtonCD.LeftCoordinate, ButtonCD.TopCoordinate, ButtonCD.Width, ButtonCD.Height));
- 	}
- 	ButClose.Text = "Close";
-
- 	if(!bIsCacheFilled)
- 	{
- 		EditMesg = UTChatWinControl(CreateControl(Class'UTChatWinControl', 10, 228, 300, 16));
- 		EditMesg.EditBoxWidth = 300;
- 	}
- 	else
- 	{
- 		EditMesg = UTChatWinControl(CreateControl(Class'UTChatWinControl', TypingWindowCD.LeftCoordinate, TypingWindowCD.TopCoordinate, TypingWindowCD.Width, TypingWindowCD.Height));
- 		EditMesg.EditBoxWidth = TypingWindowCD.Width;
- 	}
-
- 	EditMesg.SetNumericOnly(False);
- 	EditMesg.SetFont(0);
- 	EditMesg.SetHistory(True);
- 	EditMesg.SetValue("");
- 	EditMesg.Align=TA_Left;
-
- 	SetAcceptsFocus();
-
+ 	CDCreditsControl = CDUWindowCreditsControl(CreateWindow(class'CDUWindowCreditsControl', 20, 20, 500, 400));
+ 	CDCreditsControl.Register(Self);
+ 	//C.Notify(C.DE_Created);
+ 	CDCreditsControl.AddLineText("Chat Diamond");
+ 	CDCreditsControl.AddPadding(5);
+ 	CDCreditsControl.AddLineText("Version: "$ class'UTChat'.default.Version);
+ 	CDCreditsControl.AddPadding(10);
+ 	//C.AddLineImage(texture'author2',60,60);
+ 	CDCreditsControl.AddLineText("Coder:");
+ 	CDCreditsControl.AddPadding(4);
+ 	CDCreditsControl.AddLineText("The_Cowboy");
+ 	CDCreditsControl.AddPadding(15);
+ 	CDCreditsControl.AddLineText("Special Thanks To:");
+ 	CDCreditsControl.AddPadding(4);
+ 	CDCreditsControl.AddLineText("ProAsm");
+ 	CDCreditsControl.AddLineText("Daan 'Defrost' Scheerens from Zeropoint Productions");
+ 	CDCreditsControl.AddLineUrl("https://github.com/dscheerens/nexgen",, "GitHub");
+ 	CDCreditsControl.AddLineText("No0ne");
+ 	CDCreditsControl.AddLineText("Bruce Bickar aka BDB");
+ 	CDCreditsControl.AddLineText("Mongo and DrSin");
+ 	CDCreditsControl.AddLineText("[os]sphx");
+ 	CDCreditsControl.AddLineText("Dean Harmon (for WOT Greal)");
+ 	CDCreditsControl.AddPadding(20);
+ 	CDCreditsControl.AddLineUrl("https://eatsleeput.com/d/192-chatdiamond",,"Forum");
+ 	CDCreditsControl.AddLineText("Please visit the forum for suggestions and feedbacks");
+ 
  	PrevWinWidth  = WinWidth;
  	PrevWinHeight = WinHeight;
-
- 	bFirstResize = true;
  }
+
 
  function Notify (UWindowDialogControl C, byte E)
  {
  	Super.Notify(C,E);
-
- 	Switch(E)
- 	{
- 		case DE_Click:
- 			switch(C)
- 			{
- 				case ButClose:
- 				ParentWindow.ParentWindow.Close();
- 				break;
- 			}
- 			break;
- 		case 7:
- 			SendMessage();
- 			break;
- 		default:
- 			break;
- 	}
  }
 
  function SendMessage()
  {
- 	if ( EditMesg.GetValue() != "" )
+ /*
+  	if ( EditMesg.GetValue() != "" )
  	{
- 		GetPlayerOwner().ConsoleCommand("SAY " $ EditMesg.GetValue());
- 		EditMesg.SetValue("");
+ 	    GetPlayerOwner().ConsoleCommand("SAY " $ EditMesg.GetValue());
+ 	    EditMesg.SetValue("");
  	}
+ */
  }
 
  function Resized()
@@ -143,25 +96,17 @@ class UTChatWindowEmojis extends UWindowPageWindow config (ChatDiamond);
  function Resize()
  {
  	local float DiffX, DiffY;
-
+ 
  	DiffX = WinWidth - PrevWinWidth;
  	DiffY = WinHeight - PrevWinHeight;
- 	if ((DiffX != 0 || DiffY != 0))
+ 
+ 	if (DiffX != 0 || DiffY != 0)
  	{
- 		if(!bFirstResize)
- 		{
- 			ButClose.WinLeft += DiffX;
- 			ButClose.WinTop += DiffY;
-
- 			EditMesg.WinTop += DiffY;
- 			EditMesg.SetSize(EditMesg.WinWidth + DiffX, EditMesg.WinHeight);
- 			EditMesg.EditBoxWidth = EditMesg.WinWidth;
- 		}
- 		else
- 		{
- 			bFirstResize = false;
- 		}
+ 		CDCreditsControl.WinTop += DiffY;
+ 		CDCreditsControl.SetSize(CDCreditsControl.WinWidth + DiffX, CDCreditsControl.WinHeight);
+ 		CDCreditsControl.EditBoxWidth = CDCreditsControl.WinWidth;
  	}
+ 
  	PrevWinWidth = WinWidth;
  	PrevWinHeight = WinHeight;
  }
@@ -175,41 +120,24 @@ class UTChatWindowEmojis extends UWindowPageWindow config (ChatDiamond);
  function Paint (Canvas C, float MouseX, float MouseY)
  {
  	Super.Paint(C,MouseX,MouseY);
-
+ 
  	C.DrawColor  = WhiteColor;
-
+ 	
  	if (DetailMode ~= "High")
- 		DrawStretchedTexture(C, 0.00, 0.00, WinWidth, WinHeight, Texture'Emojis1');
+ 	{
+ 		DrawStretchedTexture(C,0.00,0.00,WinWidth,WinHeight,Texture'Emojis1');
+ 	}
  	else
- 		DrawStretchedTexture(C, 0.00, 0.00, WinWidth, WinHeight, Texture'Emojis2');
-
+ 	{
+ 		DrawStretchedTexture(C,0.00,0.00,WinWidth,WinHeight,Texture'Emojis2');
+ 	}
+ 	
  	C.Style = GetPlayerOwner().ERenderStyle.STY_Normal;
  }
 
  function Close (optional bool bByParent)
  {
  	Super.Close(bByParent);
-
- 	PageWidth = WinWidth;
- 	PageHeight = WinHeight;
-
- 	ButtonCD.Height = ButClose.WinHeight;
- 	ButtonCD.Width = ButClose.WinWidth;
- 	ButtonCD.LeftCoordinate = ButClose.WinLeft;
- 	ButtonCD.TopCoordinate = ButClose.WinTop;
-
- 	TypingWindowCD.Height = EditMesg.WinHeight;
- 	TypingWindowCD.Width = EditMesg.WinWidth;
- 	TypingWindowCD.LeftCoordinate = EditMesg.WinLeft;
- 	TypingWindowCD.TopCoordinate = EditMesg.WinTop;
-
- 	SaveConfig();
- 	bIsCacheFilled = true;
- }
-
- defaultproperties
- {
- 	WhiteColor=(R=255,G=255,B=255)
  }
 
 /*
