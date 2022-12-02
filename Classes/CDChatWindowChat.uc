@@ -29,6 +29,14 @@
 //==============================================================================
 
 class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
+/*
+// Travelling from server to server.
+enum ETravelType
+{
+	TRAVEL_Absolute,	// Absolute URL.
+	TRAVEL_Partial,		// Partial (carry name, reset server).
+	TRAVEL_Relative,	// Relative URL.
+};*/
 
  var() config string ChatLog[200];
 
@@ -39,7 +47,7 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
  var UWindowSmallButton ButSend;
  var UWindowSmallButton ButSave;
  var UWindowSmallButton ButClose;
- var UWindowSmallButton ButtonReload;
+ var UWindowSmallButton ButtonPlaySpectate;
 
  var GameReplicationInfo CDGRI;
  var PlayerReplicationInfo LocalPRI;
@@ -101,9 +109,16 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
  	ButClose.SetText("Close");
  	ButClose.DownSound = sound'UnrealShare.FSHLITE2';
 
- 	ButtonReload = UWindowSmallButton(CreateControl(class'UWindowSmallButton', 4, 255, 380, 25));
- 	ButtonReload.SetText("Reload ChatWindow");
- 	ButtonReload.DownSound = sound'UnrealShare.FSHLITE2';
+ 	ButtonPlaySpectate = UWindowSmallButton(CreateControl(class'UWindowSmallButton', 4, 255, 380, 25));
+ 	if(GetPlayerOwner().GetDefaultURL("OverrideClass") == "Botpack.CHSpectator")
+ 	{
+ 	ButtonPlaySpectate.SetText("Play");
+ 	}
+ 	else
+ 	{
+ 		ButtonPlaySpectate.SetText("Spectate");
+ 	}
+ 	ButtonPlaySpectate.DownSound = sound'UnrealShare.FSHLITE2';
 
 
  	// must go here to get 1st focus
@@ -150,6 +165,8 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
 
 /*******************************************************************************
  * Routine to generate message string and display the same
+ * Please note: The message from spectators are of type `Event` and not
+ * distinguishable from messages different from Say or TeamSay
  *
  * @PARAM PRI                 The PlayerReplicationInfo of involved individual
  * @PARAM Msg                 The actual message of type `Say` or `TeamSay` etc
@@ -207,6 +224,22 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
 
  					case ButClose:
  						ParentWindow.ParentWindow.Close();
+ 					break;
+
+ 					case ButtonPlaySpectate:
+ 					if(GetPlayerOwner().PlayerReplicationInfo.bIsSpectator)
+ 					{
+ 						GetPlayerOwner().PreClientTravel();
+ 						GetPlayerOwner().ClientTravel("?OverrideClass=", TRAVEL_Relative, False);
+ 						ButtonPlaySpectate.SetText("Spectate");
+ 					}
+ 					else
+ 					{
+ 					GetPlayerOwner().PreClientTravel();
+ 					GetPlayerOwner().ClientTravel("?OverrideClass=Botpack.CHSpectator", TRAVEL_Relative, False);
+ 					ButtonPlaySpectate.SetText("Play");
+ 					}
+
  					break;
  				}
  		break;
@@ -280,8 +313,8 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
  		EditMesg.SetSize(EditMesg.WinWidth + DiffX, EditMesg.WinHeight);
  		EditMesg.EditBoxWidth = EditMesg.WinWidth;
 
- 		ButtonReload.WinTop += DiffY;
- 		ButtonReload.SetSize(ButtonReload.WinWidth + DiffX, ButtonReload.WinHeight);
+ 		ButtonPlaySpectate.WinTop += DiffY;
+ 		ButtonPlaySpectate.SetSize(ButtonPlaySpectate.WinWidth + DiffX, ButtonPlaySpectate.WinHeight);
  	}
  	PrevWinWidth = WinWidth;
  	PrevWinHeight = WinHeight;
