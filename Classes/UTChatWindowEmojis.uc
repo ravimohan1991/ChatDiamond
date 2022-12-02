@@ -26,23 +26,9 @@
 // UTChatWindowEmojis
 //
 // - Flashing of availabule emojis
-// - Resizing of the window as per need
 //================================================================================
 
-class UTChatWindowEmojis extends UWindowPageWindow config (ChatDiamond);
-
- struct ControlDimensions
- {
-   var() float LeftCoordinate;
-   var() float TopCoordinate;
-   var() float Width;
-   var() float Height;
- };
-
- // Caching page variables
- var() config bool bIsCacheFilled;// Assumption: INI is not manually manipulated
- var() config float PageWidth, PageHeight;
- var() config ControlDimensions ButtonCD, TypingWindowCD;
+class UTChatWindowEmojis extends UWindowPageWindow;
 
  var UTChatWRI UTWRI;
 
@@ -52,6 +38,7 @@ class UTChatWindowEmojis extends UWindowPageWindow config (ChatDiamond);
  var color WhiteColor, GrayColor;
 
  var float  PrevWinWidth, PrevWinHeight;
+ var float  PageWidth, PageHeight;
  var string DetailMode;
 
  var bool bFirstResize;
@@ -68,32 +55,17 @@ class UTChatWindowEmojis extends UWindowPageWindow config (ChatDiamond);
 
  	DetailMode = GetPlayerOwner().ConsoleCommand("get ini:Engine.Engine.ViewportManager TextureDetail");
 
- 	if(!bIsCacheFilled)
- 	{
- 		ButClose = UWindowSmallButton(CreateControl(Class'UWindowSmallButton', 320, 229, 60, 25));
- 	}
- 	else
- 	{
- 		ButClose = UWindowSmallButton(CreateControl(Class'UWindowSmallButton', ButtonCD.LeftCoordinate, ButtonCD.TopCoordinate, ButtonCD.Width, ButtonCD.Height));
- 	}
+ 	ButClose = UWindowSmallButton(CreateControl(Class'UWindowSmallButton', 320, 250, 60, 25));
  	ButClose.Text = "Close";
 
- 	if(!bIsCacheFilled)
- 	{
- 		EditMesg = UTChatWinControl(CreateControl(Class'UTChatWinControl', 10, 228, 300, 16));
- 		EditMesg.EditBoxWidth = 300;
- 	}
- 	else
- 	{
- 		EditMesg = UTChatWinControl(CreateControl(Class'UTChatWinControl', TypingWindowCD.LeftCoordinate, TypingWindowCD.TopCoordinate, TypingWindowCD.Width, TypingWindowCD.Height));
- 		EditMesg.EditBoxWidth = TypingWindowCD.Width;
- 	}
+ 	EditMesg = UTChatWinControl(CreateControl(Class'UTChatWinControl', 10, 250, 300, 16));
+ 	EditMesg.EditBoxWidth = 300;
 
  	EditMesg.SetNumericOnly(False);
  	EditMesg.SetFont(0);
  	EditMesg.SetHistory(True);
  	EditMesg.SetValue("");
- 	EditMesg.Align=TA_Left;
+ 	EditMesg.Align = TA_Left;
 
  	SetAcceptsFocus();
 
@@ -148,19 +120,12 @@ class UTChatWindowEmojis extends UWindowPageWindow config (ChatDiamond);
  	DiffY = WinHeight - PrevWinHeight;
  	if ((DiffX != 0 || DiffY != 0))
  	{
- 		if(!bFirstResize)
- 		{
  			ButClose.WinLeft += DiffX;
  			ButClose.WinTop += DiffY;
 
  			EditMesg.WinTop += DiffY;
  			EditMesg.SetSize(EditMesg.WinWidth + DiffX, EditMesg.WinHeight);
  			EditMesg.EditBoxWidth = EditMesg.WinWidth;
- 		}
- 		else
- 		{
- 			bFirstResize = false;
- 		}
  	}
  	PrevWinWidth = WinWidth;
  	PrevWinHeight = WinHeight;
@@ -189,22 +154,7 @@ class UTChatWindowEmojis extends UWindowPageWindow config (ChatDiamond);
  function Close (optional bool bByParent)
  {
  	Super.Close(bByParent);
-
- 	PageWidth = WinWidth;
- 	PageHeight = WinHeight;
-
- 	ButtonCD.Height = ButClose.WinHeight;
- 	ButtonCD.Width = ButClose.WinWidth;
- 	ButtonCD.LeftCoordinate = ButClose.WinLeft;
- 	ButtonCD.TopCoordinate = ButClose.WinTop;
-
- 	TypingWindowCD.Height = EditMesg.WinHeight;
- 	TypingWindowCD.Width = EditMesg.WinWidth;
- 	TypingWindowCD.LeftCoordinate = EditMesg.WinLeft;
- 	TypingWindowCD.TopCoordinate = EditMesg.WinTop;
-
  	SaveConfig();
- 	bIsCacheFilled = true;
  }
 
  defaultproperties

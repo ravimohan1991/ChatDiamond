@@ -1,6 +1,6 @@
 /*
  *   --------------------------
- *  |  CDClientSideWindow.uc
+ *  |  CDUTConsole.uc
  *   --------------------------
  *   This file is part of ChatDiamond for UT99.
  *
@@ -23,90 +23,19 @@
  */
 
 //==============================================================================
-// CDClientSideWindow
+// CDUTConsole
 //
-//- All the client relative tabs are responsibility of this class
+//- This class is useful for gathering Console supplied messages
+//- Should be useful when filtered appropriately (for instance SAY messages)
 //==============================================================================
 
-class CDClientSideWindow expands UWindowConsoleClientWindow config(ChatDiamond);
+class CDUTConsole extends UTConsole config (ChatDiamond);
 
- #exec texture IMPORT NAME=Emojis1 File=Textures\emojis1.pcx GROUP=Commands Mips=on
- #exec texture IMPORT NAME=Emojis2 File=Textures\emojis2.pcx GROUP=Commands Mips=off
-
- var UMenuPageControl    Pages;
- var CDChatWindowChat    ChatWindow;
- var UTChatWindowAdmin   AdminWindow;
- var UTChatWindowConfig  ConfigWindow;
- var UTChatWindowEmojis  EmojiWindow;
- var CDAboutWindow       AboutWindow;
-
- var() config int ActivePageNumber;
-
- function Created()
+ defaultproperties
  {
- 	local UWindowPageControlPage PageControl;
-
- 	Super.Created();
-
- 	WinLeft = int(Root.WinWidth - WinWidth) / 2;
- 	WinTop = int(Root.WinHeight - WinHeight) / 2;
-
- 	Pages = UMenuPageControl(CreateWindow(class'UMenuPageControl', 0, 0, WinWidth, WinHeight));
- 	Pages.SetMultiLine(false);
-
- 	PageControl = Pages.AddPage("Public Chats", class'CDChatWindowChat');
- 	ChatWindow = CDChatWindowChat(PageControl.Page);
-
- 	PageControl = Pages.AddPage("Emojis", class'UTChatWindowEmojis');
- 	EmojiWindow = UTChatWindowEmojis(PageControl.Page);
-
- 	if(ActivePageNumber == 0)
- 	{
- 		Pages.GotoTab(Pages.GetTab("Public Chats"));
- 	}
- 	else if(ActivePageNumber == 1)
- 	{
- 		Pages.GotoTab(Pages.GetTab("Emojis"));
- 	}
-
- 	//PageControl = Pages.AddPage("Admin", class'UTChatWindowAdmin');
- 	//AdminWindow = UTChatWindowAdmin(PageControl.Page);
-
- 	// PageControl = Pages.AddPage("Configs", class'UTChatWindowConfig');
- 	// ConfigWindow = UTChatWindowConfig(PageControl.Page);
-
- 	//PageControl = Pages.AddPage("About", class'CDAboutWindow');
- 	//AboutWindow = CDAboutWindow(PageControl.Page);
- }
-
- function AddChatMessage(string sMesg)
- {
- 	if (ChatWindow != None)
- 	{
- 		ChatWindow.LoadMessages(sMesg);
- 	}
- }
-
- function Resized()
- {
- 	Super.Resized();
- 	Pages.SetSize(WinWidth, WinHeight);
- }
-
- function Close(optional bool bByParent)
- {
- 	Super.Close(bByParent);
-
- 	if(Pages.SelectedTab.Caption == "Public Chats")
- 	{
- 		ActivePageNumber = 0;
- 	}
- 	else if(Pages.SelectedTab.Caption == "Emojis")
- 	{
- 		ActivePageNumber = 1;
- 	}
-
- 	SaveConfig();
+ 	RootWindow="UMenu.UMenuRootWindow"
+ 	ConsoleClass=Class'ChatDiamond.CDModMenuWindowFrame'
+ 	ShowDesktop=True
  }
 
 /*

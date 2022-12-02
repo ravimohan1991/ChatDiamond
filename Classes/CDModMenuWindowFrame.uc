@@ -25,19 +25,22 @@
 //=============================================================================
 // CDModMenuWindowFrame
 //
-// The uwindow frame for client-side window
+// The console type uwindow frame for client-side window
 //=============================================================================
 
-class CDModMenuWindowFrame expands UWindowFramedWindow Config (ChatDiamond);
+class CDModMenuWindowFrame expands UWindowConsoleWindow Config (ChatDiamond);
 
  // INI variables
  var() config int Xpos;
  var() config int Ypos;
  var() config int Wpos;
  var() config int Hpos;
+ var() config float FrameWidth, FrameHeight;
+ var() config bool bIsCached;
 
  function created()
  {
+ 	SetDimensions();
  	super.created();
 
  	bLeaveOnScreen = true;
@@ -49,21 +52,28 @@ class CDModMenuWindowFrame expands UWindowFramedWindow Config (ChatDiamond);
  	MinWinWidth = 395;
  	MinWinHeight = 322;
 
+ 	// The function call with specified dimensions is in CDModMenuItem::Execute
+ 	if(bIsCached)
+ 	{
+ 		WinWidth = FrameWidth;
+ 		WinHeight = FrameHeight;
+ 	}
+
  	SetSizePos();
 
- 	WindowTitle = "ChatDiamond - "$class'UTChat'.default.Version;;
+ 	WindowTitle = "ChatDiamond (" $ class'UTChat'.default.Version $ ") Console";
  }
 
  function ResolutionChanged(float W, float H)
  {
-	SetSizePos();
-	Super.ResolutionChanged(W, H);
+ 	SetSizePos();
+ 	Super.ResolutionChanged(W, H);
  }
 
  function SetSizePos()
  {
  	CheckXY();
- 
+
  	if (WPos > 0 && HPos > 0)
  	{
  		SetSize(WPos, HPos);
@@ -83,10 +93,12 @@ class CDModMenuWindowFrame expands UWindowFramedWindow Config (ChatDiamond);
  	{
  		return;
  	}
- 
+
  	if (!bLeaveOnscreen) // hackish way for detect first resize
+ 	{
  		SetSizePos();
- 
+ 	}
+
  	Super.Resized();
  }
 
@@ -96,7 +108,7 @@ class CDModMenuWindowFrame expands UWindowFramedWindow Config (ChatDiamond);
  	{
  		Xpos = 50;
  	}
- 
+
  	if (Ypos < 0 || Ypos > 99)
  	{
  		Ypos = 60;
@@ -106,28 +118,60 @@ class CDModMenuWindowFrame expands UWindowFramedWindow Config (ChatDiamond);
  function Tick(float DeltaTime)
  {
  	local int x, y;
- 
+
  	WPos = WinWidth;
  	HPos = WinHeight;
- 
+
  	x = self.WinLeft / ((Root.WinWidth - WinWidth) / 100);
  	y = self.WinTop / ((Root.WinHeight - WinHeight) / 100);
- 
+
  	if (Xpos != x || Ypos != y)
  	{
  		Xpos = x;
  		Ypos = y;
  	}
- 
+
  	Super.Tick(DeltaTime);
  }
 
+ function ShowWindow()
+ {
+ 	ParentWindow.ShowChildWindow(Self);
+ 	WindowShown();
+ }
 
  function Close(optional bool bByParent)
  {
+ 	local UWindowWindow Prev, Child;
+
  	CheckXY();
+
+ 	FrameWidth = WinWidth;
+ 	FrameHeight = WinHeight;
+ 	bIsCached = true;
  	SaveConfig();
- 	Super.Close(bByParent);
+
+ 	ClientArea.Close(True);
+ 	Root.Console.HideConsole();
+
+ 	for(Child = LastChildWindow; Child != None; Child = Prev)
+ 	{
+ 		Prev = Child.PrevSiblingWindow;
+ 		Child.Close(True);
+ 	}
+
+ 	SaveConfigs();
+
+ 	if(!bByParent)
+ 	{
+ 		HideWindow();
+ 	}
+ }
+
+ function SetDimensions()
+ {
+ 	WinWidth = 395;
+ 	WinHeight = 322;
  }
 
 
