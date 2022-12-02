@@ -39,6 +39,7 @@ class CDClientSideWindow expands UWindowConsoleClientWindow config(ChatDiamond);
  var UTChatWindowConfig  ConfigWindow;
  var UTChatWindowEmojis  EmojiWindow;
  var CDAboutWindow       AboutWindow;
+ var CDUTConsoleWindow   ConsoleWindow;
 
  var() config int ActivePageNumber;
 
@@ -60,6 +61,14 @@ class CDClientSideWindow expands UWindowConsoleClientWindow config(ChatDiamond);
  	PageControl = Pages.AddPage("Emojis", class'UTChatWindowEmojis');
  	EmojiWindow = UTChatWindowEmojis(PageControl.Page);
 
+ 	PageControl = Pages.AddPage("Console", class'CDUTConsoleWindow');
+ 	ConsoleWindow = CDUTConsoleWindow(PageControl.Page);
+ 	TextArea = ConsoleWindow.TextArea; // khe khe
+ 	CDUTConsole(Root.Console).ChatWindow = ChatWindow;
+
+ 	PageControl = Pages.AddPage("About", class'CDAboutWindow');
+ 	AboutWindow = CDAboutWindow(PageControl.Page);
+
  	if(ActivePageNumber == 0)
  	{
  		Pages.GotoTab(Pages.GetTab("Public Chats"));
@@ -68,15 +77,20 @@ class CDClientSideWindow expands UWindowConsoleClientWindow config(ChatDiamond);
  	{
  		Pages.GotoTab(Pages.GetTab("Emojis"));
  	}
+ 	else if(ActivePageNumber == 2)
+ 	{
+ 		Pages.GotoTab(Pages.GetTab("Console"));
+ 	}
+ 	else if(ActivePageNumber == 3)
+ 	{
+ 		Pages.GotoTab(Pages.GetTab("About"));
+ 	}
 
  	//PageControl = Pages.AddPage("Admin", class'UTChatWindowAdmin');
  	//AdminWindow = UTChatWindowAdmin(PageControl.Page);
 
  	// PageControl = Pages.AddPage("Configs", class'UTChatWindowConfig');
  	// ConfigWindow = UTChatWindowConfig(PageControl.Page);
-
- 	//PageControl = Pages.AddPage("About", class'CDAboutWindow');
- 	//AboutWindow = CDAboutWindow(PageControl.Page);
  }
 
  function AddChatMessage(string sMesg)
@@ -104,6 +118,14 @@ class CDClientSideWindow expands UWindowConsoleClientWindow config(ChatDiamond);
  	else if(Pages.SelectedTab.Caption == "Emojis")
  	{
  		ActivePageNumber = 1;
+ 	}
+ 	else if(Pages.SelectedTab.Caption == "Console")
+ 	{
+ 		ActivePageNumber = 2;
+ 	}
+ 	else if(Pages.SelectedTab.Caption == "About")
+ 	{
+ 		ActivePageNumber = 3;
  	}
 
  	SaveConfig();

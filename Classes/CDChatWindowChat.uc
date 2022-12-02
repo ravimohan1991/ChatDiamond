@@ -25,7 +25,7 @@
 //==============================================================================
 // CDChatWindowChat
 //
-//- Here we can keep the record of just the Human sent messages
+//- Here we can keep the record of just the Human (and or bot) sent messages
 //==============================================================================
 
 class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
@@ -43,8 +43,8 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
 
  var GameReplicationInfo CDGRI;
  var PlayerReplicationInfo LocalPRI;
- //var CDChatHUD EavesDropper;// Quite oxymoronic if I may say so
  var bool bIsWindowChatFunctional;
+ var CDUTConsole ChatDiamondConsole;
 
  var config string Chat[200];
 
@@ -75,9 +75,6 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
  		foreach Root.GetPlayerOwner().AllActors(class'PlayerReplicationInfo', LocalPRI)
  		break;
  	}
-
- 	//SpawnEavesDropper();
- 	//CCWindow = Root.FindChildWindow(Class'UMenu.UMenuConsoleWindow');
 
  	lblHeading = UMenuLabelControl(CreateControl(Class'UMenuLabelControl', 0, 0, 200, 16));
  	lblHeading.Font = F_Bold;
@@ -124,27 +121,6 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
  	PrevWinHeight = WinHeight;
  }
 
- /*
- function SpawnEavesDropper()
- {
- 	// We don't want multiple instances of CDChatHUD, so a smart way.
- 	// Also atm the CDChatWindowChat needs be open before game is joined, in the sense, HUD is active.
- 	// It is certainly not when the game is freshly initiated from the binary file
- 	if(EavesDropper == none)
- 	{
- 		foreach Root.GetPlayerOwner().AllActors(class'CDChatHUD', EavesDropper)
- 		break;
-
- 		if(EavesDropper == none)
- 		{
- 			EavesDropper = Root.GetPlayerOwner().Spawn(class'CDChatHUD', Root.GetPlayerOwner(), 'NotSoSecretChatInterceptor');
- 			EavesDropper.CDChatPage = self;
- 			Log("Chat Page is: " $ EavesDropper.CDChatPage);
- 		}
- 	}
- }
- */
-
  function LoadMessages(optional string sMesg)
  {
  	local string sTemp;
@@ -169,6 +145,24 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
  			//sTemp = Left(sTemp, 6) $ "-" $ Mid(sTemp, 7);
  			//Chat[i] = sTemp;              // for saving
  		}
+ 	}
+ }
+
+/*******************************************************************************
+ * Routine to generate message string and display the same
+ *
+ * @PARAM PRI                 The PlayerReplicationInfo of involved individual
+ * @PARAM Msg                 The actual message of type `Say` or `TeamSay` etc
+ *                            may contain senders name in multiplay games
+ *
+ *******************************************************************************
+ */
+
+ function InterpretAndDisplayTextClientSide(PlayerReplicationInfo PRI, coerce string Message, name MessageType)
+ {
+ 	if(MessageType == 'Say' || MessageType == 'TeamSay')
+ 	{
+ 		LoadMessages(PRI.PlayerName $ ":" $ Message);
  	}
  }
 
@@ -245,18 +239,6 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
 
  function Tick(float delta)
  {
- /*
-    if(EavesDropper.ClientSideHUD == none || EavesDropper.ClientSideHUD.IsA('CHNullHud'))
-    {
-       bIsWindowChatFunctional = false;
-       ButtonReload.bDisabled = false;
-    }
-    else
-    {
-       bIsWindowChatFunctional = true;
-       ButtonReload.bDisabled = true;
-    } */
-
  	if (iTick > 0)
  	{
  		iTick--;
@@ -321,7 +303,6 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
 
  function Close(optional bool bByParent)
  {
- 	 //EavesDropper.Destroy();
  	Super.Close(bByParent);
  }
 
