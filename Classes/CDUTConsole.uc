@@ -51,8 +51,8 @@ function Message(PlayerReplicationInfo PRI, coerce string Msg, name N)
 
  	if(ChatWindow != none)
  	{
-    ChatWindow.InterpretAndDisplayTextClientSide(MsgPlayer[TopLine], MsgText[TopLine], MsgType[TopLine]);
-    }
+ 		ChatWindow.InterpretAndDisplayTextClientSide(MsgPlayer[TopLine], MsgText[TopLine], MsgType[TopLine]);
+ 	}
 }
 
  defaultproperties
