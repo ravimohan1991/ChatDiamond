@@ -49,6 +49,9 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  // The horizontal padding between two TextTextureLines
  var() config float UniformHorizontalPadding;
 
+ // The vertical padding between Date and Chatface in single TextTextureLine
+ var() config float ChatFaceVerticalPadding;
+
  function Created()
  {
  	Super.Created();
@@ -58,21 +61,66 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  	StaticTransparencyTexture = texture'LadrStatic.Static_a00'; // 256 by 256 pixels
  }
 
+ function FindCategoryDeliminator(string EncodedText, out int Position, out string Deliminator)
+ {
+ 	local int TempoPosition;
+
+ 	//Log("Decoding string: " $ EncodedText);
+
+ 	TempoPosition = Instr(EncodedText, "-");
+
+ 	if(TempoPosition != -1)
+ 	{
+ 		Deliminator = "-";
+ 		Position = TempoPosition;
+ 		return;
+ 	}
+
+ 	TempoPosition = Instr(EncodedText, "<");
+
+ 	if(TempoPosition != -1)
+ 	{
+ 		Deliminator = "<";
+ 		Position = TempoPosition;
+ 		return;
+ 	}
+
+ 	TempoPosition = Instr(EncodedText, ">");
+
+ 	if(TempoPosition != -1)
+ 	{
+ 		Deliminator = ">";
+ 		Position = TempoPosition;
+ 		return;
+ 	}
+
+ 	TempoPosition = Instr(EncodedText, "+");
+
+ 	if(TempoPosition != -1)
+ 	{
+ 		Deliminator = "+";
+ 		Position = TempoPosition;
+ 		return;
+ 	}
+
+ 	Log("ChatDiamond: Text - " $ EncodedText $ " has no identifiable category deliminator");
+ }
+
  // The Mid(coerce string S, int i, optional int j) function generates a substring of S by starting at character i and
  // copying j characters. If j is omitted, the rest of the string is copied. i
  // is clamped between 0 and the length of the string. j is clamped between i
  // and the length of the string. If S is not a string, its value will attempt
  // to be converted to a string value.
 
- // 01/23.-.14:46..somasup:.hey blaze (a dot represents single space padding)
+ // Saturday 22.January.2022.<.16:19..somasup:.hey blaze (a dot represents single space padding)
 
  function float DrawTextTextureLine(Canvas C, UWindowDynamicTextRow L, float Y)
  {
  	local float X, X1, X2, Y1;
- 	local string sDate, sName, sMesg, sTm;
- 	local int i;
+ 	local string sDate, sName, sMesg, sTm, CategoryDeliminator;
+ 	local int i, CategoryDeliminatorPosition;
  	local float TextureXOccupied, TextureYOccupied;
- 	
+
  	if(L.Text == "")
  	{
  		return 0;
@@ -83,66 +131,65 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
 
  	if (bChat)
  	{
- 		if (Mid(L.Text, 2, 1) == "/")            // /
+ 		FindCategoryDeliminator(L.Text, CategoryDeliminatorPosition, CategoryDeliminator);
+
+ 		sTm = CategoryDeliminator;             // <
+ 		sDate = Left(L.Text, CategoryDeliminatorPosition) $ "-" $ Mid(L.Text, CategoryDeliminatorPosition + 1, 8);// Saturday 22.January.2022.-.16:19..
+ 		sMesg = Mid(L.Text, CategoryDeliminatorPosition + 8); // somasup:.hey blaze
+
+ 		i = InStr(sMesg, ": ");
+
+ 		if (i > 0)
  		{
- 			sTm = Mid(L.Text, 6, 1);             // -
- 			sDate = Left(L.Text, 6) $ "-" $ Mid(L.Text, 7, 8);  // 01/23.-.14:46..
- 			sMesg = Mid(L.Text, 15); // somasup:.hey blaze
+ 			sName = Left(sMesg, i+1); // somasup:.
+ 			sMesg = Mid(sMesg, i+2);  // hey blaze
 
- 			i = InStr(sMesg, ": ");
+ 			TextSize(C, sDate, X1, Y1);
 
- 			if (i > 0)
+ 			C.DrawColor = ChatColor;
+ 			C.SetPos(X, Y);
+
+ 			TextAreaClipText(C, X, Y, sDate);
+
+ 			X = X1 + 2 + ChatFaceVerticalPadding;
+
+ 			DrawChatFace(C, X, Y, FacelessFaceTexture, Y1, TextureXOccupied, TextureYOccupied);
+
+ 			if (bChat)
  			{
- 				sName = Left(sMesg, i+1); // somasup:.
- 				sMesg = Mid(sMesg, i+2);  // hey blaze
+ 				if (sTm == "<")
+ 				{
+ 					C.DrawColor = RedColor;
+ 				}
+ 				else if (sTm == ">")
+ 				{
+ 					C.DrawColor = BluColor;
+ 				}
+ 				else if (sTm == "=")
+ 				{
+ 					C.DrawColor = GrnColor;
+ 				}
+ 				else if (sTm == "+")
+ 				{
+ 					C.DrawColor = YelColor;
+ 				}
+ 				else
+ 				{
+ 					C.DrawColor = WhiteColor;
+ 				}
 
- 				TextSize(C, sDate, X1, Y1);
-
- 				C.DrawColor = ChatColor;
+ 				X = X1 + 2 + ChatFaceVerticalPadding + TextureXOccupied + 2;
  				C.SetPos(X, Y);
 
- 				TextAreaClipText(C, X, Y, sDate);
+ 				TextAreaClipText(C, X, Y, sName);
 
- 				X = X1 + 2;
+ 				C.DrawColor = TxtColor;
+ 				TextSize(C, sName $ "  ", X2, Y1);
+ 				X = X1 + 2 + ChatFaceVerticalPadding + TextureXOccupied + 2 + X2;
 
- 				DrawChatFace(C, X, Y, FacelessFaceTexture, Y1, TextureXOccupied, TextureYOccupied);
-
- 				if (bChat)
- 				{
- 					if (sTm == "<")
- 					{
- 						C.DrawColor = RedColor;
- 					}
- 					else if (sTm == ">")
- 					{
- 						C.DrawColor = BluColor;
- 					}
- 					else if (sTm == "=")
- 					{
- 						C.DrawColor = GrnColor;
- 					}
- 					else if (sTm == "+")
- 					{
- 						C.DrawColor = YelColor;
- 					}
- 					else
- 					{
- 						C.DrawColor = WhiteColor;
- 					}
-
- 					X = X1 + 2 + TextureXOccupied + 2;
- 					C.SetPos(X, Y);
-
- 					TextAreaClipText(C, X, Y, sName);
- 					
- 					C.DrawColor = TxtColor;
- 					TextSize(C, sName $ "  ", X2, Y1);
- 					X = X1 + 2 + TextureXOccupied + 2 + X2;
- 					
- 					TextAreaClipText(C, X, Y, sMesg);
- 				}
- 				return DefaultTextTextureLineHeight;
+ 				TextAreaClipText(C, X, Y, sMesg);
  			}
+ 			return DefaultTextTextureLineHeight;
  		}
 
  		if (Mid(L.Text, 2, 1) != "/")
@@ -187,26 +234,26 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  {
  	local float ChatFaceMultiplier;
  	local float StaticMultiplier;
- 	
+
  	ChatFaceMultiplier = 0.5;
  	StaticMultiplier = 0.125;
- 	
+
  	XOccupied = (FaceTexture.USize * ChatFaceMultiplier + StaticTransparencyTexture.USize * StaticMultiplier) / 2;
  	YOccupied = (FaceTexture.VSize * ChatFaceMultiplier + StaticTransparencyTexture.VSize * StaticMultiplier) / 2;
- 	
+
  	if(!bTopText)
  	{
  		Y = Y - YOccupied + TextHeight;
  	}
- 
+
  	Canvas.DrawColor = WhiteColor;
  	Canvas.Style = ERenderStyle.STY_Normal;
- 
+
  	DrawStretchedTexture(Canvas, X, Y, FaceTexture.USize * ChatFaceMultiplier, FaceTexture.VSize * ChatFaceMultiplier, FaceTexture);
- 	
+
  	Canvas.Style = ERenderStyle.STY_Translucent;
  	Canvas.DrawColor = FaceColor;
- 	
+
  	DrawStretchedTexture(Canvas, X, Y, StaticTransparencyTexture.USize * StaticMultiplier,
  		StaticTransparencyTexture.VSize * StaticMultiplier, StaticTransparencyTexture);
 
@@ -221,14 +268,14 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  	local int i;
  	local float Y, Junk;
  	local bool bWrapped;
- 
+
  	C.DrawColor = TextColor;
- 
+
  	if(AbsoluteFont != None)
  		C.Font = AbsoluteFont;
  	else
  		C.Font = Root.Fonts[Font];
- 
+
  	if(OldW != WinWidth || OldH != WinHeight)
  	{
  		WordWrap(C, True);
@@ -242,24 +289,24 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  		WordWrap(C, False);
  		bWrapped = True;
  	}
- 
+
  	if(bWrapped)
  	{
  		// Obtain the ChatFace texture height
  		DrawChatFace(C, 0 , 0, FacelessFaceTexture, 0, , TempoTextureHeight);
- 
+
  		// Obtain the text (maybe emote) height
  		TextAreaTextSize(C, "A", Junk, TempoTextHeight);
- 
+
  		DefaultTextTextureLineHeight = max(TempoTextHeight, TempoTextureHeight);
- 
+
  		// Some horizontal padding (gap?)
  		DefaultTextTextureLineHeight += UniformHorizontalPadding;
- 
+
  		VisibleRows = WinHeight / DefaultTextTextureLineHeight;
  		Count = List.Count();
  		VertSB.SetRange(0, Count, VisibleRows);
- 
+
  		if(bScrollOnResize)
  		{
  			if(bTopCentric)
@@ -271,7 +318,7 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  				VertSB.Pos = VertSB.MaxPos;
  			}
  		}
- 
+
  		if(bAutoScrollbar && !bVariableRowHeight)
  		{
  			if(Count <= VisibleRows)
@@ -284,17 +331,17 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  			}
  		}
  	}
- 
+
  	if(bTopCentric)
  	{
  		SkipCount = VertSB.Pos;
  		L = UWindowDynamicTextRow(List.Next);
- 
+
  		for(i=0; i < SkipCount && (L != None) ; i++)
  		{
  			L = UWindowDynamicTextRow(L.Next);
  		}
- 
+
  		if(bVCenter && Count <= VisibleRows)
  		{
  			Y = int((WinHeight - (Count * DefaultTextTextureLineHeight)) / 2);
@@ -303,9 +350,9 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  		{
  			Y = 1;
  		}
- 
+
  		DrawCount = 0;
- 
+
  		while(Y < WinHeight)
  		{
  			DrawCount++;
@@ -319,18 +366,18 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  				Y += DefaultTextTextureLineHeight;
  			}
  		}
- 
+
  		if(bVariableRowHeight)
  		{
  			VisibleRows = DrawCount - 1;
- 
+
  			while(VertSB.Pos + VisibleRows > Count)
  			{
  				VisibleRows--;
  			}
- 
+
  			VertSB.SetRange(0, Count, VisibleRows);
- 
+
  			if(bAutoScrollbar)
  			{
  				if(Count <= VisibleRows)
@@ -348,14 +395,14 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  	{
  		SkipCount = Max(0, Count - (VisibleRows + VertSB.Pos));
  		L = UWindowDynamicTextRow(List.Last);
- 
+
  		for(i=0; i < SkipCount && (L != List) ; i++)
  		{
  			L = UWindowDynamicTextRow(L.Prev);
  		}
- 
+
  		Y = WinHeight - DefaultTextTextureLineHeight;
- 
+
  		while(L != List && L != None && Y > -DefaultTextTextureLineHeight)
  		{
  			DrawTextTextureLine(C, L, Y);
@@ -378,6 +425,7 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  	TxtColor=(R=160,G=160,B=160)
  	FaceColor=(R=50,G=50,B=50,A=0)
  	UniformHorizontalPadding=10
+ 	ChatFaceVerticalPadding=9
  }
 
  /*

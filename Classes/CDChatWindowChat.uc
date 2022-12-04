@@ -78,13 +78,13 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
 
  	CDGRI = Root.GetPlayerOwner().GameReplicationInfo;
  	LocalPRI = Root.GetPlayerOwner().PlayerReplicationInfo;
- 	
+
  	VSRP.CDServerName = GenerateServerName();
  	VSRP.CDMD5Hash = class'CDHash'.static.MD5(VSRP.CDServerName);
 
  	lblHeading = UMenuLabelControl(CreateControl(Class'UMenuLabelControl', 0, 0, 200, 16));
  	lblHeading.Font = F_Bold;
- 	lblHeading.SetText(" Date    Time   Nickname / Message ");
+ 	lblHeading.SetText(" Date                                       Message ");
  	lblHeading.Align = TA_Left;
  	lblHeading.SetTextColor(GrnColor);
 
@@ -163,8 +163,8 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
  function PadVerticallyWithHorizontal(optional int VerticalPaddingAmount)
  {
  	local int Counter, MaximumPadCount;
- 	
- 	
+
+
  	if(VerticalPaddingAmount > 0)
  	{
  		MaximumPadCount = VerticalPaddingAmount;
@@ -173,7 +173,7 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
  	{
  		MaximumPadCount = 4;
  	}
- 	
+
  	for(Counter = 0; Counter < MaximumPadCount; Counter++)
  	{
  		TheTextArea.AddText("");
@@ -206,7 +206,22 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
  {
  	if(MessageType == 'Say' || MessageType == 'TeamSay')
  	{
- 		LoadMessages(PRI.PlayerName $ ": " $ Message);
+ 		if(PRI.bAdmin)
+ 		{
+ 			LoadMessages(LocalTimeAndMPOVMarker("+") $ "  " $ PRI.PlayerName $ ": " $ Message);
+ 		}
+ 		else if(PRI.Team == 0)
+ 		{
+ 		 LoadMessages(LocalTimeAndMPOVMarker("<") $ "  " $ PRI.PlayerName $ ": " $ Message);
+ 		}
+ 		else if(PRI.Team == 1)
+ 		{
+ 			LoadMessages(LocalTimeAndMPOVMarker(">") $ "  " $ PRI.PlayerName $ ": " $ Message);
+ 		}
+ 		else // for 4-way I need to think
+ 		{
+ 			LoadMessages(LocalTimeAndMPOVMarker("-") $ "  " $ PRI.PlayerName $ ": " $ Message);
+ 		}
  	}
 
  	if(PRI.bIsSpectator)
@@ -217,19 +232,38 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
  		// Message = The_Cowboy:Howdy!
  		if(FilterSenderName(Message) == PRI.PlayerName)
  		{
- 			LoadMessages(Message);
+ 			//LoadMessages(PrepareSpectatorMessageForDisplay(Message));
+ 			LoadMessages(LocalTimeAndMPOVMarker("-") $ "  " $ PrepareSpectatorMessageForDisplay(Message));
  		}
  	}
+ }
+
+ function string PrepareSpectatorMessageForDisplay(string SpectatorMessage)
+ {
+ 	local string TempoString, SpectatorName;
+ 	local int NameEndPosition;
+
+ 	// Assuming name has no funny character, i.e delimiter itself
+ 	NameEndPosition = Instr(SpectatorMessage, ":");
+
+ 	if(NameEndPosition != -1)
+ 	{
+ 		SpectatorName = Left(SpectatorMessage, NameEndPosition);
+ 	}
+
+ 	TempoString = Mid(SpectatorMessage, NameEndPosition + 1);
+
+ 	return SpectatorName $ ": " $ TempoString;
  }
 
  function string FilterSenderName(coerce string Message)
  {
  	local int NameEndPosition;
  	local string SenderName;
- 	
+
  	// Assuming name has no funny character, i.e delimiter itself
  	NameEndPosition = Instr(Message, ":");
- 	
+
  	if(NameEndPosition != -1)
  	{
  		SenderName = Left(Message, NameEndPosition);
@@ -241,6 +275,7 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
 
  	return SenderName;
  }
+
 
  function string GenerateServerName()
  {
@@ -258,37 +293,62 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
  	return GeneratedServerName;
  }
 
-// sTemp = sDate $" "$ sTm $" "$ sTime $" " @ sName $": " $sMesg;
+/*******************************************************************************
+ * Routine for modifying the console message as per our interpretation
+ * and encode the deliminators accordingly
+ *
+ * @PARAM Message             The actual message
+ * @PARAM CategoryDeliminator Categories are like so
+ *                            1. - for neutral spectator (white color)
+ *                            2. < for red team category
+ *                            3. > for blue team category
+ *                            4. = for green color  (could be 4 way team)
+ *                            5. + for golden color (could be 4 way team)
+ *
+ * @also see CDUTChatTextTextureAnimEmoteArea::DrawTextTextureLine
+ *
+ *******************************************************************************
+ */
 
- /*
- function GetDateTime()
+ function string LocalTimeAndMPOVMarker(string CategoryDeliminator)
  {
-	sDate = "";
+ 	local string Mon, Day, Min;
+ 	local PlayerPawn PlayerOwner;
 
-	if (Level.Month < 10)
-		sDate = sDate$"0"$Level.Month;
-	else
-		sDate = sDate$Level.Month;
-    sMonth = sDate;
+ 	PlayerOwner = Root.GetPlayerOwner();
 
-	if (Level.Day < 10)
-		sDate = sDate$"/0"$Level.Day;
-	else
-		sDate = sDate$"/"$Level.Day;
+ 	Min = string(PlayerOwner.Level.Minute);
+ 	if( int( Min ) < 10 ) Min = "0" $ Min;
 
-        sTime = "";
+ 	switch(PlayerOwner.Level.month)
+ 	{
+ 		case  1: Mon = "Jan"; break;
+ 		case  2: Mon = "Feb"; break;
+ 		case  3: Mon = "Mar"; break;
+ 		case  4: Mon = "Apr"; break;
+ 		case  5: Mon = "May"; break;
+ 		case  6: Mon = "Jun"; break;
+ 		case  7: Mon = "Jul"; break;
+ 		case  8: Mon = "Aug"; break;
+ 		case  9: Mon = "Sep"; break;
+ 		case 10: Mon = "Oct"; break;
+ 		case 11: Mon = "Nov"; break;
+ 		case 12: Mon = "Dec"; break;
+ 	}
 
-	if (Level.Hour < 10)
-		sTime = sTime$"0"$Level.Hour;
-	else
-		sTime = sTime$Level.Hour;
-    sHour = sTime;
+ 	switch( PlayerOwner.Level.dayOfWeek )
+ 	{
+ 		case 0: Day = "Sunday";    break;
+ 		case 1: Day = "Monday";    break;
+ 		case 2: Day = "Tuesday";   break;
+ 		case 3: Day = "Wednesday"; break;
+ 		case 4: Day = "Thursday";  break;
+ 		case 5: Day = "Friday";    break;
+ 		case 6: Day = "Saturday";  break;
+ 	}
 
-	if (Level.Minute < 10)
-		sTime = sTime$":0"$Level.Minute;
-	else
-		sTime = sTime$":"$Level.Minute;
- }   */
+ 	return Day @ PlayerOwner.Level.Day @ Mon @ PlayerOwner.Level.Year @ CategoryDeliminator @ PlayerOwner.Level.Hour $ ":" $ Min;
+ }
 
  function CacheMessage(string sMesg)
  {
@@ -384,7 +444,7 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
  	{
  		CDGRI = Root.GetPlayerOwner().GameReplicationInfo;
  		TemporaryServerName =  GenerateServerName();
- 		
+
  		if(TemporaryServerName != "" && TemporaryServerName != "Another UT Server")// ye I don't know what you are doing playing on such server anyways
  		{
  			TemporaryServerHash = class'CDHash'.static.MD5(TemporaryServerName);
