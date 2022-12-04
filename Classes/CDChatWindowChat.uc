@@ -29,30 +29,34 @@
 //==============================================================================
 
 class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
-/*
-// Travelling from server to server.
-enum ETravelType
-{
-	TRAVEL_Absolute,	// Absolute URL.
-	TRAVEL_Partial,		// Partial (carry name, reset server).
-	TRAVEL_Relative,	// Relative URL.
-};*/
 
  var() config string ChatLog[200];
 
  var UMenuLabelControl  lblHeading;
- var UTChatTextArea     TheTextArea;
+ var CDUTChatTextTextureAnimEmoteArea TheTextArea;
  var UTChatWinControl   EditMesg;
 
  var UWindowSmallButton ButSend;
  var UWindowSmallButton ButSave;
- var UWindowSmallButton ButClose;
  var UWindowSmallButton ButtonPlaySpectate;
+ var UWindowSmallButton ButtonDisconnectAndQuit;
 
  var GameReplicationInfo CDGRI;
  var PlayerReplicationInfo LocalPRI;
  var bool bIsWindowChatFunctional;
  var CDUTConsole ChatDiamondConsole;
+
+ // Server being visited
+ struct VisitingServerInformation
+ {
+ 	var string CDServerName;
+ 	// Dragon's barbed alogrithm, in uscript, for identification
+ 	var string CDMD5Hash;
+ };
+
+ var VisitingServerInformation VSRP;// Visiting Server Relevant Platter
+ var string TemporaryServerHash;
+ var string TemporaryServerName;
 
  var config string Chat[200];
 
@@ -72,17 +76,11 @@ enum ETravelType
 
  	Super.Created();
 
- 	if(CDGRI == none)
- 	{
- 		foreach Root.GetPlayerOwner().AllActors(class'GameReplicationInfo', CDGRI)
- 		break;
- 	}
-
- 	if(LocalPRI == none)
- 	{
- 		foreach Root.GetPlayerOwner().AllActors(class'PlayerReplicationInfo', LocalPRI)
- 		break;
- 	}
+ 	CDGRI = Root.GetPlayerOwner().GameReplicationInfo;
+ 	LocalPRI = Root.GetPlayerOwner().PlayerReplicationInfo;
+ 	
+ 	VSRP.CDServerName = GenerateServerName();
+ 	VSRP.CDMD5Hash = class'CDHash'.static.MD5(VSRP.CDServerName);
 
  	lblHeading = UMenuLabelControl(CreateControl(Class'UMenuLabelControl', 0, 0, 200, 16));
  	lblHeading.Font = F_Bold;
@@ -90,12 +88,14 @@ enum ETravelType
  	lblHeading.Align = TA_Left;
  	lblHeading.SetTextColor(GrnColor);
 
- 	TheTextArea = UTChatTextArea(CreateControl(Class'UTChatTextArea',1, 16, 385, 212));
+ 	TheTextArea = CDUTChatTextTextureAnimEmoteArea(CreateControl(Class'CDUTChatTextTextureAnimEmoteArea', 1, 16, 385, 212));
  	TheTextArea.AbsoluteFont = Font(DynamicLoadObject("UWindowFonts.TahomaB12", class'Font'));
  	TheTextArea.bAutoScrollbar = False;
  	TheTextArea.SetTextColor(SilColor);
  	TheTextArea.Clear();
  	TheTextArea.bChat = True;
+ 	TheTextArea.bVariableRowHeight = True;
+ 	TheTextArea.bScrollOnResize = True;
 
  	ButSave = UWindowSmallButton(CreateControl(class'UWindowSmallButton', 4, 230, 50, 25));
  	ButSave.SetText("Save");
@@ -105,9 +105,9 @@ enum ETravelType
  	ButSend.SetText("Send");
  	ButSend.DownSound = sound'UnrealShare.FSHLITE2';
 
- 	ButClose = UWindowSmallButton(CreateControl(class'UWindowSmallButton', 333, 230, 50, 25));
- 	ButClose.SetText("Close");
- 	ButClose.DownSound = sound'UnrealShare.FSHLITE2';
+ 	ButtonDisconnectAndQuit = UWindowSmallButton(CreateControl(class'UWindowSmallButton', 333, 230, 50, 25));
+ 	ButtonDisconnectAndQuit.SetText("RAGE");//("Goodbye!");
+ 	ButtonDisconnectAndQuit.DownSound = sound'UnrealShare.FSHLITE2';
 
  	ButtonPlaySpectate = UWindowSmallButton(CreateControl(class'UWindowSmallButton', 4, 255, 380, 25));
  	if(GetPlayerOwner().GetDefaultURL("OverrideClass") == "Botpack.CHSpectator")
@@ -119,7 +119,6 @@ enum ETravelType
  		ButtonPlaySpectate.SetText("Spectate");
  	}
  	ButtonPlaySpectate.DownSound = sound'UnrealShare.FSHLITE2';
-
 
  	// must go here to get 1st focus
  	EditMesg = UTChatWinControl(CreateControl(Class'UTChatWinControl', 56, 230, 217, 16)); //188
@@ -157,9 +156,27 @@ enum ETravelType
  				break;
  			}
  			TheTextArea.AddText(sTemp);
- 			//sTemp = Left(sTemp, 6) $ "-" $ Mid(sTemp, 7);
- 			//Chat[i] = sTemp;              // for saving
  		}
+ 	}
+ }
+
+ function PadVerticallyWithHorizontal(optional int VerticalPaddingAmount)
+ {
+ 	local int Counter, MaximumPadCount;
+ 	
+ 	
+ 	if(VerticalPaddingAmount > 0)
+ 	{
+ 		MaximumPadCount = VerticalPaddingAmount;
+ 	}
+ 	else
+ 	{
+ 		MaximumPadCount = 4;
+ 	}
+ 	
+ 	for(Counter = 0; Counter < MaximumPadCount; Counter++)
+ 	{
+ 		TheTextArea.AddText("");
  	}
  }
 
@@ -168,7 +185,17 @@ enum ETravelType
  * Please note: The message from spectators are of type `Event` and not
  * distinguishable from messages different from Say or TeamSay
  *
+ * TODO:
+ * 1. Server Information
+ * 2. Tab for history. Public chat should be cleaned everytime game is loaded. Force clean?
+ * 3. Contextual deletion of History?
+ * 4. Filter default messages (for instance I have got the flag! or custom cmds)
+ * 5. Face loading
+ *
  * @PARAM PRI                 The PlayerReplicationInfo of involved individual
+ *                            Behavior differs (as far as I understand)
+ *                            1. Multiplay: PRI is that of client
+ *                            2. Single Player: PRI can be of Human or bot
  * @PARAM Msg                 The actual message of type `Say` or `TeamSay` etc
  *                            may contain senders name in multiplay games
  *
@@ -179,9 +206,89 @@ enum ETravelType
  {
  	if(MessageType == 'Say' || MessageType == 'TeamSay')
  	{
- 		LoadMessages(PRI.PlayerName $ ":" $ Message);
+ 		LoadMessages(PRI.PlayerName $ ": " $ Message);
+ 	}
+
+ 	if(PRI.bIsSpectator)
+ 	{
+ 		// Maybe exhaustive.
+ 		// Well, player join leave and server adds and whatnot. So we shall use
+ 		// our filter. Spectators' message is of the form
+ 		// Message = The_Cowboy:Howdy!
+ 		if(FilterSenderName(Message) == PRI.PlayerName)
+ 		{
+ 			LoadMessages(Message);
+ 		}
  	}
  }
+
+ function string FilterSenderName(coerce string Message)
+ {
+ 	local int NameEndPosition;
+ 	local string SenderName;
+ 	
+ 	// Assuming name has no funny character, i.e delimiter itself
+ 	NameEndPosition = Instr(Message, ":");
+ 	
+ 	if(NameEndPosition != -1)
+ 	{
+ 		SenderName = Left(Message, NameEndPosition);
+ 	}
+ 	else
+ 	{
+ 		SenderName = "";
+ 	}
+
+ 	return SenderName;
+ }
+
+ function string GenerateServerName()
+ {
+ 	local string GeneratedServerName;
+
+ 	if(CDGRI != none)
+ 	{
+ 		GeneratedServerName = CDGRI.ServerName;
+ 	}
+ 	else
+ 	{
+ 		GeneratedServerName = "";
+ 	}
+
+ 	return GeneratedServerName;
+ }
+
+// sTemp = sDate $" "$ sTm $" "$ sTime $" " @ sName $": " $sMesg;
+
+ /*
+ function GetDateTime()
+ {
+	sDate = "";
+
+	if (Level.Month < 10)
+		sDate = sDate$"0"$Level.Month;
+	else
+		sDate = sDate$Level.Month;
+    sMonth = sDate;
+
+	if (Level.Day < 10)
+		sDate = sDate$"/0"$Level.Day;
+	else
+		sDate = sDate$"/"$Level.Day;
+
+        sTime = "";
+
+	if (Level.Hour < 10)
+		sTime = sTime$"0"$Level.Hour;
+	else
+		sTime = sTime$Level.Hour;
+    sHour = sTime;
+
+	if (Level.Minute < 10)
+		sTime = sTime$":0"$Level.Minute;
+	else
+		sTime = sTime$":"$Level.Minute;
+ }   */
 
  function CacheMessage(string sMesg)
  {
@@ -222,10 +329,11 @@ enum ETravelType
  						SendMessage();
  					break;
 
- 					case ButClose:
- 						ParentWindow.ParentWindow.Close();
+ 					case ButtonDisconnectAndQuit:
+ 						Root.QuitGame();
  					break;
 
+ 					// Courtsey ProAsm's UTCmds8
  					case ButtonPlaySpectate:
  					if(GetPlayerOwner().PlayerReplicationInfo.bIsSpectator)
  					{
@@ -263,8 +371,8 @@ enum ETravelType
 
  		MessageString = Root.GetPlayerOwner().PlayerReplicationInfo.PlayerName $ ": " $  EditMesg.GetValue();
 
- 		// Only for experiments. Nice way be intercepting HUD messages
- 		//LoadMessages(MessageString);
+ 		// Only for experiments.
+ 		// LoadMessages(MessageString);
 
  		EditMesg.SetValue("");
  	}
@@ -272,6 +380,23 @@ enum ETravelType
 
  function Tick(float delta)
  {
+ 	if(Root.GetPlayerOwner().GameReplicationInfo != CDGRI)
+ 	{
+ 		CDGRI = Root.GetPlayerOwner().GameReplicationInfo;
+ 		TemporaryServerName =  GenerateServerName();
+ 		
+ 		if(TemporaryServerName != "" && TemporaryServerName != "Another UT Server")// ye I don't know what you are doing playing on such server anyways
+ 		{
+ 			TemporaryServerHash = class'CDHash'.static.MD5(TemporaryServerName);
+ 			if(VSRP.CDMD5Hash != TemporaryServerHash)
+ 			{
+ 				VSRP.CDServerName = TemporaryServerName;
+ 				VSRP.CDMD5Hash = TemporaryServerHash;
+ 				LoadMessages(VSRP.CDServerName);
+ 			}
+ 		}
+ 	}
+
  	if (iTick > 0)
  	{
  		iTick--;
@@ -306,8 +431,8 @@ enum ETravelType
  		ButSend.WinLeft += DiffX;
  		ButSend.WinTop += DiffY;
 
- 		ButClose.WinLeft += DiffX;
- 		ButClose.WinTop += DiffY;
+ 		ButtonDisconnectAndQuit.WinLeft += DiffX;
+ 		ButtonDisconnectAndQuit.WinTop += DiffY;
 
  		EditMesg.WinTop += DiffY;
  		EditMesg.SetSize(EditMesg.WinWidth + DiffX, EditMesg.WinHeight);

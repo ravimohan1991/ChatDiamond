@@ -63,7 +63,7 @@ class CDClientSideWindow expands UWindowConsoleClientWindow config(ChatDiamond);
 
  	PageControl = Pages.AddPage("Console", class'CDUTConsoleWindow');
  	ConsoleWindow = CDUTConsoleWindow(PageControl.Page);
- 	TextArea = ConsoleWindow.TextArea; // khe khe
+ 	TextArea = ConsoleWindow.TextArea; // khe khe, also think about font TextArea.Font
  	CDUTConsole(Root.Console).ChatWindow = ChatWindow;
 
  	PageControl = Pages.AddPage("About", class'CDAboutWindow');
@@ -89,8 +89,8 @@ class CDClientSideWindow expands UWindowConsoleClientWindow config(ChatDiamond);
  	//PageControl = Pages.AddPage("Admin", class'UTChatWindowAdmin');
  	//AdminWindow = UTChatWindowAdmin(PageControl.Page);
 
- 	// PageControl = Pages.AddPage("Configs", class'UTChatWindowConfig');
- 	// ConfigWindow = UTChatWindowConfig(PageControl.Page);
+ 	//PageControl = Pages.AddPage("Configs", class'UTChatWindowConfig');
+ 	//ConfigWindow = UTChatWindowConfig(PageControl.Page);
  }
 
  function AddChatMessage(string sMesg)

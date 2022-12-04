@@ -32,21 +32,21 @@ class CDUTConsoleWindow extends UWindowPageWindow config (ChatDiamond);
 
  var UWindowConsoleTextAreaControl TextArea;
  var UWindowEditControl	EditControl;
- 
+
  var config string History[32];
- 
+
  function Created()
  {
  	local int i;
  	local UWindowEditBoxHistory CurrentHistory;
- 
+
  	TextArea = UWindowConsoleTextAreaControl(CreateWindow(class'UWindowConsoleTextAreaControl', 0, 0, WinWidth, WinHeight));
  	EditControl = UWindowEditControl(CreateControl(class'UWindowEditControl', 0, WinHeight-16, WinWidth, 16));
  	EditControl.SetFont(F_Normal);
  	EditControl.SetNumericOnly(False);
  	EditControl.SetMaxLength(400);
  	EditControl.SetHistory(True);
- 
+
  	for (i = ArrayCount(History) - 1; i >= 0; i--)
  	{
  		if (History[i] == "") continue;
@@ -55,15 +55,15 @@ class CDUTConsoleWindow extends UWindowPageWindow config (ChatDiamond);
  	}
  	EditControl.EditBox.CurrentHistory = EditControl.EditBox.HistoryList;
  }
- 
+
  function Notify(UWindowDialogControl C, byte E)
  {
  	local string s;
  	local int i;
  	local UWindowEditBoxHistory CurrentHistory;
- 
+
  	Super.Notify(C, E);
- 
+
  	switch(E)
  	{
  	case DE_EnterPressed:
@@ -84,7 +84,7 @@ class CDUTConsoleWindow extends UWindowPageWindow config (ChatDiamond);
  					}
  				}
  				SaveConfig();
- 
+
  				s = EditControl.GetValue();
  				Root.Console.Message( None, "> "$s, 'Console' );
  				EditControl.Clear();
@@ -112,22 +112,30 @@ class CDUTConsoleWindow extends UWindowPageWindow config (ChatDiamond);
  		break;
  	}
  }
- 
+
  function BeforePaint(Canvas C, float X, float Y)
  {
  	Super.BeforePaint(C, X, Y);
- 
+
  	EditControl.SetSize(WinWidth, 17);
  	EditControl.WinLeft = 0;
  	EditControl.WinTop = WinHeight - EditControl.WinHeight;
  	EditControl.EditBoxWidth = WinWidth;
- 
+
  	TextArea.SetSize(WinWidth, WinHeight - EditControl.WinHeight);
  }
- 
+
  function Paint(Canvas C, float X, float Y)
  {
  	DrawStretchedTexture(C, 0, 0, WinWidth, WinHeight, Texture'BlackTexture');
+ }
+
+ function Close(optional bool bByParent)
+ {
+ 	Super.Close(bByParent);
+
+ 	if(Root.bQuickKeyEnable)
+		Root.Console.CloseUWindow();
  }
 
  defaultproperties
