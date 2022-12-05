@@ -112,7 +112,7 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
  	ButtonPlaySpectate = UWindowSmallButton(CreateControl(class'UWindowSmallButton', 4, 255, 380, 25));
  	if(GetPlayerOwner().GetDefaultURL("OverrideClass") == "Botpack.CHSpectator")
  	{
- 	ButtonPlaySpectate.SetText("Play");
+ 		ButtonPlaySpectate.SetText("Play");
  	}
  	else
  	{
@@ -204,23 +204,40 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
 
  function InterpretAndDisplayTextClientSide(PlayerReplicationInfo PRI, coerce string Message, name MessageType)
  {
+ 	local string SkinName, FaceName;
+ 	local Pawn LP;
+ 	
+ 	LP = Pawn(PRI.Owner);
+ 	
+ 	LP.GetMultiSkin(LP, SkinName, FaceName);
+ 	
+ 	if(FaceName == "")
+ 	{
+ 		FaceName = "Dummy";
+ 	}
+
+ 	if(SkinName == "")
+ 	{
+ 		SkinName = "Dummy";
+ 	}
+
  	if(MessageType == 'Say' || MessageType == 'TeamSay')
  	{
  		if(PRI.bAdmin)
  		{
- 			LoadMessages(LocalTimeAndMPOVMarker("+") $ "  " $ PRI.PlayerName $ ": " $ Message);
+ 			LoadMessages(FaceName $ ":" $ SkinName $ "::" $ LocalTimeAndMPOVMarker("+") $ "  " $ PRI.PlayerName $ ": " $ Message);
  		}
  		else if(PRI.Team == 0)
  		{
- 		 LoadMessages(LocalTimeAndMPOVMarker("<") $ "  " $ PRI.PlayerName $ ": " $ Message);
+ 		 LoadMessages(FaceName $ ":" $ SkinName $ "::" $ LocalTimeAndMPOVMarker("<") $ "  " $ PRI.PlayerName $ ": " $ Message);
  		}
  		else if(PRI.Team == 1)
  		{
- 			LoadMessages(LocalTimeAndMPOVMarker(">") $ "  " $ PRI.PlayerName $ ": " $ Message);
+ 			LoadMessages(FaceName $ ":" $ SkinName $ "::" $ LocalTimeAndMPOVMarker(">") $ "  " $ PRI.PlayerName $ ": " $ Message);
  		}
  		else // for 4-way I need to think
  		{
- 			LoadMessages(LocalTimeAndMPOVMarker("-") $ "  " $ PRI.PlayerName $ ": " $ Message);
+ 			LoadMessages(FaceName $ ":" $ SkinName $ "::" $ LocalTimeAndMPOVMarker("-") $ "  " $ PRI.PlayerName $ ": " $ Message);
  		}
  	}
 
@@ -303,7 +320,8 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
  *                            2. < for red team category
  *                            3. > for blue team category
  *                            4. = for green color  (could be 4 way team)
- *                            5. + for golden color (could be 4 way team)
+ *                            5. + for golden color (could be 4 way team). Admin
+ *                               for now.
  *
  * @also see CDUTChatTextTextureAnimEmoteArea::DrawTextTextureLine
  *
@@ -312,13 +330,13 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
 
  function string LocalTimeAndMPOVMarker(string CategoryDeliminator)
  {
- 	local string Mon, Day, Min;
+ 	local string Mon, Day, Min, Hour;
  	local PlayerPawn PlayerOwner;
 
  	PlayerOwner = Root.GetPlayerOwner();
 
  	Min = string(PlayerOwner.Level.Minute);
- 	if( int( Min ) < 10 ) Min = "0" $ Min;
+ 	if(int(Min) < 10) Min = "0" $ Min;
 
  	switch(PlayerOwner.Level.month)
  	{
@@ -336,7 +354,7 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
  		case 12: Mon = "Dec"; break;
  	}
 
- 	switch( PlayerOwner.Level.dayOfWeek )
+ 	switch(PlayerOwner.Level.dayOfWeek)
  	{
  		case 0: Day = "Sunday";    break;
  		case 1: Day = "Monday";    break;
@@ -347,7 +365,16 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
  		case 6: Day = "Saturday";  break;
  	}
 
- 	return Day @ PlayerOwner.Level.Day @ Mon @ PlayerOwner.Level.Year @ CategoryDeliminator @ PlayerOwner.Level.Hour $ ":" $ Min;
+ 	if(PlayerOwner.Level.Hour < 10)
+ 	{
+ 		Hour = 0 $ string(PlayerOwner.Level.Hour);
+ 	}
+ 	else
+ 	{
+ 		Hour = string(PlayerOwner.Level.Hour);
+ 	}
+
+ 	return Day @ PlayerOwner.Level.Day @ Mon @ PlayerOwner.Level.Year @ CategoryDeliminator @ Hour $ ":" $ Min;
  }
 
  function CacheMessage(string sMesg)

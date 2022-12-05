@@ -39,8 +39,15 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  var bool bShowFaces, bCountryFlags;
  var bool bCol;
  var Color ChatColor, GrnColor, YelColor, BluColor, RedColor, WhiteColor, TxtColor, FaceColor;
- var texture FacelessFaceTexture;
  var texture StaticTransparencyTexture;
+
+ struct SkinStore
+ {
+ 	var texture ChatFace;
+ 	var string FaceName;
+ };
+
+ var SkinStore CachedFaces[50];
 
  // The maximum height inclusive of FaceTexture, text, and emote when displayed in a line
  // Height(FaceTexture) < Height(emote) type assumption (also obvious)
@@ -57,7 +64,6 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  	Super.Created();
 
  	// Powers of two, I presume!
- 	FacelessFaceTexture = Texture'faceless'; // 64 by 64 pixels
  	StaticTransparencyTexture = texture'LadrStatic.Static_a00'; // 256 by 256 pixels
  }
 
@@ -112,12 +118,14 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  // and the length of the string. If S is not a string, its value will attempt
  // to be converted to a string value.
 
- // Saturday 22.January.2022.<.16:19..somasup:.hey blaze (a dot represents single space padding)
+ // Saturday.22.January.2022.<.16:19..somasup:.hey blaze (a dot represents single space padding)
 
  function float DrawTextTextureLine(Canvas C, UWindowDynamicTextRow L, float Y)
  {
  	local float X, X1, X2, Y1;
  	local string sDate, sName, sMesg, sTm, CategoryDeliminator;
+ 	local string FaceName, SkinName;
+ 	local string FaceSkinNoText;
  	local int i, CategoryDeliminatorPosition;
  	local float TextureXOccupied, TextureYOccupied;
 
@@ -128,14 +136,15 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
 
  	X = 2;
  	sTm = "-";// The date time delimiter
+ 	FaceSkinNoText = StripFaceNameAndSkinName(L.Text, FaceName, SkinName);
 
  	if (bChat)
  	{
- 		FindCategoryDeliminator(L.Text, CategoryDeliminatorPosition, CategoryDeliminator);
+ 		FindCategoryDeliminator(FaceSkinNoText, CategoryDeliminatorPosition, CategoryDeliminator);
 
  		sTm = CategoryDeliminator;             // <
- 		sDate = Left(L.Text, CategoryDeliminatorPosition) $ "-" $ Mid(L.Text, CategoryDeliminatorPosition + 1, 8);// Saturday 22.January.2022.-.16:19..
- 		sMesg = Mid(L.Text, CategoryDeliminatorPosition + 8); // somasup:.hey blaze
+ 		sDate = Left(FaceSkinNoText, CategoryDeliminatorPosition) $ "-" $ Mid(FaceSkinNoText, CategoryDeliminatorPosition + 1, 8);// Saturday 22.January.2022.-.16:19..
+ 		sMesg = Mid(FaceSkinNoText, CategoryDeliminatorPosition + 8); // somasup:.hey blaze
 
  		i = InStr(sMesg, ": ");
 
@@ -153,7 +162,7 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
 
  			X = X1 + 2 + ChatFaceVerticalPadding;
 
- 			DrawChatFace(C, X, Y, FacelessFaceTexture, Y1, TextureXOccupied, TextureYOccupied);
+ 			DrawChatFace(C, X, Y, LocateChatFaceTexture(FaceName, SkinName), Y1, TextureXOccupied, TextureYOccupied);
 
  			if (bChat)
  			{
@@ -192,21 +201,152 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  			return DefaultTextTextureLineHeight;
  		}
 
- 		if (Mid(L.Text, 2, 1) != "/")
+ 		if (Mid(FaceSkinNoText, 2, 1) != "/")
  		{
  			TextSize(C, "07/28 - 12:34   ", X1, X2);
  			X = X1;
  		}
 
  		C.DrawColor = TxtColor;
- 		TextAreaClipText(C, X, Y, L.Text);
+ 		TextAreaClipText(C, X, Y, FaceSkinNoText);
  	}
  	else
  	{
- 		TextAreaClipText(C, X, Y, Mid(L.Text, MyPos/4));
+ 		TextAreaClipText(C, X, Y, Mid(FaceSkinNoText, MyPos/4));
  	}
 
  	return DefaultTextTextureLineHeight;
+ }
+
+ function string StripFaceNameAndSkinName(string EncodedString, out string FaceName, out string SkinName)
+ {
+ 	local int i, j;
+ 	local string FaceAndSkinNames;
+ 	
+ 	i = Instr(EncodedString, "::");
+ 	
+ 	if(i != -1)
+ 	{
+ 		FaceAndSkinNames = left(EncodedString, i);
+ 		
+ 		j = Instr(FaceAndSkinNames, ":");
+ 		
+ 		SkinName = mid(FaceAndSkinNames, j + 1);
+ 		FaceName = left(FaceAndSkinNames, j);
+ 		
+ 		return mid(EncodedString, i + 2);
+ 	}
+ 	else
+ 	{
+ 		return EncodedString;
+ 	}
+ }
+
+ // need to cache
+ function texture LocateChatFaceTexture(optional string FaceNameString, optional string SkinNameString)
+ {
+ 	local texture ChatFaceTexture;
+ 	local string FacePackage, SkinItem, FaceItem, NonSandhiFaceNameString;
+
+ 	if(FaceNameString == "faceless" || FaceNameString == "")
+ 	{
+ 	  return texture'faceless';
+ 	}
+ 	/*
+ 	for(i = 0; i< 50; i++)
+ 	{
+ 		if(CachedFaces[i].ChatFace == none)
+ 		{
+ 			break;
+ 		}
+ 		else if(CachedFaces[i].FaceName == FaceNameString)
+ 		{
+ 			return CachedFaces[i].ChatFace;
+ 		}
+ 	}*/
+
+ 	SkinItem = Root.GetPlayerOwner().GetItemName(SkinNameString);
+ 	FaceItem = Root.GetPlayerOwner().GetItemName(FaceNameString);
+ 	FacePackage = Left(FaceNameString, Len(FaceNameString) - Len(FaceItem));
+
+ 	if(FacePackage == "")
+ 	{
+ 		FacePackage = TournamentPlayer(Root.GetPlayerOwner()).default.DefaultPackage;
+ 		FaceNameString = FacePackage $ FaceNameString;
+ 	}
+
+ 	if(IsSandhiNeeded(FaceNameString, NonSandhiFaceNameString))
+ 	{
+ 		ChatFaceTexture = Texture(DynamicLoadObject(FacePackage $ SkinItem $ "5" $ FaceItem, class'Texture'));
+ 	}
+ 	else
+ 	{
+ 		ChatFaceTexture = Texture(DynamicLoadObject(NonSandhiFaceNameString, class'Texture'));
+ 	}
+
+ 	if(ChatFaceTexture == none)
+ 	{
+ 		Log("Couldn't find ChatFace: " $ FaceNameString);
+ 		ChatFaceTexture = texture'faceless';
+ 	}
+ 	/*
+ 	CachedFaces[i].ChatFace = ChatFaceTexture;
+ 	CachedFaces[i].FaceName = FaceNameString;
+ 	*/
+ 	return ChatFaceTexture;
+ }
+
+ // Decide whether to use the string concatenation or not
+ // FaceNameString: FCommandoSkins.cmdo4Gromida
+ function bool IsSandhiNeeded(string FaceNameString, optional out string NotSandhiString)
+ {
+ 	local int DotLocation;
+ 	local string OnlyFaceString;// After the dot
+ 	local bool bResult;
+ 	local string PackageName, TFName;// TheFaceName
+
+ 	DotLocation = instr(FaceNameString, ".");
+ 	PackageName = left(FaceNameString, DotLocation);
+
+ 	if(DotLocation != -1)
+ 	{
+ 		OnlyFaceString = mid(FaceNameString, DotLocation + 1);
+ 		bResult = DoesStringRequireChatFaceDigitReplacement(OnlyFaceString, TFName);
+ 		NotSandhiString = PackageName $ "." $ TFName;
+ 		return bResult;
+ 	}
+
+ 	// Honestly IDK as of now
+ 	return true;
+ }
+
+
+ // Digit at position 5 seems to be the general scenario. For chat face the value is also 5
+ function bool DoesStringRequireChatFaceDigitReplacement(string SomeString, optional out string TrueFaceNameString)
+ {
+ 	local int TextureIdentifier;
+ 	local int Counter;
+ 	local string StringAndDigitJunction;
+ 	
+ 	Log("SomeString: " $ SomeString);
+ 	
+ 	StringAndDigitJunction =  mid(SomeString, 4, 1);
+ 	Log("Junction is " $ StringAndDigitJunction);
+ 	
+ 	TextureIdentifier = int(StringAndDigitJunction);
+ 	Log("TextureIdentifier: " $ TextureIdentifier);
+ 	
+ 	TrueFaceNameString = left(SomeString, 4) $ "5" $ mid(SomeString, 5);
+ 	
+ 	for(Counter = 1; Counter < 10; Counter++)
+ 	{
+ 		if(TextureIdentifier == Counter && TextureIdentifier != 5)
+ 		{
+ 			return false;
+ 		}
+ 	}
+ 	
+ 	return true;
  }
 
 /*******************************************************************************
@@ -293,7 +433,7 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  	if(bWrapped)
  	{
  		// Obtain the ChatFace texture height
- 		DrawChatFace(C, 0 , 0, FacelessFaceTexture, 0, , TempoTextureHeight);
+ 		DrawChatFace(C, 0 , 0, LocateChatFaceTexture(), 0, , TempoTextureHeight);
 
  		// Obtain the text (maybe emote) height
  		TextAreaTextSize(C, "A", Junk, TempoTextHeight);
