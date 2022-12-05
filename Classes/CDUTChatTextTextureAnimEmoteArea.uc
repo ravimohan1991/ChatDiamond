@@ -222,18 +222,18 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  {
  	local int i, j;
  	local string FaceAndSkinNames;
- 	
+
  	i = Instr(EncodedString, "::");
- 	
+
  	if(i != -1)
  	{
  		FaceAndSkinNames = left(EncodedString, i);
- 		
+
  		j = Instr(FaceAndSkinNames, ":");
- 		
+
  		SkinName = mid(FaceAndSkinNames, j + 1);
  		FaceName = left(FaceAndSkinNames, j);
- 		
+
  		return mid(EncodedString, i + 2);
  	}
  	else
@@ -242,17 +242,32 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  	}
  }
 
- // need to cache
+/*********************************************************************************************
+ * Bit tricky way to locate the Texture of chatting player. Please see
+ * https://github.com/ravimohan1991/ChatDiamond/wiki/Level-of-Detail-in-Server-Client-Context
+ *
+ * We also try and cache the dynamically loaded textures because common sense is common again?
+ * @PARAM FaceNameString             The complete string name for face identification
+ *                                   (Server) SoldierSkins.Brock
+ *                                   (Client) SoldierSkins.Sldr4Brock
+ * @PARAM SkinNameString             The complete string name for skin identification
+ *                                   (Server) SoldierSkins.sldr
+ *                                   (Client) SoldierSkins.sldr3
+ *
+ *********************************************************************************************
+ */
+
  function texture LocateChatFaceTexture(optional string FaceNameString, optional string SkinNameString)
  {
  	local texture ChatFaceTexture;
  	local string FacePackage, SkinItem, FaceItem, NonSandhiFaceNameString;
+ 	local int i;
 
  	if(FaceNameString == "faceless" || FaceNameString == "")
  	{
  	  return texture'faceless';
  	}
- 	/*
+
  	for(i = 0; i< 50; i++)
  	{
  		if(CachedFaces[i].ChatFace == none)
@@ -263,7 +278,7 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  		{
  			return CachedFaces[i].ChatFace;
  		}
- 	}*/
+ 	}
 
  	SkinItem = Root.GetPlayerOwner().GetItemName(SkinNameString);
  	FaceItem = Root.GetPlayerOwner().GetItemName(FaceNameString);
@@ -286,18 +301,30 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
 
  	if(ChatFaceTexture == none)
  	{
- 		Log("Couldn't find ChatFace: " $ FaceNameString);
+ 		Log("ChatDiamond: Couldn't find ChatFace: " $ FaceNameString);
  		ChatFaceTexture = texture'faceless';
  	}
- 	/*
+
  	CachedFaces[i].ChatFace = ChatFaceTexture;
  	CachedFaces[i].FaceName = FaceNameString;
- 	*/
+
  	return ChatFaceTexture;
  }
 
- // Decide whether to use the string concatenation or not
- // FaceNameString: FCommandoSkins.cmdo4Gromida
+/*******************************************************************************
+ * Decide whether to use the string concatenation (serverside type) or not (heh)
+ * @PARAM FaceNameString        The complete string name for face identification
+ *                              (Server) SoldierSkins.Brock
+ *                              (Client) SoldierSkins.Sldr4Brock
+ * @PARAM NotSandhiString       The right string spit if servertype string is
+ *                              not provided
+ * @RETURN                      True if string concatenation is required, where
+ *                              queried. False if not. Then the NotSandhiString
+ *                              is used.
+ *
+ *******************************************************************************
+ */
+
  function bool IsSandhiNeeded(string FaceNameString, optional out string NotSandhiString)
  {
  	local int DotLocation;
@@ -320,24 +347,35 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  	return true;
  }
 
+/*******************************************************************************
+ * It seems, as per UT99 convention, in the sub-string after dot, 5th element is
+ * the indicator what type (server or client) of texture is provided. So we make
+ * arrangements accrodingly.
+ * @PARAM SomeString                 The later part of FaceNameString for right
+ *                                   identification of the server-client type
+ * @PARAM TrueFaceNameString         If client-type identified then appropriate
+ *                                   replacement to make server-type string
+ * @RETURN                           True if replacement is needed, false if not
+ *
+ *******************************************************************************
+ */
 
- // Digit at position 5 seems to be the general scenario. For chat face the value is also 5
  function bool DoesStringRequireChatFaceDigitReplacement(string SomeString, optional out string TrueFaceNameString)
  {
  	local int TextureIdentifier;
  	local int Counter;
  	local string StringAndDigitJunction;
- 	
+
  	Log("SomeString: " $ SomeString);
- 	
+
  	StringAndDigitJunction =  mid(SomeString, 4, 1);
  	Log("Junction is " $ StringAndDigitJunction);
- 	
+
  	TextureIdentifier = int(StringAndDigitJunction);
  	Log("TextureIdentifier: " $ TextureIdentifier);
- 	
+
  	TrueFaceNameString = left(SomeString, 4) $ "5" $ mid(SomeString, 5);
- 	
+
  	for(Counter = 1; Counter < 10; Counter++)
  	{
  		if(TextureIdentifier == Counter && TextureIdentifier != 5)
@@ -345,7 +383,7 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  			return false;
  		}
  	}
- 	
+
  	return true;
  }
 

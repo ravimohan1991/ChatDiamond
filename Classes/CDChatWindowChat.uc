@@ -196,33 +196,36 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
  *                            Behavior differs (as far as I understand)
  *                            1. Multiplay: PRI is that of client
  *                            2. Single Player: PRI can be of Human or bot
- * @PARAM Msg                 The actual message of type `Say` or `TeamSay` etc
- *                            may contain senders name in multiplay games
+ * @PARAM Message             The actual message of type `Say` or `TeamSay` etc
+ *                            may contain sender's name in multiplay games
+ * @PARAM MessageType         The type of message like so
+ *                            Say, TeamSay, and Event (should be enough here)
  *
  *******************************************************************************
  */
 
  function InterpretAndDisplayTextClientSide(PlayerReplicationInfo PRI, coerce string Message, name MessageType)
  {
- 	local string SkinName, FaceName;
+ 	local string SkinName, FaceName, DisplayableSpectatorMessage;
  	local Pawn LP;
- 	
- 	LP = Pawn(PRI.Owner);
- 	
- 	LP.GetMultiSkin(LP, SkinName, FaceName);
- 	
- 	if(FaceName == "")
- 	{
- 		FaceName = "Dummy";
- 	}
-
- 	if(SkinName == "")
- 	{
- 		SkinName = "Dummy";
- 	}
+ 	local PlayerReplicationInfo SpectatorLPRI;
 
  	if(MessageType == 'Say' || MessageType == 'TeamSay')
  	{
+ 		LP = Pawn(PRI.Owner);
+
+ 		LP.GetMultiSkin(LP, SkinName, FaceName);
+
+ 		if(FaceName == "")
+ 		{
+ 			FaceName = "Dummy";
+ 		}
+
+ 		if(SkinName == "")
+ 		{
+ 			SkinName = "Dummy";
+ 		}
+
  		if(PRI.bAdmin)
  		{
  			LoadMessages(FaceName $ ":" $ SkinName $ "::" $ LocalTimeAndMPOVMarker("+") $ "  " $ PRI.PlayerName $ ": " $ Message);
@@ -249,13 +252,27 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
  		// Message = The_Cowboy:Howdy!
  		if(FilterSenderName(Message) == PRI.PlayerName)
  		{
- 			//LoadMessages(PrepareSpectatorMessageForDisplay(Message));
- 			LoadMessages(LocalTimeAndMPOVMarker("-") $ "  " $ PrepareSpectatorMessageForDisplay(Message));
+ 			DisplayableSpectatorMessage =  PrepareSpectatorMessageForDisplay(Message, SpectatorLPRI);
+ 			LP = Pawn(SpectatorLPRI.Owner);
+
+ 			LP.GetMultiSkin(LP, SkinName, FaceName);
+
+ 			if(FaceName == "")
+ 			{
+ 				FaceName = "Dummy";
+ 			}
+
+ 			if(SkinName == "")
+ 			{
+ 				SkinName = "Dummy";
+ 			}
+
+ 			LoadMessages(FaceName $ ":" $ SkinName $ "::" $ LocalTimeAndMPOVMarker("-") $ "  " $ PrepareSpectatorMessageForDisplay(Message));
  		}
  	}
  }
 
- function string PrepareSpectatorMessageForDisplay(string SpectatorMessage)
+ function string PrepareSpectatorMessageForDisplay(string SpectatorMessage, optional out PlayerReplicationInfo RelevantPRI)
  {
  	local string TempoString, SpectatorName;
  	local int NameEndPosition;
@@ -269,6 +286,14 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
  	}
 
  	TempoString = Mid(SpectatorMessage, NameEndPosition + 1);
+
+ 	foreach Root.GetPlayerOwner().AllActors(class'PlayerReplicationInfo', RelevantPRI)
+ 	{
+ 		if(RelevantPRI.PlayerName == SpectatorName)
+ 		{
+ 			break;
+ 		}
+ 	}
 
  	return SpectatorName $ ": " $ TempoString;
  }
