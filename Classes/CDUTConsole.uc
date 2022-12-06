@@ -49,13 +49,16 @@ class CDUTConsole extends UTConsole config (ChatDiamond);
 
 function Message(PlayerReplicationInfo PRI, coerce string Msg, name N)
 {
- 	if(bFilterNonChatMessages && PRI == none) return;
+ 	if(bFilterNonChatMessages && !Root.GetPlayerOwner().PlayerReplicationInfo.bIsSpectator && !(N == 'Say' || N == 'TeamSay'))
+ 	{
+ 		return;
+ 	}
 
  	// A: Assuming broadcasted messages don't have `:` delimiter
- 	if(bFilterNonChatMessages && Root.GetPlayerOwner().PlayerReplicationInfo.bIsSpectator && IsMessageNonChat(Msg))
- 	return;
-
- 	Log("Message PRI is " @ PRI.Name);
+ 	if(bFilterNonChatMessages && Root.GetPlayerOwner().PlayerReplicationInfo.bIsSpectator && IsMessageNonChat(Msg, true))
+ 	{
+ 		return;
+ 	}
 
  	super.Message(PRI, Msg, N);
 
@@ -65,7 +68,7 @@ function Message(PlayerReplicationInfo PRI, coerce string Msg, name N)
  	}
 }
 
- function bool IsMessageNonChat(string Message)
+ function bool IsMessageNonChat(string Message, bool bIsSpectator)
  {
  	local int ReceieverNameEndPosition, SenderNameEndPosition;
 
@@ -74,14 +77,30 @@ function Message(PlayerReplicationInfo PRI, coerce string Msg, name N)
  	// except for the spectator name seperator
  	ReceieverNameEndPosition = Instr(Message, ":");
 
- 	if(ReceieverNameEndPosition != -1)
+ 	if(bIsSpectator)
  	{
+ 	if(ReceieverNameEndPosition != -1)
+ 	 {
  		SenderNameEndPosition = Instr(mid(Message, ReceieverNameEndPosition), ":");
  		if(SenderNameEndPosition != -1)
  		{
  			return false;
  		}
  		return true;
+ 	 }
+ 	}
+ 	else// EXPERIMENTAL
+ 	{
+ 		if(ReceieverNameEndPosition != -1)
+ 		{
+ 			Log("Non spectator message is (0): " @ Message);
+ 			return false;
+ 		}
+ 		else
+ 		{
+ 			Log("Non spectator message is: (1)" @ Message);
+ 			return true;
+ 		}
  	}
 
  	// IDK atm
