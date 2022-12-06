@@ -212,9 +212,16 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
 
  	if(MessageType == 'Say' || MessageType == 'TeamSay')
  	{
- 		LP = Pawn(PRI.Owner);
-
- 		LP.GetMultiSkin(LP, SkinName, FaceName);
+ 		if(PRI != none)
+ 		{
+ 			LP = Pawn(PRI.Owner);
+ 			LP.GetMultiSkin(LP, SkinName, FaceName);
+ 		}
+ 		else
+ 		{
+ 			FaceName = "";
+ 			SkinName = "";
+ 		}
 
  		if(FaceName == "")
  		{

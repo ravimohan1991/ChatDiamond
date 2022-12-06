@@ -32,6 +32,8 @@
 class CDUTConsole extends UTConsole config (ChatDiamond);
 
  var CDChatWindowChat ChatWindow;
+ var() config bool bFilterEvents;
+ var() config bool bFilterNonChatMessages;
 
 /*******************************************************************************
  * Routine to gather the messages supplied to the client via PlayerPawn
@@ -47,6 +49,14 @@ class CDUTConsole extends UTConsole config (ChatDiamond);
 
 function Message(PlayerReplicationInfo PRI, coerce string Msg, name N)
 {
+ 	if(bFilterNonChatMessages && PRI == none) return;
+
+ 	// A: Assuming broadcasted messages don't have `:` delimiter
+ 	if(bFilterNonChatMessages && Root.GetPlayerOwner().PlayerReplicationInfo.bIsSpectator && IsMessageNonChat(Msg))
+ 	return;
+
+ 	Log("Message PRI is " @ PRI.Name);
+
  	super.Message(PRI, Msg, N);
 
  	if(ChatWindow != none)
@@ -55,11 +65,57 @@ function Message(PlayerReplicationInfo PRI, coerce string Msg, name N)
  	}
 }
 
+ function bool IsMessageNonChat(string Message)
+ {
+ 	local int ReceieverNameEndPosition, SenderNameEndPosition;
+
+ 	// B: Assuming name has no funny character, i.e delimiter itself
+ 	// A better assumption (club A and B) there are no ':' delimiters in non chat Message for spectator
+ 	// except for the spectator name seperator
+ 	ReceieverNameEndPosition = Instr(Message, ":");
+
+ 	if(ReceieverNameEndPosition != -1)
+ 	{
+ 		SenderNameEndPosition = Instr(mid(Message, ReceieverNameEndPosition), ":");
+ 		if(SenderNameEndPosition != -1)
+ 		{
+ 			return false;
+ 		}
+ 		return true;
+ 	}
+
+ 	// IDK atm
+ 	return true;
+ }
+
+ event AddString( coerce string Msg )
+ {
+ 	if(bFilterEvents)
+ 	{
+ 		return;
+ 	}
+ 	super.AddString(Msg);
+ }
+
+function CloseUWindow()
+{
+	Super.CloseUWindow();
+
+	SaveConfig();
+}
+
+event Tick( float Delta )
+{
+	Super.Tick( Delta );
+}
+
  defaultproperties
  {
  	RootWindow="UMenu.UMenuRootWindow"
  	ConsoleClass=Class'ChatDiamond.CDModMenuWindowFrame'
  	ShowDesktop=True
+ 	bFilterEvents=False
+ 	bFilterNonChatMessages=False
  }
 
 /*

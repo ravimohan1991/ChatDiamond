@@ -33,15 +33,43 @@ class CDUTConsoleWindow extends UWindowPageWindow config (ChatDiamond);
  var UWindowConsoleTextAreaControl TextArea;
  var UWindowEditControl	EditControl;
 
+ var UWindowCheckbox EventsFilter;
+ var UWindowCheckbox NonChatMessageFilter;
+
+ var int BottomGapForConfiguration;
+
  var config string History[32];
+
+ var float PrevWinWidth, PrevWinHeight;
+ var Color CheckBoxTextColor;
 
  function Created()
  {
  	local int i;
  	local UWindowEditBoxHistory CurrentHistory;
 
- 	TextArea = UWindowConsoleTextAreaControl(CreateWindow(class'UWindowConsoleTextAreaControl', 0, 0, WinWidth, WinHeight));
- 	EditControl = UWindowEditControl(CreateControl(class'UWindowEditControl', 0, WinHeight-16, WinWidth, 16));
+ 	local int EffectiveHeight;
+
+ 	EffectiveHeight = WinHeight - BottomGapForConfiguration;
+
+ 	EventsFilter = UWindowCheckbox(CreateControl(class'UWindowCheckbox', 10, WinHeight - 15, 100, 16));
+ 	EventsFilter.TextColor = CheckBoxTextColor;
+ 	EventsFilter.SetText("Filter Events");
+ 	EventsFilter.SetHelpText("Filter out death event messages!");
+ 	EventsFilter.bChecked = CDUTConsole(Root.Console).bFilterEvents;
+ 	EventsFilter.SetFont(F_Normal);
+ 	EventsFilter.Align = TA_Left;
+
+ 	NonChatMessageFilter = UWindowCheckbox(CreateControl(class'UWindowCheckbox', 140, WinHeight - 15, 100, 16));
+ 	NonChatMessageFilter.TextColor = CheckBoxTextColor;
+ 	NonChatMessageFilter.SetText("Filter NonChat");
+ 	NonChatMessageFilter.SetHelpText("Filter out non chat messages!");
+ 	NonChatMessageFilter.bChecked = CDUTConsole(Root.Console).bFilterNonChatMessages;
+ 	NonChatMessageFilter.SetFont(F_Normal);
+ 	NonChatMessageFilter.Align = TA_Left;
+
+ 	TextArea = UWindowConsoleTextAreaControl(CreateWindow(class'UWindowConsoleTextAreaControl', 0, 0, WinWidth, EffectiveHeight - 100));
+ 	EditControl = UWindowEditControl(CreateControl(class'UWindowEditControl', 0, 0, WinWidth, 40));
  	EditControl.SetFont(F_Normal);
  	EditControl.SetNumericOnly(False);
  	EditControl.SetMaxLength(400);
@@ -54,6 +82,11 @@ class CDUTConsoleWindow extends UWindowPageWindow config (ChatDiamond);
  		CurrentHistory.HistoryText = History[i];
  	}
  	EditControl.EditBox.CurrentHistory = EditControl.EditBox.HistoryList;
+
+ 	SetAcceptsFocus();
+
+	PrevWinWidth = WinWidth;
+	PrevWinHeight = WinHeight;
  }
 
  function Notify(UWindowDialogControl C, byte E)
@@ -63,6 +96,28 @@ class CDUTConsoleWindow extends UWindowPageWindow config (ChatDiamond);
  	local UWindowEditBoxHistory CurrentHistory;
 
  	Super.Notify(C, E);
+
+ 	if(E == DE_MouseMove)
+ 	{
+ 		if(UMenuRootWindow(Root) != None)
+ 		{
+ 			if(UMenuRootWindow(Root).StatusBar != None)
+ 			{
+ 				UMenuRootWindow(Root).StatusBar.SetHelp(C.HelpText);
+ 			}
+ 		}
+ 	}
+
+ 	if(E == DE_MouseLeave)
+ 	{
+ 		if(UMenuRootWindow(Root) != None)
+ 		{
+ 			if(UMenuRootWindow(Root).StatusBar != None)
+ 			{
+ 				UMenuRootWindow(Root).StatusBar.SetHelp("");
+ 			}
+ 		}
+ 	}
 
  	switch(E)
  	{
@@ -94,40 +149,64 @@ class CDUTConsoleWindow extends UWindowPageWindow config (ChatDiamond);
  			break;
  		}
  		break;
- 	case DE_WheelUpPressed:
+ 		case DE_WheelUpPressed:
+ 			switch(C)
+ 			{
+ 			case EditControl:
+ 				TextArea.VertSB.Scroll(-1);
+ 				break;
+ 			}
+ 			break;
+ 		case DE_WheelDownPressed:
+ 			switch(C)
+ 			{
+ 			case EditControl:
+ 				TextArea.VertSB.Scroll(1);
+ 				break;
+ 			}
+ 			break;
+ 		case DE_Change:
  		switch(C)
  		{
- 		case EditControl:
- 			TextArea.VertSB.Scroll(-1);
+ 			case EventsFilter:
+ 				CDUTConsole(Root.Console).bFilterEvents = !CDUTConsole(Root.Console).bFilterEvents;
+ 				EventsFilter.bChecked = CDUTConsole(Root.Console).bFilterEvents;
+ 			break;
+ 			case NonChatMessageFilter:
+ 				CDUTConsole(Root.Console).bFilterNonChatMessages = !CDUTConsole(Root.Console).bFilterNonChatMessages;
+ 				NonChatMessageFilter.bChecked = CDUTConsole(Root.Console).bFilterNonChatMessages;
  			break;
  		}
- 		break;
- 	case DE_WheelDownPressed:
- 		switch(C)
- 		{
- 		case EditControl:
- 			TextArea.VertSB.Scroll(1);
+ 		default:
  			break;
- 		}
- 		break;
  	}
  }
 
  function BeforePaint(Canvas C, float X, float Y)
  {
- 	Super.BeforePaint(C, X, Y);
+ 	local int EffectiveHeight;// heh
+
+ 	EffectiveHeight = WinHeight - BottomGapForConfiguration;
 
  	EditControl.SetSize(WinWidth, 17);
  	EditControl.WinLeft = 0;
- 	EditControl.WinTop = WinHeight - EditControl.WinHeight;
+ 	EditControl.WinTop = EffectiveHeight - EditControl.WinHeight;
  	EditControl.EditBoxWidth = WinWidth;
 
- 	TextArea.SetSize(WinWidth, WinHeight - EditControl.WinHeight);
+ 	TextArea.SetSize(WinWidth, EffectiveHeight - EditControl.WinHeight);
+
+ 	Super.BeforePaint(C, X, Y);
+
+ 	Resize();
  }
 
  function Paint(Canvas C, float X, float Y)
  {
- 	DrawStretchedTexture(C, 0, 0, WinWidth, WinHeight, Texture'BlackTexture');
+ 	local int EffectiveHeight;
+
+ 	EffectiveHeight = WinHeight - BottomGapForConfiguration;
+
+ 	DrawStretchedTexture(C, 0, 0, WinWidth, EffectiveHeight, Texture'BlackTexture');
  }
 
  function Close(optional bool bByParent)
@@ -135,13 +214,43 @@ class CDUTConsoleWindow extends UWindowPageWindow config (ChatDiamond);
  	Super.Close(bByParent);
 
  	if(Root.bQuickKeyEnable)
+ 	{
 		Root.Console.CloseUWindow();
+ 	}
  }
+
+ function Resized()
+ {
+	Super.Resized();
+
+	Resize();
+ }
+
+
+ function Resize()
+ {
+	local float DiffX, DiffY;
+
+	DiffX = WinWidth - PrevWinWidth;
+	DiffY = WinHeight - PrevWinHeight;
+
+	if (DiffX != 0 || DiffY != 0)
+	{
+ 		EventsFilter.WinTop += DiffY;
+ 		NonChatMessageFilter.WinTop += DiffY;
+	}
+
+	PrevWinWidth = WinWidth;
+	PrevWinHeight = WinHeight;
+ }
+
 
  defaultproperties
  {
  	TextArea=None
  	EditControl=None
+ 	BottomGapForConfiguration=20
+ 	CheckBoxTextColor=(R=0,G=0,B=0)
  }
 
 /*
