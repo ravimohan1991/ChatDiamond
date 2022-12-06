@@ -36,7 +36,10 @@ class CDUTConsoleWindow extends UWindowPageWindow config (ChatDiamond);
  var UWindowCheckbox EventsFilter;
  var UWindowCheckbox NonChatMessageFilter;
 
+ var UWindowSmallButton CleanConsoleWindow;
+
  var int BottomGapForConfiguration;
+ var CDModMenuWindowFrame FrameWindow;
 
  var config string History[32];
 
@@ -67,6 +70,10 @@ class CDUTConsoleWindow extends UWindowPageWindow config (ChatDiamond);
  	NonChatMessageFilter.bChecked = CDUTConsole(Root.Console).bFilterNonChatMessages;
  	NonChatMessageFilter.SetFont(F_Normal);
  	NonChatMessageFilter.Align = TA_Left;
+
+ 	CleanConsoleWindow = UWindowSmallButton(CreateControl(class'UWindowSmallButton', WinWidth - 50, WinHeight - 15, 35, 16));
+ 	CleanConsoleWindow.SetText("Clear!");
+ 	CleanConsoleWindow.DownSound = sound'UnrealShare.FSHLITE2';
 
  	TextArea = UWindowConsoleTextAreaControl(CreateWindow(class'UWindowConsoleTextAreaControl', 0, 0, WinWidth, EffectiveHeight - 100));
  	EditControl = UWindowEditControl(CreateControl(class'UWindowEditControl', 0, 0, WinWidth, 40));
@@ -99,23 +106,37 @@ class CDUTConsoleWindow extends UWindowPageWindow config (ChatDiamond);
 
  	if(E == DE_MouseMove)
  	{
- 		if(UMenuRootWindow(Root) != None)
+ 		if(C == EventsFilter)
  		{
- 			if(UMenuRootWindow(Root).StatusBar != None)
- 			{
- 				UMenuRootWindow(Root).StatusBar.SetHelp(C.HelpText);
- 			}
+ 			FrameWindow.StatusBarText = "Filter out death event messages!";
+ 		}
+
+ 		if(C == NonChatMessageFilter)
+ 		{
+ 			FrameWindow.StatusBarText = "Filter out non-chat messages!";
+ 		}
+
+ 		if(C == CleanConsoleWindow)
+ 		{
+ 			FrameWindow.StatusBarText = "Clean the console window!";
  		}
  	}
 
  	if(E == DE_MouseLeave)
  	{
- 		if(UMenuRootWindow(Root) != None)
+ 		if(C == EventsFilter)
  		{
- 			if(UMenuRootWindow(Root).StatusBar != None)
- 			{
- 				UMenuRootWindow(Root).StatusBar.SetHelp("");
- 			}
+ 			FrameWindow.StatusBarText = "";
+ 		}
+
+ 		if(C == NonChatMessageFilter)
+ 		{
+ 			FrameWindow.StatusBarText = "";
+ 		}
+
+ 		if(C == CleanConsoleWindow)
+ 		{
+ 			FrameWindow.StatusBarText = "";
  		}
  	}
 
@@ -177,6 +198,15 @@ class CDUTConsoleWindow extends UWindowPageWindow config (ChatDiamond);
  				NonChatMessageFilter.bChecked = CDUTConsole(Root.Console).bFilterNonChatMessages;
  			break;
  		}
+
+ 		case DE_Click:
+ 			switch(C)
+ 				{
+ 					case CleanConsoleWindow:
+ 						TextArea.Clear();
+ 					break;
+				}
+
  		default:
  			break;
  	}
@@ -215,33 +245,35 @@ class CDUTConsoleWindow extends UWindowPageWindow config (ChatDiamond);
 
  	if(Root.bQuickKeyEnable)
  	{
-		Root.Console.CloseUWindow();
+ 		Root.Console.CloseUWindow();
  	}
  }
 
  function Resized()
  {
-	Super.Resized();
+ 	Super.Resized();
 
-	Resize();
+ 	Resize();
  }
 
 
  function Resize()
  {
-	local float DiffX, DiffY;
+ 	local float DiffX, DiffY;
 
-	DiffX = WinWidth - PrevWinWidth;
-	DiffY = WinHeight - PrevWinHeight;
+ 	DiffX = WinWidth - PrevWinWidth;
+ 	DiffY = WinHeight - PrevWinHeight;
 
-	if (DiffX != 0 || DiffY != 0)
-	{
+ 	if (DiffX != 0 || DiffY != 0)
+ 	{
  		EventsFilter.WinTop += DiffY;
  		NonChatMessageFilter.WinTop += DiffY;
-	}
+ 		CleanConsoleWindow.WinTop += DiffY;
+ 		CleanConsoleWindow.WinLeft += DiffX;
+ 	}
 
-	PrevWinWidth = WinWidth;
-	PrevWinHeight = WinHeight;
+ 	PrevWinWidth = WinWidth;
+ 	PrevWinHeight = WinHeight;
  }
 
 

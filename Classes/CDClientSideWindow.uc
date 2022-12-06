@@ -65,6 +65,7 @@ class CDClientSideWindow expands UWindowConsoleClientWindow config(ChatDiamond);
  	ConsoleWindow = CDUTConsoleWindow(PageControl.Page);
  	TextArea = ConsoleWindow.TextArea; // khe khe, also think about font TextArea.Font
  	CDUTConsole(Root.Console).ChatWindow = ChatWindow;
+ 	ConsoleWindow.FrameWindow = CDModMenuWindowFrame(ParentWindow);
 
  	PageControl = Pages.AddPage("About", class'CDAboutWindow');
  	AboutWindow = CDAboutWindow(PageControl.Page);

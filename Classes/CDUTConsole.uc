@@ -55,7 +55,7 @@ function Message(PlayerReplicationInfo PRI, coerce string Msg, name N)
  	}
 
  	// A: Assuming broadcasted messages don't have `:` delimiter
- 	if(bFilterNonChatMessages && Root.GetPlayerOwner().PlayerReplicationInfo.bIsSpectator && IsMessageNonChat(Msg, true))
+ 	if(bFilterNonChatMessages && Root.GetPlayerOwner().PlayerReplicationInfo.bIsSpectator && (IsSpectatorMessageNonChat(Msg, true, N)))
  	{
  		return;
  	}
@@ -64,13 +64,15 @@ function Message(PlayerReplicationInfo PRI, coerce string Msg, name N)
 
  	if(ChatWindow != none)
  	{
- 		ChatWindow.InterpretAndDisplayTextClientSide(MsgPlayer[TopLine], MsgText[TopLine], MsgType[TopLine]);
+ 		ChatWindow.InterpretAndDisplayTextClientSide(PRI, Msg, N);
  	}
 }
 
- function bool IsMessageNonChat(string Message, bool bIsSpectator)
+ function bool IsSpectatorMessageNonChat(string Message, bool bIsSpectator, name MessageType)
  {
  	local int ReceieverNameEndPosition, SenderNameEndPosition;
+
+ 	Log("IsMessageNonChat: " @ Message @ " Type: " @ MessageType);
 
  	// B: Assuming name has no funny character, i.e delimiter itself
  	// A better assumption (club A and B) there are no ':' delimiters in non chat Message for spectator
@@ -79,15 +81,19 @@ function Message(PlayerReplicationInfo PRI, coerce string Msg, name N)
 
  	if(bIsSpectator)
  	{
- 	if(ReceieverNameEndPosition != -1)
- 	 {
- 		SenderNameEndPosition = Instr(mid(Message, ReceieverNameEndPosition), ":");
- 		if(SenderNameEndPosition != -1)
+ 		if(ReceieverNameEndPosition != -1)
+ 		{
+ 			SenderNameEndPosition = Instr(mid(Message, ReceieverNameEndPosition), ":");
+ 			if(SenderNameEndPosition != -1)
+ 			{
+ 				return false;
+ 			}
+ 			return true;
+ 		}
+ 		else if(ReceieverNameEndPosition == -1 && (MessageType == 'Say' || MessageType == 'TeamSay'))
  		{
  			return false;
  		}
- 		return true;
- 	 }
  	}
  	else// EXPERIMENTAL
  	{

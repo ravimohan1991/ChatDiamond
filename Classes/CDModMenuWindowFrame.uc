@@ -61,7 +61,9 @@ class CDModMenuWindowFrame expands UWindowConsoleWindow Config (ChatDiamond);
 
  	SetSizePos();
 
- 	WindowTitle = "ChatDiamond (" $ class'UTChat'.default.Version $ ") Console";
+ 	WindowTitle = "ChatDiamond (" $ class'UTChat'.default.Version $ ")";
+
+ 	ClientArea.OwnerWindow = self;
  }
 
  function ResolutionChanged(float W, float H)
