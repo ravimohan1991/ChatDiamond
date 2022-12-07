@@ -1,0 +1,6 @@
+# pdfLaTeX ignore files
+*.aux
+chatdiamond.log
+*.out
+chatdiamond.pdf
+chatdiamond.synctex.gz
