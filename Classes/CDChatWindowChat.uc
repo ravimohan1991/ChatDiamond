@@ -210,6 +210,9 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
  	local Pawn LP;
  	local PlayerReplicationInfo SpectatorLPRI;
 
+ 	if(Message == "")
+ 	return;
+
  	if(MessageType == 'Say' || MessageType == 'TeamSay')
  	{
  		if(PRI != none)

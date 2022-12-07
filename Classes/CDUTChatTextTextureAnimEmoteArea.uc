@@ -24,6 +24,87 @@
 
 class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
 
+#exec Texture Import File=Textures\1faceless.pcx    Name=Faceless    Mips=off
+
+#exec Texture Import File=Textures\smile.bmp        Name=Smile       Mips=off
+#exec Texture Import File=Textures\sad.bmp          Name=Sad         Mips=off
+#exec Texture Import File=Textures\eyes.bmp         Name=Eyes        Mips=off
+#exec Texture Import File=Textures\tup.bmp          Name=ThumbUp     Mips=off
+#exec Texture Import File=Textures\tdown.bmp        Name=ThumbDown   Mips=off
+#exec Texture Import File=Textures\happy.bmp        Name=Happy       Mips=off
+#exec Texture Import File=Textures\bomb.bmp         Name=Bomb        Mips=off
+#exec Texture Import File=Textures\fist.bmp         Name=Fist        Mips=off
+#exec Texture Import File=Textures\hand.bmp         Name=Hand        Mips=off
+#exec Texture Import File=Textures\hundreds.bmp     Name=Hundreds    Mips=off
+#exec Texture Import File=Textures\grin.bmp         Name=Grin        Mips=off
+#exec Texture Import File=Textures\ok.bmp           Name=Okey        Mips=off
+#exec Texture Import File=Textures\pointup.bmp      Name=PointUp     Mips=off
+#exec Texture Import File=Textures\question.bmp     Name=Question    Mips=off
+#exec Texture Import File=Textures\rofl.bmp         Name=ROFL        Mips=off
+#exec Texture Import File=Textures\sunglasses.bmp   Name=Sunglass    Mips=off
+#exec Texture Import File=Textures\think.bmp        Name=Think       Mips=off
+#exec Texture Import File=Textures\tongue.bmp       Name=Tongue      Mips=off
+#exec Texture Import File=Textures\zzz.bmp          Name=Zzz         Mips=off
+#exec Texture Import File=Textures\wink.bmp         Name=Wink        Mips=off
+#exec Texture Import File=Textures\silly.bmp        Name=Silly       Mips=off
+#exec Texture Import File=Textures\heart.bmp        Name=Heart       Mips=off
+#exec Texture Import File=Textures\peace.bmp        Name=Peace       Mips=off
+#exec Texture Import File=Textures\rockon.bmp       Name=Rockon      Mips=off
+#exec Texture Import File=Textures\mask.bmp         Name=Mask        Mips=off
+#exec Texture Import File=Textures\squint.bmp       Name=Squint      Mips=off
+#exec Texture Import File=Textures\facepalm.bmp     Name=FacePalm    Mips=off
+#exec Texture Import File=Textures\shrug.bmp        Name=Shrug       Mips=off
+
+#exec Texture Import File=Textures\xsmile.bmp       Name=XSmile      Mips=off
+#exec Texture Import File=Textures\xsad.bmp         Name=XSad        Mips=off
+#exec Texture Import File=Textures\xeyes.bmp        Name=XEyes       Mips=off
+#exec Texture Import File=Textures\xtup.bmp         Name=XThumbUp    Mips=off
+#exec Texture Import File=Textures\xtdown.bmp       Name=XThumbDown  Mips=off
+#exec Texture Import File=Textures\xhappy.bmp       Name=XHappy      Mips=off
+#exec Texture Import File=Textures\xbomb.bmp        Name=XBomb       Mips=off
+#exec Texture Import File=Textures\xfist.bmp        Name=XFist       Mips=off
+#exec Texture Import File=Textures\xhand.bmp        Name=XHand       Mips=off
+#exec Texture Import File=Textures\xhundreds.bmp    Name=XHundreds   Mips=off
+#exec Texture Import File=Textures\xgrin.bmp        Name=XGrin       Mips=off
+#exec Texture Import File=Textures\xok.bmp          Name=XOkey       Mips=off
+#exec Texture Import File=Textures\xpointup.bmp     Name=XPointUp    Mips=off
+#exec Texture Import File=Textures\xquestion.bmp    Name=XQuestion   Mips=off
+#exec Texture Import File=Textures\xrofl.bmp        Name=XROFL       Mips=off
+#exec Texture Import File=Textures\xsunglasses.bmp  Name=XSunglass   Mips=off
+#exec Texture Import File=Textures\xthink.bmp       Name=XThink      Mips=off
+#exec Texture Import File=Textures\xtongue.bmp      Name=XTongue     Mips=off
+#exec Texture Import File=Textures\xzzz.bmp         Name=XZzz        Mips=off
+#exec Texture Import File=Textures\xwink.bmp        Name=XWink       Mips=off
+#exec Texture Import File=Textures\xsilly.bmp       Name=XSilly      Mips=off
+#exec Texture Import File=Textures\xheart.bmp       Name=XHeart      Mips=off
+#exec Texture Import File=Textures\xpeace.bmp       Name=XPeace      Mips=off
+#exec Texture Import File=Textures\xrockon.bmp      Name=XRockon     Mips=off
+#exec Texture Import File=Textures\xmask.bmp        Name=XMask       Mips=off
+#exec Texture Import File=Textures\xsquint.bmp      Name=XSquint     Mips=off
+#exec Texture Import File=Textures\xfacepalm.bmp    Name=XFacePalm   Mips=off
+#exec Texture Import File=Textures\xshrug.bmp       Name=XShrug      Mips=off
+
+#exec Texture Import File=Textures\welldone.bmp     Name=WellDone    Mips=off
+#exec Texture Import File=Textures\wtf.bmp          Name=WTF         Mips=off
+#exec Texture Import File=Textures\womg.bmp         Name=OMG         Mips=off
+#exec Texture Import File=Textures\wlol.bmp         Name=LOL         Mips=off
+#exec Texture Import File=Textures\wthankyou.bmp    Name=ThankYou    Mips=off
+#exec Texture Import File=Textures\wniceshot.bmp    Name=NiceShot    Mips=off
+#exec Texture Import File=Textures\wgoodgame.bmp    Name=GoodGame    Mips=off
+#exec Texture Import File=Textures\wniceone.bmp     Name=NiceOne     Mips=off
+
+// Shock Rifle Emote
+#exec Texture Import File=Textures\04_SHOCK01.pcx  Name=ANEShock0    Mips=off
+#exec Texture Import File=Textures\04_SHOCK02.pcx  Name=ANEShock1    Mips=off
+#exec Texture Import File=Textures\04_SHOCK03.pcx  Name=ANEShock2    Mips=off
+#exec Texture Import File=Textures\04_SHOCK04.pcx  Name=ANEShock3    Mips=off
+#exec Texture Import File=Textures\04_SHOCK05.pcx  Name=ANEShock4    Mips=off
+#exec Texture Import File=Textures\04_SHOCK06.pcx  Name=ANEShock5    Mips=off
+#exec Texture Import File=Textures\04_SHOCK07.pcx  Name=ANEShock6    Mips=off
+#exec Texture Import File=Textures\04_SHOCK08.pcx  Name=ANEShock7    Mips=off
+#exec Texture Import File=Textures\04_SHOCK09.pcx  Name=ANEShock8    Mips=off
+#exec Texture Import File=Textures\04_SHOCK10.pcx  Name=ANEShock9    Mips=off
+
  // Style for rendering sprites, meshes.
  var(Display) enum ERenderStyle
  {
@@ -34,6 +115,35 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  	STY_Modulated,
  } Style;
 
+ struct CustEmoji
+ {
+ 	var string  Symbol;
+ 	var Texture Image1;
+ 	var Texture Image2;
+ };
+
+ struct AnEmote
+ {
+ 	var Texture Atlas[10];
+ 	var int CurrentAnimFrame;
+ 	var int TotalElements;
+ 	var string TextSymbol;
+ };
+
+ struct EmoStatus
+ {
+ 	var string TextSymbol;
+ 	var int Location;
+ 	var int Identifier;
+ };
+
+ var AnEmote AnimShockEmote;
+ 
+ var CustEmoji   ChatEmojis[28];
+ var CustEmoji   WordEmojis[10];
+ 
+ var() config string RecognizableEmoTextSymbols[100];
+
  var int MyPos;
  var bool bChat;
  var bool bShowFaces, bCountryFlags;
@@ -41,13 +151,16 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  var Color ChatColor, GrnColor, YelColor, BluColor, RedColor, WhiteColor, TxtColor, FaceColor;
  var texture StaticTransparencyTexture;
 
+ var float FrameRate;
+ var int TickCounter;
+
  struct SkinStore
  {
  	var texture ChatFace;
  	var string FaceName;
  };
 
- var SkinStore CachedFaces[50];
+ var() config SkinStore CachedFaces[50];
 
  // The maximum height inclusive of FaceTexture, text, and emote when displayed in a line
  // Height(FaceTexture) < Height(emote) type assumption (also obvious)
@@ -59,19 +172,64 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  // The vertical padding between Date and Chatface in single TextTextureLine
  var() config float ChatFaceVerticalPadding;
 
+
  function Created()
  {
  	Super.Created();
 
  	// Powers of two, I presume!
  	StaticTransparencyTexture = texture'LadrStatic.Static_a00'; // 256 by 256 pixels
+
+ 	FrameRate = 60;
+ 	TickCounter = 0;
+
+ 	AnimShockEmote.CurrentAnimFrame = 0;
+ 	AnimShockEmote.TextSymbol = ":4";
+ 	AnimShockEmote.Atlas[0] = texture'ANEShock0';
+ 	AnimShockEmote.Atlas[1] = texture'ANEShock1';
+ 	AnimShockEmote.Atlas[2] = texture'ANEShock2';
+ 	AnimShockEmote.Atlas[3] = texture'ANEShock3';
+ 	AnimShockEmote.Atlas[4] = texture'ANEShock4';
+ 	AnimShockEmote.Atlas[5] = texture'ANEShock5';
+ 	AnimShockEmote.Atlas[6] = texture'ANEShock6';
+ 	AnimShockEmote.Atlas[7] = texture'ANEShock7';
+ 	AnimShockEmote.Atlas[8] = texture'ANEShock8';
+ 	AnimShockEmote.Atlas[9] = texture'ANEShock9';
+
+ 	RecognizableEmoTextSymbols[0] = ":)";
+ 	RecognizableEmoTextSymbols[1] = ":(";
+ 	RecognizableEmoTextSymbols[2] = ":^";
+ 	RecognizableEmoTextSymbols[3] = ":+";
+ 	RecognizableEmoTextSymbols[4] = ":_";
+ 	RecognizableEmoTextSymbols[5] = ":d";
+ 	RecognizableEmoTextSymbols[6] = ":b";
+ 	RecognizableEmoTextSymbols[7] = ":f";
+ 	RecognizableEmoTextSymbols[8] = ":w";
+ 	RecognizableEmoTextSymbols[9] = ":1";
+ 	RecognizableEmoTextSymbols[10] = ":/";
+ 	RecognizableEmoTextSymbols[11] = ":k";
+ 	RecognizableEmoTextSymbols[12] = ":u";
+ 	RecognizableEmoTextSymbols[13] = ":q";
+ 	RecognizableEmoTextSymbols[14] = ":r";
+ 	RecognizableEmoTextSymbols[15] = ":c";
+ 	RecognizableEmoTextSymbols[16] = ":t";
+ 	RecognizableEmoTextSymbols[17] = ":p";
+ 	RecognizableEmoTextSymbols[18] = ":;";
+ 	RecognizableEmoTextSymbols[19] = ":s";
+ 	RecognizableEmoTextSymbols[20] = ":z";
+ 	RecognizableEmoTextSymbols[21] = ":h";
+ 	RecognizableEmoTextSymbols[22] = ":v";
+ 	RecognizableEmoTextSymbols[23] = ":#";
+ 	RecognizableEmoTextSymbols[24] = ":m";
+ 	RecognizableEmoTextSymbols[25] = ":>";
+ 	RecognizableEmoTextSymbols[26] = ":o";
+ 	RecognizableEmoTextSymbols[27] = ":y";
+ 	RecognizableEmoTextSymbols[28] = ":4";
  }
 
  function FindCategoryDeliminator(string EncodedText, out int Position, out string Deliminator)
  {
  	local int TempoPosition;
-
- 	//Log("Decoding string: " $ EncodedText);
 
  	TempoPosition = Instr(EncodedText, "-");
 
@@ -196,7 +354,7 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  				TextSize(C, sName $ "  ", X2, Y1);
  				X = X1 + 2 + ChatFaceVerticalPadding + TextureXOccupied + 2 + X2;
 
- 				TextAreaClipText(C, X, Y, sMesg);
+ 				DrawChatMessageWithEmoji(C, X, Y, sMesg);
  			}
  			return DefaultTextTextureLineHeight;
  		}
@@ -216,6 +374,147 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  	}
 
  	return DefaultTextTextureLineHeight;
+ }
+
+ function DrawChatMessageWithEmoji(Canvas C, float DrawX, float DrawY, coerce string Message, optional out float LateralDisplacement, optional bool bCheckHotkey)
+ {
+ 	local string TempoString;
+ 	local int EmojiLocation, Identifier, EmojiYDrawCoordinate, EmoteYDrawCoordinate;
+ 	local float SomeHeight, TextWidth;
+ 	local float EmojiMultiplier, EmoteMultiplier;
+
+ 	EmojiMultiplier = 0.5;
+ 	EmoteMultiplier = 0.50;
+
+ 	EmojiLocation = LookForEmojiTextRepresentation(Message, Identifier);
+
+ 	while(EmojiLocation != -1)
+ 	{
+ 		TempoString = Left(Message, EmojiLocation);
+ 		TextAreaClipText(C, DrawX, DrawY, TempoString);
+ 		
+ 		if(TempoString != "")
+ 		{
+ 			TextSize(C, TempoString, TextWidth, SomeHeight);
+ 		}
+ 		else
+ 		{
+ 			TextSize(C, "Pika", TextWidth, SomeHeight);
+ 			TextWidth = 0;
+ 		}
+
+ 		LateralDisplacement += TextWidth;
+ 		DrawX += TextWidth;
+
+ 		C.DrawColor = WhiteColor;
+ 		C.Style = ERenderStyle.STY_Normal;
+
+ 		if(Identifier < 28)
+ 		{
+ 			EmojiYDrawCoordinate =  DrawY - ChatEmojis[Identifier].Image1.VSize * EmojiMultiplier + SomeHeight;
+
+ 			DrawStretchedTexture(C, DrawX, EmojiYDrawCoordinate, ChatEmojis[Identifier].Image1.USize * EmojiMultiplier,
+ 				ChatEmojis[Identifier].Image1.VSize * EmojiMultiplier, ChatEmojis[Identifier].Image1);
+
+ 			LateralDisplacement +=  ChatEmojis[Identifier].Image1.USize * EmojiMultiplier;
+ 			DrawX += ChatEmojis[Identifier].Image1.USize * EmojiMultiplier;
+ 		}
+
+ 		if(Identifier == 51)
+ 		{
+ 			EmoteYDrawCoordinate =  DrawY - AnimShockEmote.Atlas[AnimShockEmote.CurrentAnimFrame].VSize * EmoteMultiplier / 2 + SomeHeight / 2;
+
+ 			DrawStretchedTexture(C, DrawX, EmoteYDrawCoordinate, AnimShockEmote.Atlas[AnimShockEmote.CurrentAnimFrame].USize * EmoteMultiplier,
+ 			AnimShockEmote.Atlas[AnimShockEmote.CurrentAnimFrame].USize * EmoteMultiplier,AnimShockEmote.Atlas[AnimShockEmote.CurrentAnimFrame]);
+ 			
+ 			LateralDisplacement +=  AnimShockEmote.Atlas[0].USize * EmoteMultiplier;
+ 			DrawX += AnimShockEmote.Atlas[0].USize * EmoteMultiplier;
+ 		}
+
+ 		Message = Mid(Message, EmojiLocation + 2);
+ 		EmojiLocation = LookForEmojiTextRepresentation(Message, Identifier);
+ 	}
+
+ 	TextAreaClipText(C, DrawX, DrawY, Message);
+ 	TextSize(C, Message, TextWidth, SomeHeight);
+ 	
+ 	LateralDisplacement += TextWidth;
+ }
+
+ function Tick(float DeltaTime)
+ {
+ 	if(TickCounter > 2)
+ 	{
+ 		AnimShockEmote.CurrentAnimFrame++;
+ 		if(AnimShockEmote.CurrentAnimFrame > 9)
+ 		{
+ 			AnimShockEmote.CurrentAnimFrame = 0;
+ 		}
+ 		TickCounter = 0;
+ 	}
+
+ 	TickCounter++;
+
+ 	super.Tick(DeltaTime);
+ }
+
+ function int LookForEmojiTextRepresentation(string MessageStringPart, out int IdentifyingIndex)
+ {
+ 	local int EmoLocation, Counter;
+ 	local EmoStatus EmoArray[100];
+ 	local int EmoCount, SmallestRegister;
+ 	local bool bNoEmoTextSymbol;
+
+ 	EmoCount = 0;
+ 	bNoEmoTextSymbol = true;
+
+ 	for(Counter = 0; Counter <= 28; Counter++)
+ 	{
+ 		EmoLocation = Instr(MessageStringPart, RecognizableEmoTextSymbols[Counter]);
+
+ 		if(EmoLocation != -1)
+ 		{
+ 			EmoArray[EmoCount].TextSymbol = RecognizableEmoTextSymbols[Counter];
+ 			EmoArray[EmoCount].Location = EmoLocation;
+
+ 			if(Counter == 28)
+ 			{
+ 				EmoArray[EmoCount].Identifier = 51;
+ 			}
+ 			else
+ 			{
+ 				EmoArray[EmoCount].Identifier = Counter;
+ 			}
+
+ 			EmoCount++;
+ 			bNoEmoTextSymbol = false;
+ 		}
+ 	}
+
+ 	if(bNoEmoTextSymbol)
+ 	{
+ 		return -1;
+ 	}
+
+ 	SmallestRegister = 100;
+
+ 	for(Counter = 0; Counter < 100; Counter++)
+ 	{
+ 		if(EmoArray[Counter].TextSymbol == "")
+ 		{
+ 			break;
+ 		}
+ 		
+ 		if(EmoArray[Counter].Location <= SmallestRegister)
+ 		{
+ 			SmallestRegister = EmoArray[Counter].Location;
+ 			EmoCount = Counter;
+ 		}
+ 	}
+
+ 	IdentifyingIndex = EmoArray[EmoCount].Identifier;
+ 	return EmoArray[EmoCount].Location;
+
  }
 
  function string StripFaceNameAndSkinName(string EncodedString, out string FaceName, out string SkinName)
@@ -366,13 +665,8 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  	local int Counter;
  	local string StringAndDigitJunction;
 
- 	Log("SomeString: " $ SomeString);
-
  	StringAndDigitJunction =  mid(SomeString, 4, 1);
- 	Log("Junction is " $ StringAndDigitJunction);
-
  	TextureIdentifier = int(StringAndDigitJunction);
- 	Log("TextureIdentifier: " $ TextureIdentifier);
 
  	TrueFaceNameString = left(SomeString, 4) $ "5" $ mid(SomeString, 5);
 
@@ -604,6 +898,47 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  	FaceColor=(R=50,G=50,B=50,A=0)
  	UniformHorizontalPadding=10
  	ChatFaceVerticalPadding=9
+
+ 	ChatEmojis(0)=(Symbol=":)",Image1=Texture'Smile',Image2=Texture'XSmile')
+ 	ChatEmojis(1)=(Symbol=":(",Image1=Texture'Sad',Image2=Texture'XSad')
+ 	ChatEmojis(2)=(Symbol=":^",Image1=Texture'Eyes',Image2=Texture'XEyes')
+ 	ChatEmojis(3)=(Symbol=":+",Image1=Texture'ThumbUp',Image2=Texture'XThumbUp')
+ 	ChatEmojis(4)=(Symbol=":_",Image1=Texture'ThumbDown',Image2=Texture'XThumbDown')
+ 	ChatEmojis(5)=(Symbol=":d",Image1=Texture'Happy',Image2=Texture'XHappy')
+ 	ChatEmojis(6)=(Symbol=":b",Image1=Texture'Bomb',Image2=Texture'XBomb')
+ 	ChatEmojis(7)=(Symbol=":f",Image1=Texture'Fist',Image2=Texture'XFist')
+ 	ChatEmojis(8)=(Symbol=":w",Image1=Texture'Hand',Image2=Texture'XHand')
+ 	ChatEmojis(9)=(Symbol=":1",Image1=Texture'Hundreds',Image2=Texture'XHundreds')
+ 	ChatEmojis(10)=(Symbol=":/",Image1=Texture'Grin',Image2=Texture'XGrin')
+ 	ChatEmojis(11)=(Symbol=":k",Image1=Texture'Okey',Image2=Texture'XOkey')
+ 	ChatEmojis(12)=(Symbol=":u",Image1=Texture'PointUp',Image2=Texture'XPointUp')
+ 	ChatEmojis(13)=(Symbol=":q",Image1=Texture'Question',Image2=Texture'XQuestion')
+ 	ChatEmojis(14)=(Symbol=":r",Image1=Texture'ROFL',Image2=Texture'XROFL')
+ 	ChatEmojis(15)=(Symbol=":c",Image1=Texture'Sunglass',Image2=Texture'XSunglass')
+ 	ChatEmojis(16)=(Symbol=":t",Image1=Texture'Think',Image2=Texture'XThink')
+ 	ChatEmojis(17)=(Symbol=":p",Image1=Texture'Tongue',Image2=Texture'XTongue')
+ 	ChatEmojis(18)=(Symbol=":;",Image1=Texture'Wink',Image2=Texture'XWink')
+ 	ChatEmojis(19)=(Symbol=":s",Image1=Texture'Silly',Image2=Texture'XSilly')
+ 	ChatEmojis(20)=(Symbol=":z",Image1=Texture'Zzz',Image2=Texture'XZzz')
+ 	ChatEmojis(21)=(Symbol=":h",Image1=Texture'Heart',Image2=Texture'XHeart')
+ 	ChatEmojis(22)=(Symbol=":v",Image1=Texture'Peace',Image2=Texture'XPeace')
+ 	ChatEmojis(23)=(Symbol=":#",Image1=Texture'Rockon',Image2=Texture'XRockon')
+ 	ChatEmojis(24)=(Symbol=":m",Image1=Texture'Mask',Image2=Texture'XMask')
+ 	ChatEmojis(25)=(Symbol=":>",Image1=Texture'Squint',Image2=Texture'XSquint')
+ 	ChatEmojis(26)=(Symbol=":o",Image1=Texture'FacePalm',Image2=Texture'XFacePalm')
+ 	ChatEmojis(27)=(Symbol=":y",Image1=Texture'Shrug',Image2=Texture'XShrug')
+
+ 	WordEmojis(0)=(Symbol="WD!",Image1=Texture'WellDone',Image2=None)
+ 	WordEmojis(1)=(Symbol="TF!",Image1=Texture'WTF',Image2=None)
+ 	WordEmojis(2)=(Symbol="MG!",Image1=Texture'OMG',Image2=None)
+ 	WordEmojis(3)=(Symbol="OL!",Image1=Texture'LOL',Image2=None)
+ 	WordEmojis(4)=(Symbol="TY!",Image1=Texture'ThankYou',Image2=None)
+ 	WordEmojis(5)=(Symbol="NS!",Image1=Texture'NiceShot',Image2=None)
+ 	WordEmojis(6)=(Symbol="GG!",Image1=Texture'GoodGame',Image2=None)
+ 	WordEmojis(7)=(Symbol="N1!",Image1=Texture'NiceOne',Image2=None)
+
+ 	AnimShockEmote=(Atlas[0]=Texture'ChatDiamond.ANEShock0',Atlas[1]=Texture'ChatDiamond.ANEShock1',Atlas[2]=Texture'ChatDiamond.ANEShock2',Atlas[3]=Texture'ChatDiamond.ANEShock3',Atlas[4]=Texture'ChatDiamond.ANEShock4',Atlas[5]=Texture'ChatDiamond.ANEShock5',Atlas[6]=Texture'ChatDiamond.ANEShock6',Atlas[7]=Texture'ChatDiamond.ANEShock7',Atlas[8]=Texture'ChatDiamond.ANEShock8',Atlas[9]=Texture'ChatDiamond.ANEShock9',CurrentAnimFrame=0,TotalElements=1,TextSymbol=":4")
+
  }
 
  /*
