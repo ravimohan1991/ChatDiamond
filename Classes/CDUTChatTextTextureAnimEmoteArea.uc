@@ -103,7 +103,7 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
 #exec Texture Import File=Textures\04_SHOCK07.pcx  Name=ANEShock6    Mips=off
 #exec Texture Import File=Textures\04_SHOCK08.pcx  Name=ANEShock7    Mips=off
 #exec Texture Import File=Textures\04_SHOCK09.pcx  Name=ANEShock8    Mips=off
-#exec Texture Import File=Textures\04_SHOCK10.pcx  Name=ANEShock9    Mips=off
+#exec Texture Import File=Textures\04_SHOCK010.pcx  Name=ANEShock9    Mips=off
 
  // Style for rendering sprites, meshes.
  var(Display) enum ERenderStyle
@@ -138,10 +138,10 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  };
 
  var AnEmote AnimShockEmote;
- 
+
  var CustEmoji   ChatEmojis[28];
  var CustEmoji   WordEmojis[10];
- 
+
  var() config string RecognizableEmoTextSymbols[100];
 
  var int MyPos;
@@ -392,7 +392,7 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  	{
  		TempoString = Left(Message, EmojiLocation);
  		TextAreaClipText(C, DrawX, DrawY, TempoString);
- 		
+
  		if(TempoString != "")
  		{
  			TextSize(C, TempoString, TextWidth, SomeHeight);
@@ -426,7 +426,7 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
 
  			DrawStretchedTexture(C, DrawX, EmoteYDrawCoordinate, AnimShockEmote.Atlas[AnimShockEmote.CurrentAnimFrame].USize * EmoteMultiplier,
  			AnimShockEmote.Atlas[AnimShockEmote.CurrentAnimFrame].USize * EmoteMultiplier,AnimShockEmote.Atlas[AnimShockEmote.CurrentAnimFrame]);
- 			
+
  			LateralDisplacement +=  AnimShockEmote.Atlas[0].USize * EmoteMultiplier;
  			DrawX += AnimShockEmote.Atlas[0].USize * EmoteMultiplier;
  		}
@@ -437,7 +437,7 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
 
  	TextAreaClipText(C, DrawX, DrawY, Message);
  	TextSize(C, Message, TextWidth, SomeHeight);
- 	
+
  	LateralDisplacement += TextWidth;
  }
 
@@ -504,7 +504,7 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  		{
  			break;
  		}
- 		
+
  		if(EmoArray[Counter].Location <= SmallestRegister)
  		{
  			SmallestRegister = EmoArray[Counter].Location;
