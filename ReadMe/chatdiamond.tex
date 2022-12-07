@@ -58,15 +58,35 @@ ChatDiamond is a purely client-side mod for Unreal Tournament G.O.T.Y which relp
 \begin{figure}
 \centering
 \label{fig:chatdiamond}
-\includegraphics[width=0.5\textwidth]{img}
-\caption{A screenshot of the ChatDiamond \ChatDiamondVersion~chat.}
+\includegraphics[width=0.4\textwidth]{img}
+\caption{A screenshot of the ChatDiamond \ChatDiamondVersion~chat}
 \end{figure}
 
-\section{Chat Window}
+\subsection{Chat Window}
 Figure \ref{fig:chatdiamond} shows the current form of the chat window. The following features are supported
 \begin{itemize}
 \item Display of sender's avatar face.
 \item Static emojis and animated emotes.
+\item Display of Date and Time (long format for now).
+\item Display of the Server name for reference purposes.
 \end{itemize}
+
+\subsection{Console Window}
+\begin{figure}
+\centering
+\label{fig:chatdiamond_console}
+\includegraphics[width=0.4\textwidth]{img_console}
+\caption{ChatDiamond \ChatDiamondVersion~console}
+\end{figure}
+
+The console now has the following features
+\begin{itemize}
+\item Non-chat filter to filter out server or mutator advertisements, in the console. Although SmartCTF cover and seal messages may also get filtered.
+\item Event filter censors death messages corresponding to the weapon used.
+\item A clear button to clean or reset the console.
+\item A working status bar linked with console configuration modifiers.
+\end{itemize}
+
+
 
 \end{document}
