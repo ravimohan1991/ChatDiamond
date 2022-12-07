@@ -105,6 +105,29 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
 #exec Texture Import File=Textures\04_SHOCK09.pcx  Name=ANEShock8    Mips=off
 #exec Texture Import File=Textures\04_SHOCK010.pcx  Name=ANEShock9    Mips=off
 
+// Trash-talk Emote
+#exec Texture Import File=Textures\ARGUE01.pcx  Name=ANEArgue0    Mips=off
+#exec Texture Import File=Textures\ARGUE02.pcx  Name=ANEArgue1    Mips=off
+#exec Texture Import File=Textures\ARGUE03.pcx  Name=ANEArgue2    Mips=off
+#exec Texture Import File=Textures\ARGUE04.pcx  Name=ANEArgue3    Mips=off
+#exec Texture Import File=Textures\ARGUE05.pcx  Name=ANEArgue4    Mips=off
+#exec Texture Import File=Textures\ARGUE06.pcx  Name=ANEArgue5    Mips=off
+#exec Texture Import File=Textures\ARGUE07.pcx  Name=ANEArgue6    Mips=off
+#exec Texture Import File=Textures\ARGUE08.pcx  Name=ANEArgue7    Mips=off
+#exec Texture Import File=Textures\ARGUE09.pcx  Name=ANEArgue8    Mips=off
+#exec Texture Import File=Textures\ARGUE10.pcx  Name=ANEArgue9    Mips=off
+#exec Texture Import File=Textures\ARGUE11.pcx  Name=ANEArgue10    Mips=off
+#exec Texture Import File=Textures\ARGUE12.pcx  Name=ANEArgue11    Mips=off
+#exec Texture Import File=Textures\ARGUE13.pcx  Name=ANEArgue12    Mips=off
+#exec Texture Import File=Textures\ARGUE14.pcx  Name=ANEArgue13    Mips=off
+#exec Texture Import File=Textures\ARGUE15.pcx  Name=ANEArgue14    Mips=off
+#exec Texture Import File=Textures\ARGUE16.pcx  Name=ANEArgue15    Mips=off
+#exec Texture Import File=Textures\ARGUE17.pcx  Name=ANEArgue16    Mips=off
+#exec Texture Import File=Textures\ARGUE18.pcx  Name=ANEArgue17    Mips=off
+#exec Texture Import File=Textures\ARGUE19.pcx  Name=ANEArgue18    Mips=off
+#exec Texture Import File=Textures\ARGUE20.pcx  Name=ANEArgue19    Mips=off
+#exec Texture Import File=Textures\ARGUE21.pcx  Name=ANEArgue20    Mips=off
+
  // Style for rendering sprites, meshes.
  var(Display) enum ERenderStyle
  {
@@ -124,7 +147,9 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
 
  struct AnEmote
  {
- 	var Texture Atlas[10];
+ 	var Texture Atlas[25];
+ 	var float TexChatSizeFraction;
+
  	var int CurrentAnimFrame;
  	var int TotalElements;
  	var string TextSymbol;
@@ -138,6 +163,7 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  };
 
  var AnEmote AnimShockEmote;
+ var AnEmote AnimTrashTalkEmote;
 
  var CustEmoji   ChatEmojis[28];
  var CustEmoji   WordEmojis[10];
@@ -195,6 +221,31 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  	AnimShockEmote.Atlas[7] = texture'ANEShock7';
  	AnimShockEmote.Atlas[8] = texture'ANEShock8';
  	AnimShockEmote.Atlas[9] = texture'ANEShock9';
+ 	AnimShockEmote.TexChatSizeFraction = 0.50;
+
+ 	 AnimTrashTalkEmote.CurrentAnimFrame = 0;
+     AnimTrashTalkEmote.Atlas[0] = texture'ANEArgue0';
+ 	AnimTrashTalkEmote.Atlas[1] = texture'ANEArgue1';
+ 	AnimTrashTalkEmote.Atlas[2] = texture'ANEArgue2';
+ 	AnimTrashTalkEmote.Atlas[3] = texture'ANEArgue3';
+ 	AnimTrashTalkEmote.Atlas[4] = texture'ANEArgue4';
+ 	AnimTrashTalkEmote.Atlas[5] = texture'ANEArgue5';
+ 	AnimTrashTalkEmote.Atlas[6] = texture'ANEArgue6';
+ 	AnimTrashTalkEmote.Atlas[7] = texture'ANEArgue7';
+ 	AnimTrashTalkEmote.Atlas[8] = texture'ANEArgue8';
+ 	AnimTrashTalkEmote.Atlas[9] = texture'ANEArgue9';
+ 	AnimTrashTalkEmote.Atlas[10] = texture'ANEArgue10';
+ 	AnimTrashTalkEmote.Atlas[11] = texture'ANEArgue11';
+ 	AnimTrashTalkEmote.Atlas[12] = texture'ANEArgue12';
+ 	AnimTrashTalkEmote.Atlas[13] = texture'ANEArgue13';
+ 	AnimTrashTalkEmote.Atlas[14] = texture'ANEArgue14';
+ 	AnimTrashTalkEmote.Atlas[15] = texture'ANEArgue15';
+ 	AnimTrashTalkEmote.Atlas[16] = texture'ANEArgue16';
+ 	AnimTrashTalkEmote.Atlas[17] = texture'ANEArgue17';
+ 	AnimTrashTalkEmote.Atlas[18] = texture'ANEArgue18';
+ 	AnimTrashTalkEmote.Atlas[19] = texture'ANEArgue19';
+ 	AnimTrashTalkEmote.Atlas[20] = texture'ANEArgue20';
+ 	AnimTrashTalkEmote.TexChatSizeFraction = 0.6;
 
  	RecognizableEmoTextSymbols[0] = ":)";
  	RecognizableEmoTextSymbols[1] = ":(";
@@ -225,6 +276,7 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  	RecognizableEmoTextSymbols[26] = ":o";
  	RecognizableEmoTextSymbols[27] = ":y";
  	RecognizableEmoTextSymbols[28] = ":4";
+ 	RecognizableEmoTextSymbols[29] = ":3";
  }
 
  function FindCategoryDeliminator(string EncodedText, out int Position, out string Deliminator)
@@ -381,10 +433,10 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  	local string TempoString;
  	local int EmojiLocation, Identifier, EmojiYDrawCoordinate, EmoteYDrawCoordinate;
  	local float SomeHeight, TextWidth;
- 	local float EmojiMultiplier, EmoteMultiplier;
+ 	local float EmojiMultiplier;//, EmoteMultiplier;
 
  	EmojiMultiplier = 0.5;
- 	EmoteMultiplier = 0.50;
+ 	//EmoteMultiplier = 0.50;
 
  	EmojiLocation = LookForEmojiTextRepresentation(Message, Identifier);
 
@@ -422,13 +474,24 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
 
  		if(Identifier == 51)
  		{
- 			EmoteYDrawCoordinate =  DrawY - AnimShockEmote.Atlas[AnimShockEmote.CurrentAnimFrame].VSize * EmoteMultiplier / 2 + SomeHeight / 2;
+ 			EmoteYDrawCoordinate =  DrawY - AnimShockEmote.Atlas[AnimShockEmote.CurrentAnimFrame].VSize * AnimShockEmote.TexChatSizeFraction / 2 + SomeHeight / 2;
 
- 			DrawStretchedTexture(C, DrawX, EmoteYDrawCoordinate, AnimShockEmote.Atlas[AnimShockEmote.CurrentAnimFrame].USize * EmoteMultiplier,
- 			AnimShockEmote.Atlas[AnimShockEmote.CurrentAnimFrame].USize * EmoteMultiplier,AnimShockEmote.Atlas[AnimShockEmote.CurrentAnimFrame]);
+ 			DrawStretchedTexture(C, DrawX, EmoteYDrawCoordinate, AnimShockEmote.Atlas[AnimShockEmote.CurrentAnimFrame].USize * AnimShockEmote.TexChatSizeFraction,
+ 			AnimShockEmote.Atlas[AnimShockEmote.CurrentAnimFrame].USize * AnimShockEmote.TexChatSizeFraction, AnimShockEmote.Atlas[AnimShockEmote.CurrentAnimFrame]);
 
- 			LateralDisplacement +=  AnimShockEmote.Atlas[0].USize * EmoteMultiplier;
- 			DrawX += AnimShockEmote.Atlas[0].USize * EmoteMultiplier;
+ 			LateralDisplacement +=  AnimShockEmote.Atlas[0].USize * AnimShockEmote.TexChatSizeFraction;
+ 			DrawX += AnimShockEmote.Atlas[0].USize * AnimShockEmote.TexChatSizeFraction;
+ 		}
+
+ 		if(Identifier == 52)
+ 		{
+ 			EmoteYDrawCoordinate =  DrawY - AnimTrashTalkEmote.Atlas[AnimTrashTalkEmote.CurrentAnimFrame].VSize * AnimTrashTalkEmote.TexChatSizeFraction / 2 + SomeHeight / 2;
+
+ 			DrawStretchedTexture(C, DrawX, EmoteYDrawCoordinate, AnimTrashTalkEmote.Atlas[AnimTrashTalkEmote.CurrentAnimFrame].USize * AnimTrashTalkEmote.TexChatSizeFraction,
+ 			AnimTrashTalkEmote.Atlas[AnimTrashTalkEmote.CurrentAnimFrame].USize * AnimTrashTalkEmote.TexChatSizeFraction, AnimTrashTalkEmote.Atlas[AnimTrashTalkEmote.CurrentAnimFrame]);
+
+ 			LateralDisplacement +=  AnimTrashTalkEmote.Atlas[0].USize * AnimTrashTalkEmote.TexChatSizeFraction;
+ 			DrawX += AnimTrashTalkEmote.Atlas[0].USize * AnimTrashTalkEmote.TexChatSizeFraction;
  		}
 
  		Message = Mid(Message, EmojiLocation + 2);
@@ -446,10 +509,18 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  	if(TickCounter > 2)
  	{
  		AnimShockEmote.CurrentAnimFrame++;
+ 		AnimTrashTalkEmote.CurrentAnimFrame++;
+
  		if(AnimShockEmote.CurrentAnimFrame > 9)
  		{
  			AnimShockEmote.CurrentAnimFrame = 0;
  		}
+
+        if(AnimTrashTalkEmote.CurrentAnimFrame > 20)
+        {
+             AnimTrashTalkEmote.CurrentAnimFrame = 0;
+        }
+
  		TickCounter = 0;
  	}
 
@@ -468,7 +539,7 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  	EmoCount = 0;
  	bNoEmoTextSymbol = true;
 
- 	for(Counter = 0; Counter <= 28; Counter++)
+ 	for(Counter = 0; Counter <= 29; Counter++)
  	{
  		EmoLocation = Instr(MessageStringPart, RecognizableEmoTextSymbols[Counter]);
 
@@ -481,6 +552,10 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  			{
  				EmoArray[EmoCount].Identifier = 51;
  			}
+ 			else if(Counter == 29)
+ 			{
+                EmoArray[EmoCount].Identifier = 52;
+            }
  			else
  			{
  				EmoArray[EmoCount].Identifier = Counter;
@@ -560,13 +635,13 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  {
  	local texture ChatFaceTexture;
  	local string FacePackage, SkinItem, FaceItem, NonSandhiFaceNameString;
- 	local int i;
+ 	//local int i;
 
  	if(FaceNameString == "faceless" || FaceNameString == "")
  	{
  	  return texture'faceless';
  	}
-
+    /*
  	for(i = 0; i< 50; i++)
  	{
  		if(CachedFaces[i].ChatFace == none)
@@ -578,7 +653,7 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  			return CachedFaces[i].ChatFace;
  		}
  	}
-
+    */
  	SkinItem = Root.GetPlayerOwner().GetItemName(SkinNameString);
  	FaceItem = Root.GetPlayerOwner().GetItemName(FaceNameString);
  	FacePackage = Left(FaceNameString, Len(FaceNameString) - Len(FaceItem));
@@ -603,9 +678,10 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  		Log("ChatDiamond: Couldn't find ChatFace: " $ FaceNameString);
  		ChatFaceTexture = texture'faceless';
  	}
-
+    /*
  	CachedFaces[i].ChatFace = ChatFaceTexture;
  	CachedFaces[i].FaceName = FaceNameString;
+ 	*/
 
  	return ChatFaceTexture;
  }
