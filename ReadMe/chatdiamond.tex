@@ -87,6 +87,44 @@ The console now has the following features
 \item A working status bar linked with console configuration modifiers.
 \end{itemize}
 
+\section{A note on UT Messaging}
+ChatDiamond's functionality is based upon the tenet ``A complete clientside user interface with no dependencies with the server''.  This would imply conforming to the UT standards and any server not conforming to the standards, if so, is not worth visiting.
+
+Based upon the above motivation we have a choice to make between replacing the client HUD or UT console, in order to gather the UT messages clientside.  My first instinct was to replace the HUD because that would give more precise classification of the messages, in the sense Epic wrote the code, like \href{http://uncodex.ut-files.com/UT/v436/Source_botpack/challengehud.html}{so} (line 1499)
+
+\begin{lstlisting}[frame=single]
+// Entry point for string messages.
+simulated function Message( PlayerReplicationInfo PRI, coerce string Msg, name MsgType )
+{
+    local int i;
+    local Class<LocalMessage> MessageClass;
+
+    switch (MsgType)
+    {
+        case 'Say':
+        case 'TeamSay':
+            MessageClass = class'SayMessagePlus';
+            break;
+        case 'CriticalEvent':
+            MessageClass = class'CriticalStringPlus';
+            LocalizedMessage( MessageClass, 0, None, None, None, Msg );
+            return;
+        case 'DeathMessage':
+            MessageClass = class'RedSayMessagePlus';
+            break;
+        case 'Pickup':
+            PickupTime = Level.TimeSeconds;
+        default:
+            MessageClass = class'StringMessagePlus';
+            break;
+     }
+   %* \ldots *)           
+\end{lstlisting}
+
+The basic premise of many cheats providing aim assist is to modify the HUD clientside and display the adversary's position behind the wall or a radar.  This is the reason why modern anticheats are not receptive of clients modifying HUD, and thus, work with the concept of ``whitelisting''.
+
+If the notion of ``cheat-anticheat'' interplay exists in the UT standards, then that simply doesn't fit with the tenant we began with.  We don't want to be sending request to server administrators for specifically whitelisting ChatDiamond which will be reverted by cold silent treatment to say the most and some naggy jibber jabber about the unknown-ness of ChatDiamond, especially when the mod is not that popular.
+
 
 
 \end{document}
