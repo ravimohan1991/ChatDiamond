@@ -143,7 +143,7 @@ event Tick( float Delta )
  	ShowDesktop=True
  	bFilterEvents=False
  	bFilterNonChatMessages=False
- 	Version=0.1.0-alpha
+ 	Version="0.1.0-alpha"
  }
 
 /*
