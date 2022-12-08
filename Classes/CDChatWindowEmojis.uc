@@ -28,10 +28,10 @@
 // - Flashing of availabule emojis
 //================================================================================
 
-class UTChatWindowEmojis extends UWindowPageWindow;
+class CDChatWindowEmojis extends UWindowPageWindow;
 
  var UWindowSmallButton ButClose;
- var UTChatWinControl   EditMesg;
+ var UWindowEditControl EditMesg;
 
  var color WhiteColor, GrayColor;
 
@@ -50,7 +50,7 @@ class UTChatWindowEmojis extends UWindowPageWindow;
  	ButClose = UWindowSmallButton(CreateControl(Class'UWindowSmallButton', 320, 250, 60, 25));
  	ButClose.Text = "Close";
 
- 	EditMesg = UTChatWinControl(CreateControl(Class'UTChatWinControl', 10, 250, 300, 16));
+ 	EditMesg = UWindowEditControl(CreateControl(Class'UWindowEditControl', 10, 250, 300, 16));
  	EditMesg.EditBoxWidth = 300;
 
  	EditMesg.SetNumericOnly(False);

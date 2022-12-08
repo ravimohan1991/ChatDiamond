@@ -49,7 +49,7 @@ class CDAboutWindow expands UWindowPageWindow;
 
  	CDCreditsControl.AddLineText("Chat Diamond", 3, ChatDiamondTitleColor, true);
  	CDCreditsControl.AddPadding(5);
- 	CDCreditsControl.AddLineText("Version: "$ class'UTChat'.default.Version);
+ 	CDCreditsControl.AddLineText("Version: "$ class'CDUTConsole'.default.Version);
  	CDCreditsControl.AddPadding(10);
 
  	CDCreditsControl.AddLineText("Coder:");

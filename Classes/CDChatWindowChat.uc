@@ -34,7 +34,7 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
 
  var UMenuLabelControl  lblHeading;
  var CDUTChatTextTextureAnimEmoteArea TheTextArea;
- var UTChatWinControl   EditMesg;
+ var UWindowEditControl EditMesg;
 
  var UWindowSmallButton ButSend;
  var UWindowSmallButton ButSave;
@@ -123,7 +123,7 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
  	ButtonPlaySpectate.DownSound = sound'UnrealShare.FSHLITE2';
 
  	// must go here to get 1st focus
- 	EditMesg = UTChatWinControl(CreateControl(Class'UTChatWinControl', 56, 230, 217, 16)); //188
+ 	EditMesg = UWindowEditControl(CreateControl(Class'UWindowEditControl', 56, 230, 217, 16));
  	EditMesg.EditBoxWidth = 217;
  	EditMesg.SetNumericOnly(False);
  	EditMesg.SetFont(0);

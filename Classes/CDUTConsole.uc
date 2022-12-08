@@ -32,6 +32,8 @@
 class CDUTConsole extends UTConsole config (ChatDiamond);
 
  var CDChatWindowChat ChatWindow;
+ var string Version;
+
  var() config bool bFilterEvents;
  var() config bool bFilterNonChatMessages;
 
@@ -141,6 +143,7 @@ event Tick( float Delta )
  	ShowDesktop=True
  	bFilterEvents=False
  	bFilterNonChatMessages=False
+ 	Version=0.1.0-alpha
  }
 
 /*

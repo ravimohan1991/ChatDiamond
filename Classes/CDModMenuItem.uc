@@ -33,8 +33,8 @@ class CDModMenuItem expands UMenuModMenuItem;
 
  function Setup()
  {
- 	MenuCaption = "ChatDiamond"@class'UTChat'.default.Version;
- 	MenuHelp = "ChatDiamond"@class'UTChat'.default.Version@"- Tool for Linguistic Communication";
+ 	MenuCaption = "ChatDiamond"@class'CDUTConsole'.default.Version;
+ 	MenuHelp = "ChatDiamond"@class'CDUTConsole'.default.Version@"- Tool for Linguistic Communication";
  	SaveConfig();
  	StaticSaveConfig();
  }

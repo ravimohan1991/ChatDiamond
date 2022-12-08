@@ -35,9 +35,9 @@ class CDClientSideWindow expands UWindowConsoleClientWindow config(ChatDiamond);
 
  var UMenuPageControl    Pages;
  var CDChatWindowChat    ChatWindow;
- var UTChatWindowAdmin   AdminWindow;
- var UTChatWindowConfig  ConfigWindow;
- var UTChatWindowEmojis  EmojiWindow;
+ //var UTChatWindowAdmin   AdminWindow;
+ //var UTChatWindowConfig  ConfigWindow;
+ var CDChatWindowEmojis  EmojiWindow;
  var CDAboutWindow       AboutWindow;
  var CDUTConsoleWindow   ConsoleWindow;
 
@@ -59,8 +59,8 @@ class CDClientSideWindow expands UWindowConsoleClientWindow config(ChatDiamond);
  	ChatWindow = CDChatWindowChat(PageControl.Page);
  	ChatWindow.FrameWindow = CDModMenuWindowFrame(ParentWindow);
 
- 	PageControl = Pages.AddPage("Emojis", class'UTChatWindowEmojis');
- 	EmojiWindow = UTChatWindowEmojis(PageControl.Page);
+ 	PageControl = Pages.AddPage("Emojis", class'CDChatWindowEmojis');
+ 	EmojiWindow = CDChatWindowEmojis(PageControl.Page);
 
  	PageControl = Pages.AddPage("Console", class'CDUTConsoleWindow');
  	ConsoleWindow = CDUTConsoleWindow(PageControl.Page);
