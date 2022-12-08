@@ -57,6 +57,7 @@ class CDClientSideWindow expands UWindowConsoleClientWindow config(ChatDiamond);
 
  	PageControl = Pages.AddPage("Public Chats", class'CDChatWindowChat');
  	ChatWindow = CDChatWindowChat(PageControl.Page);
+ 	ChatWindow.FrameWindow = CDModMenuWindowFrame(ParentWindow);
 
  	PageControl = Pages.AddPage("Emojis", class'UTChatWindowEmojis');
  	EmojiWindow = UTChatWindowEmojis(PageControl.Page);

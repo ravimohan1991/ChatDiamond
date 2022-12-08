@@ -41,6 +41,7 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
  var UWindowSmallButton ButtonPlaySpectate;
  var UWindowSmallButton ButtonDisconnectAndQuit;
 
+ var CDModMenuWindowFrame FrameWindow;
  var GameReplicationInfo CDGRI;
  var PlayerReplicationInfo LocalPRI;
  var bool bIsWindowChatFunctional;
@@ -110,6 +111,7 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
  	ButtonDisconnectAndQuit.DownSound = sound'UnrealShare.FSHLITE2';
 
  	ButtonPlaySpectate = UWindowSmallButton(CreateControl(class'UWindowSmallButton', 4, 255, 380, 25));
+
  	if(GetPlayerOwner().GetDefaultURL("OverrideClass") == "Botpack.CHSpectator")
  	{
  		ButtonPlaySpectate.SetText("Play");
@@ -144,6 +146,7 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
  	{
  		TheTextArea.AddText(sMesg);
  		CacheMessage(sMesg);
+ 		ButSave.bDisabled = false;
  	}
  	else
  	{
@@ -190,7 +193,7 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
  * 2. Tab for history. Public chat should be cleaned everytime game is loaded. Force clean?
  * 3. Contextual deletion of History?
  * 4. Filter default messages (for instance I have got the flag! or custom cmds)
- * 5. Face loading
+ * 5. Face loading (done)
  *
  * @PARAM PRI                 The PlayerReplicationInfo of involved individual
  *                            Behavior differs (as far as I understand)
@@ -429,6 +432,62 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
  function Notify (UWindowDialogControl C, byte E)
  {
  	Super.Notify(C,E);
+
+ 	if(E == DE_MouseMove)
+ 	{
+ 		if(C == ButSend)
+ 		{
+ 			FrameWindow.StatusBarText = "Send the message!";
+ 		}
+
+ 		if(C == ButSave)
+ 		{
+ 			FrameWindow.StatusBarText = "Save the messages in ChatDiamond.ini!";
+ 		}
+
+ 		if(C == ButtonPlaySpectate)
+ 		{
+ 			FrameWindow.StatusBarText = "Based on the context, play or spectate!";
+ 		}
+
+ 		if(C == ButtonDisconnectAndQuit)
+ 		{
+ 			FrameWindow.StatusBarText = "Shut down the game and do `better` things!";
+ 		}
+
+ 		if(C == EditMesg)
+ 		{
+ 			FrameWindow.StatusBarText = "Type a message for everyone!";
+ 		}
+ 	}
+
+ 	if(E == DE_MouseLeave)
+ 	{
+ 		if(C == EditMesg)
+ 		{
+ 			FrameWindow.StatusBarText = "";
+ 		}
+
+ 		if(C == ButSend)
+ 		{
+ 			FrameWindow.StatusBarText = "";
+ 		}
+
+ 		if(C == ButSave)
+ 		{
+ 			FrameWindow.StatusBarText = "";
+ 		}
+
+ 		if(C == ButtonPlaySpectate)
+ 		{
+ 			FrameWindow.StatusBarText = "";
+ 		}
+
+ 		if(C == ButtonDisconnectAndQuit)
+ 		{
+ 			FrameWindow.StatusBarText = "";
+ 		}
+ 	}
 
  	Switch(E)
  	{

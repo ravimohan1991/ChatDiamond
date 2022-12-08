@@ -30,8 +30,6 @@
 
 class UTChatWindowEmojis extends UWindowPageWindow;
 
- var UTChatWRI UTWRI;
-
  var UWindowSmallButton ButClose;
  var UTChatWinControl   EditMesg;
 
@@ -46,12 +44,6 @@ class UTChatWindowEmojis extends UWindowPageWindow;
  function Created ()
  {
  	Super.Created();
-
- 	if ( UTWRI == none )
- 	{
- 		foreach GetPlayerOwner().AllActors(class'UTChatWRI', UTWRI)
- 		break;
- 	}
 
  	DetailMode = GetPlayerOwner().ConsoleCommand("get ini:Engine.Engine.ViewportManager TextureDetail");
 

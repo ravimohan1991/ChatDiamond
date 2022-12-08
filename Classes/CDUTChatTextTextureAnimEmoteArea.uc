@@ -179,6 +179,8 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
 
  var float FrameRate;
  var int TickCounter;
+ var int TickCounterWarpNumber;
+ var int DesiredAnimationFrameRate;
 
  struct SkinStore
  {
@@ -209,6 +211,9 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  	FrameRate = 60;
  	TickCounter = 0;
 
+ 	DesiredAnimationFrameRate = 24;
+ 	TickCounterWarpNumber = (int(FrameRate) / 24);
+
  	AnimShockEmote.CurrentAnimFrame = 0;
  	AnimShockEmote.TextSymbol = ":4";
  	AnimShockEmote.Atlas[0] = texture'ANEShock0';
@@ -223,8 +228,8 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  	AnimShockEmote.Atlas[9] = texture'ANEShock9';
  	AnimShockEmote.TexChatSizeFraction = 0.50;
 
- 	 AnimTrashTalkEmote.CurrentAnimFrame = 0;
-     AnimTrashTalkEmote.Atlas[0] = texture'ANEArgue0';
+ 	AnimTrashTalkEmote.CurrentAnimFrame = 0;
+ 	AnimTrashTalkEmote.Atlas[0] = texture'ANEArgue0';
  	AnimTrashTalkEmote.Atlas[1] = texture'ANEArgue1';
  	AnimTrashTalkEmote.Atlas[2] = texture'ANEArgue2';
  	AnimTrashTalkEmote.Atlas[3] = texture'ANEArgue3';
@@ -506,7 +511,7 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
 
  function Tick(float DeltaTime)
  {
- 	if(TickCounter > 2)
+ 	if(TickCounter > TickCounterWarpNumber)
  	{
  		AnimShockEmote.CurrentAnimFrame++;
  		AnimTrashTalkEmote.CurrentAnimFrame++;
@@ -516,10 +521,10 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  			AnimShockEmote.CurrentAnimFrame = 0;
  		}
 
-        if(AnimTrashTalkEmote.CurrentAnimFrame > 20)
-        {
-             AnimTrashTalkEmote.CurrentAnimFrame = 0;
-        }
+ 	if(AnimTrashTalkEmote.CurrentAnimFrame > 20)
+ 	{
+ 		AnimTrashTalkEmote.CurrentAnimFrame = 0;
+ 	}
 
  		TickCounter = 0;
  	}
@@ -554,8 +559,8 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  			}
  			else if(Counter == 29)
  			{
-                EmoArray[EmoCount].Identifier = 52;
-            }
+ 				EmoArray[EmoCount].Identifier = 52;
+ 			}
  			else
  			{
  				EmoArray[EmoCount].Identifier = Counter;
@@ -620,6 +625,8 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  * Bit tricky way to locate the Texture of chatting player. Please see
  * https://github.com/ravimohan1991/ChatDiamond/wiki/Level-of-Detail-in-Server-Client-Context
  *
+ * TODO: Need an algorithm to cache the textures (being rendered each tick)
+ *
  * We also try and cache the dynamically loaded textures because common sense is common again?
  * @PARAM FaceNameString             The complete string name for face identification
  *                                   (Server) SoldierSkins.Brock
@@ -641,7 +648,7 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  	{
  	  return texture'faceless';
  	}
-    /*
+ 	/*
  	for(i = 0; i< 50; i++)
  	{
  		if(CachedFaces[i].ChatFace == none)
@@ -653,7 +660,7 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  			return CachedFaces[i].ChatFace;
  		}
  	}
-    */
+ 	*/
  	SkinItem = Root.GetPlayerOwner().GetItemName(SkinNameString);
  	FaceItem = Root.GetPlayerOwner().GetItemName(FaceNameString);
  	FacePackage = Left(FaceNameString, Len(FaceNameString) - Len(FaceItem));
@@ -678,7 +685,7 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  		Log("ChatDiamond: Couldn't find ChatFace: " $ FaceNameString);
  		ChatFaceTexture = texture'faceless';
  	}
-    /*
+ 	/*
  	CachedFaces[i].ChatFace = ChatFaceTexture;
  	CachedFaces[i].FaceName = FaceNameString;
  	*/
@@ -1013,8 +1020,7 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  	WordEmojis(6)=(Symbol="GG!",Image1=Texture'GoodGame',Image2=None)
  	WordEmojis(7)=(Symbol="N1!",Image1=Texture'NiceOne',Image2=None)
 
- 	AnimShockEmote=(Atlas[0]=Texture'ChatDiamond.ANEShock0',Atlas[1]=Texture'ChatDiamond.ANEShock1',Atlas[2]=Texture'ChatDiamond.ANEShock2',Atlas[3]=Texture'ChatDiamond.ANEShock3',Atlas[4]=Texture'ChatDiamond.ANEShock4',Atlas[5]=Texture'ChatDiamond.ANEShock5',Atlas[6]=Texture'ChatDiamond.ANEShock6',Atlas[7]=Texture'ChatDiamond.ANEShock7',Atlas[8]=Texture'ChatDiamond.ANEShock8',Atlas[9]=Texture'ChatDiamond.ANEShock9',CurrentAnimFrame=0,TotalElements=1,TextSymbol=":4")
-
+ 	//AnimShockEmote=(Atlas[0]=Texture'ChatDiamond.ANEShock0',Atlas[1]=Texture'ChatDiamond.ANEShock1',Atlas[2]=Texture'ChatDiamond.ANEShock2',Atlas[3]=Texture'ChatDiamond.ANEShock3',Atlas[4]=Texture'ChatDiamond.ANEShock4',Atlas[5]=Texture'ChatDiamond.ANEShock5',Atlas[6]=Texture'ChatDiamond.ANEShock6',Atlas[7]=Texture'ChatDiamond.ANEShock7',Atlas[8]=Texture'ChatDiamond.ANEShock8',Atlas[9]=Texture'ChatDiamond.ANEShock9',CurrentAnimFrame=0,TotalElements=1,TextSymbol=":4")
  }
 
  /*

@@ -84,77 +84,99 @@ DelayScroll, SpeedScroll
     second).
        */
 
-class CDUWindowCreditsControl extends UWindowEditControl;//UWindowDialogControl;
+class CDUWindowCreditsControl extends UWindowDialogControl;
 
+#exec Texture Import File=Textures\diamondbright1.bmp     Name=diamond1      Mips=off
+#exec Texture Import File=Textures\diamondbright2.bmp     Name=diamond2      Mips=off
+#exec Texture Import File=Textures\diamondbright3.bmp     Name=diamond3      Mips=off
+#exec Texture Import File=Textures\diamondbright4.bmp     Name=diamond4      Mips=off
+#exec Texture Import File=Textures\diamondbright5.bmp     Name=diamond5      Mips=off
+#exec Texture Import File=Textures\diamondbright6.bmp     Name=diamond6      Mips=off
+#exec Texture Import File=Textures\diamondbright7.bmp     Name=diamond7      Mips=off
+#exec Texture Import File=Textures\diamondbright8.bmp     Name=diamond8      Mips=off
+#exec Texture Import File=Textures\diamondbright9.bmp     Name=diamond9      Mips=off
+#exec Texture Import File=Textures\diamondbright10.bmp    Name=diamond10     Mips=off
 
 // ============================================================================
 // Structures
 // ============================================================================
 
-struct TLine {
+ struct TLine
+ {
+ 	var string Text;
+ 	var string Url;
+ 	var byte Font;
+ 	var Color Color;
+ 	var bool Underline;
 
-  var string Text;
-  var string Url;
-  var byte Font;
-  var Color Color;
-  var bool Underline;
+ 	var Texture Image;
+ 	var int Width;
+ 	var int Height;
 
-  var Texture Image;
-  var int Width;
-  var int Height;
+ 	var int Indent;
+ 	var int Padding;
+ };
 
-  var int Indent;
-  var int Padding;
-  };
+ struct ShiningDiamond
+ {
+ 	var Texture Atlas[10];
+
+ 	var int CurrentAnimFrame;
+ };
 
 
 // ============================================================================
 // Enumerations
 // ============================================================================
 
-enum EAction {
-
-  Action_None,
-  Action_Fading,
-  Action_Scrolling,
-  };
+ enum EAction
+ {
+ 	Action_None,
+ 	Action_Fading,
+ 	Action_Scrolling,
+ };
 
 
 // ============================================================================
 // Properties
 // ============================================================================
 
-var() Color ColorDefault;
-var() Color ColorImage;
-var() Color ColorLink;
+ var() Color ColorDefault;
+ var() Color ColorImage;
+ var() Color ColorLink;
 
-var() int OffsetStart;
-var() float DelayFade;
-var() float DelayScroll;
-var() float SpeedFade;
-var() float SpeedScroll;
-var() TLine Lines[64];
+ var() int OffsetStart;
+ var() float DelayFade;
+ var() float DelayScroll;
+ var() float SpeedFade;
+ var() float SpeedScroll;
+ var() TLine Lines[64];
 
 
 // ============================================================================
 // Variables
 // ============================================================================
 
-var EAction Action;
-var EAction ActionPrev;
+ var EAction Action;
+ var EAction ActionPrev;
 
-var bool FlagDrag;
-var bool FlagUpdated;
+ var bool FlagDrag;
+ var bool FlagUpdated;
 
-var float Delay;
-var float Fade;
-var float Offset;
-var float OffsetDrag;
+ var float Delay;
+ var float Fade;
+ var float Offset;
+ var float OffsetDrag;
+ var float FrameRate;
 
-var int CountLines;
-var int HeightTotal;
+ var int CountLines;
+ var int HeightTotal;
+ var int TickCounter;
+ var int TickCounterWarpNumber;
+ var int DesiredAnimationFrameRate;
 
-var string TextUrlCurrent;
+ var string TextUrlCurrent;
+ var ShiningDiamond AnimDiamond;
 
 
 // ============================================================================
@@ -163,27 +185,30 @@ var string TextUrlCurrent;
 // Adds a line of text.
 // ============================================================================
 
-function bool AddLineText(string Text, optional byte Font,
+ function bool AddLineText(string Text, optional byte Font,
                                        optional Color Color,
-                                       optional bool Underline) {
+                                       optional bool Underline)
+ {
 
-  if (CountLines == ArrayCount(Lines) || Len(Text) == 0)
-    return false;
+ 	if (CountLines == ArrayCount(Lines) || Len(Text) == 0)
+ 	{
+ 		return false;
+ 	}
 
-  Lines[CountLines].Text      = Text;
-  Lines[CountLines].Url       = "";
-  Lines[CountLines].Font      = Font;
-  Lines[CountLines].Color     = Color;
-  Lines[CountLines].Underline = Underline;
-  Lines[CountLines].Padding   = 0;
+ 	Lines[CountLines].Text      = Text;
+ 	Lines[CountLines].Url       = "";
+ 	Lines[CountLines].Font      = Font;
+ 	Lines[CountLines].Color     = Color;
+ 	Lines[CountLines].Underline = Underline;
+ 	Lines[CountLines].Padding   = 0;
 
-  Lines[CountLines].Image = None;
+ 	Lines[CountLines].Image = None;
 
-  CountLines++;
-  FlagUpdated = false;
+ 	CountLines++;
+ 	FlagUpdated = false;
 
-  return true;
-  }
+ 	return true;
+ }
 
 
 // ============================================================================
@@ -192,30 +217,37 @@ function bool AddLineText(string Text, optional byte Font,
 // Adds a clickable Internet address.
 // ============================================================================
 
-function bool AddLineUrl(string Url, optional byte Font,
-                                     optional string Text) {
+ function bool AddLineUrl(string Url, optional byte Font,
+                                     optional string Text)
+ {
 
-  if (CountLines == ArrayCount(Lines) || Len(Url) == 0)
-    return false;
+ 	if (CountLines == ArrayCount(Lines) || Len(Url) == 0)
+ 	{
+ 		return false;
+ 	}
 
-  Lines[CountLines].Url       = Url;
-  Lines[CountLines].Font      = Font;
-  Lines[CountLines].Color     = ColorLink;
-  Lines[CountLines].Underline = true;
-  Lines[CountLines].Padding   = 2;
+ 	Lines[CountLines].Url       = Url;
+ 	Lines[CountLines].Font      = Font;
+ 	Lines[CountLines].Color     = ColorLink;
+ 	Lines[CountLines].Underline = true;
+ 	Lines[CountLines].Padding   = 2;
 
-  if (Len(Text) == 0)
-    Lines[CountLines].Text = Url;
-  else
-    Lines[CountLines].Text = Text;
+ 	if (Len(Text) == 0)
+ 	{
+ 		Lines[CountLines].Text = Url;
+ 	}
+ 	else
+ 	{
+ 		Lines[CountLines].Text = Text;
+ 	}
 
-  Lines[CountLines].Image = None;
+ 	Lines[CountLines].Image = None;
 
-  CountLines++;
-  FlagUpdated = false;
+ 	CountLines++;
+ 	FlagUpdated = false;
 
-  return true;
-  }
+ 	return true;
+ }
 
 
 // ============================================================================
@@ -224,24 +256,27 @@ function bool AddLineUrl(string Url, optional byte Font,
 // Adds an image.
 // ============================================================================
 
-function bool AddLineImage(Texture Image, optional int Width,
-                                          optional int Height) {
+ function bool AddLineImage(Texture Image, optional int Width,
+                                          optional int Height)
+ {
 
-  if (CountLines == ArrayCount(Lines) || Image == None)
-    return false;
+ 	if (CountLines == ArrayCount(Lines) || Image == None)
+ 	{
+ 		return false;
+ 	}
 
-  Lines[CountLines].Image   = Image;
-  Lines[CountLines].Width   = Width;
-  Lines[CountLines].Height  = Height;
-  Lines[CountLines].Padding = 0;
+ 	Lines[CountLines].Image   = Image;
+ 	Lines[CountLines].Width   = Width;
+ 	Lines[CountLines].Height  = Height;
+ 	Lines[CountLines].Padding = 0;
 
-  Lines[CountLines].Text = "";
+ 	Lines[CountLines].Text = "";
 
-  CountLines++;
-  FlagUpdated = false;
+ 	CountLines++;
+ 	FlagUpdated = false;
 
-  return true;
-  }
+ 	return true;
+ }
 
 
 // ============================================================================
@@ -250,13 +285,16 @@ function bool AddLineImage(Texture Image, optional int Width,
 // Adds padding to the last line.
 // ============================================================================
 
-function bool AddPadding(int Padding) {
+ function bool AddPadding(int Padding)
+ {
 
-  if (CountLines == 0)
-    return false;
+ 	if (CountLines == 0)
+ 	{
+ 		return false;
+ 	}
 
-  Lines[CountLines - 1].Padding += Padding;
-  }
+ 	Lines[CountLines - 1].Padding += Padding;
+ }
 
 
 // ============================================================================
@@ -265,13 +303,13 @@ function bool AddPadding(int Padding) {
 // Clears the credit lines.
 // ============================================================================
 
-function Clear() {
+ function Clear()
+ {
+ 	Lines[0].Text = "";
+ 	Lines[0].Image = None;
 
-  Lines[0].Text = "";
-  Lines[0].Image = None;
-
-  FlagUpdated = false;
-  }
+ 	FlagUpdated = false;
+ }
 
 
 // ============================================================================
@@ -281,17 +319,28 @@ function Clear() {
 // just below the bottom of the arena.
 // ============================================================================
 
-function Reset() {
+ function Reset()
+ {
+ 	if(HeightTotal + 20 <= WinHeight)
+ 	{
+ 		Offset = -(WinHeight - HeightTotal) / 2;
+ 	}
+ 	else
+ 	{
+ 		Offset = -10;
+ 	}
 
-  Offset = OffsetStart - WinHeight;
+ 	if (SpeedFade == 0.0)
+ 	{
+ 		Action = Action_Scrolling;
+ 	}
+ 	else
+ 	{
+ 		Action = Action_Fading;
+ 	}
 
-  if (SpeedFade == 0.0)
-    Action = Action_Scrolling;
-  else
-    Action = Action_Fading;
-
-  ActionPrev = Action_None;
-  }
+ 	ActionPrev = Action_None;
+ }
 
 
 // ============================================================================
@@ -301,241 +350,382 @@ function Reset() {
 // determines element indents.
 // ============================================================================
 
-function Update(Canvas Canvas) {
+ function Update(Canvas Canvas)
+ {
+ 	local int IndexLine;
+ 	local float WidthText;
+ 	local float HeightText;
 
-  local int IndexLine;
-  local float WidthText;
-  local float HeightText;
+ 	if (FlagUpdated)
+ 	{
+ 		return;
+ 	}
 
-  if (FlagUpdated)
-    return;
+ 	CountLines = 0;
+ 	HeightTotal = 0;
 
-  CountLines = 0;
-  HeightTotal = 0;
+ 	for (IndexLine = 0; IndexLine < ArrayCount(Lines); IndexLine++)
+ 	{
+ 		if (Len(Lines[IndexLine].Text) > 0)
+ 		{
+ 			Canvas.Font = Root.Fonts[Lines[IndexLine].Font];
+ 			TextSize(Canvas, Lines[IndexLine].Text, WidthText, HeightText);
 
-  for (IndexLine = 0; IndexLine < ArrayCount(Lines); IndexLine++) {
-    if (Len(Lines[IndexLine].Text) > 0) {
-      Canvas.Font = Root.Fonts[Lines[IndexLine].Font];
-      TextSize(Canvas, Lines[IndexLine].Text, WidthText, HeightText);
+ 			Lines[IndexLine].Width = WidthText;
+ 			Lines[IndexLine].Height = HeightText;
+ 		}
 
-      Lines[IndexLine].Width = WidthText;
-      Lines[IndexLine].Height = HeightText;
-      }
+ 		else if (Lines[IndexLine].Image != None)
+ 		{
+ 			if (Lines[IndexLine].Width  == 0)
+ 			{
+ 				Lines[IndexLine].Width  = Lines[IndexLine].Image.UClamp;
+ 			}
+ 			if (Lines[IndexLine].Height == 0)
+ 			{
+ 				Lines[IndexLine].Height = Lines[IndexLine].Image.VClamp;
+ 			}
+ 		}
 
-    else if (Lines[IndexLine].Image != None) {
-      if (Lines[IndexLine].Width  == 0) Lines[IndexLine].Width  = Lines[IndexLine].Image.UClamp;
-      if (Lines[IndexLine].Height == 0) Lines[IndexLine].Height = Lines[IndexLine].Image.VClamp;
-      }
+ 		else
+ 		{
+ 			break;
+ 		}
 
-    else
-      break;
+ 		Lines[IndexLine].Indent = (WinWidth - Lines[IndexLine].Width) / 2;
 
-    Lines[IndexLine].Indent = (WinWidth - Lines[IndexLine].Width) / 2;
+ 		CountLines++;
+ 		HeightTotal += Lines[IndexLine].Height + Lines[IndexLine].Padding;
+ 	}
 
-    CountLines++;
-    HeightTotal += Lines[IndexLine].Height + Lines[IndexLine].Padding;
-    }
+ 	Reset();
 
-  Reset();
-
-  FlagUpdated = true;
-  }
+ 	FlagUpdated = true;
+ }
 
 
 // ============================================================================
 // WindowShown
 // ============================================================================
 
-function WindowShown() {
+ function WindowShown()
+ {
 
-  Reset();
+ 	Reset();
 
-  Super.WindowShown();
-  }
+ 	Super.WindowShown();
+ }
 
+// ============================================================================
+// Initiate
+// ============================================================================
+
+ function Initiate()
+ {
+ 	FrameRate = 60;
+ 	DesiredAnimationFrameRate = 24;
+
+ 	TickCounterWarpNumber = (int(FrameRate) / 24);
+
+ 	AnimDiamond.Atlas[0] = texture'diamond1';
+ 	AnimDiamond.Atlas[1] = texture'diamond2';
+ 	AnimDiamond.Atlas[2] = texture'diamond3';
+ 	AnimDiamond.Atlas[3] = texture'diamond4';
+ 	AnimDiamond.Atlas[4] = texture'diamond5';
+ 	AnimDiamond.Atlas[5] = texture'diamond6';
+ 	AnimDiamond.Atlas[6] = texture'diamond7';
+ 	AnimDiamond.Atlas[7] = texture'diamond8';
+ 	AnimDiamond.Atlas[8] = texture'diamond9';
+ 	AnimDiamond.Atlas[9] = texture'diamond10';
+ }
 
 // ============================================================================
 // Tick
 // ============================================================================
 
-event Tick(float TimeDelta) {
+ event Tick(float TimeDelta)
+ {
+ 	if(TickCounter > TickCounterWarpNumber)
+ 	{
+ 		AnimDiamond.CurrentAnimFrame++;
 
-  if (Action != ActionPrev) {
-    switch (Action) {
-      case Action_Fading:     Fade = 0.0;  Delay = DelayFade;    break;
-      case Action_Scrolling:  Fade = 1.0;  Delay = DelayScroll;  break;
-      }
+ 		if(AnimDiamond.CurrentAnimFrame > 9)
+ 		{
+ 			AnimDiamond.CurrentAnimFrame = 0;
+ 		}
 
-    ActionPrev = Action;
-    }
+ 		TickCounter = 0;
+ 	}
 
-  if (Delay > 0.0) {
-    Delay = FMax(0.0, Delay - TimeDelta);
-    return;
-    }
+ 	TickCounter++;
 
-  switch (Action) {
-    case Action_Fading:
-      Fade = FMin(1.0, Fade + SpeedFade * TimeDelta);
-      if (Fade == 1.0)
-        Action = Action_Scrolling;
-      break;
+ 	if (Action != ActionPrev)
+ 	{
+ 		switch (Action)
+ 		{
+ 			case Action_Fading:
+ 				Fade = 0.0;
+ 				Delay = DelayFade;
+ 			break;
+ 			case Action_Scrolling:
+ 				Fade = 1.0;
+ 				Delay = DelayScroll;
+ 			break;
+ 		}
 
-    case Action_Scrolling:
-      if (!bMouseDown)
-        Offset += SpeedScroll * TimeDelta;
-      break;
-    }
-  }
+ 		ActionPrev = Action;
+ 	}
+
+ 	if (Delay > 0.0)
+ 	{
+ 		Delay = FMax(0.0, Delay - TimeDelta);
+ 		return;
+ 	}
+
+ 	switch (Action)
+ 	{
+ 		case Action_Fading:
+ 			Fade = FMin(1.0, Fade + SpeedFade * TimeDelta);
+ 			if (Fade == 1.0)
+ 			{
+ 				Action = Action_Scrolling;
+ 			}
+ 		break;
+
+ 		case Action_Scrolling:
+ 		if (!bMouseDown)
+ 		{
+ 			if(HeightTotal + 20 <= WinHeight)
+ 			{
+ 				Offset = -(WinHeight - HeightTotal) / 2;
+ 			}
+ 			else
+ 			{
+ 				Offset += SpeedScroll * TimeDelta;
+ 			}
+ 		}
+ 		break;
+ 	}
+ }
 
 
 // ============================================================================
 // Click
 // ============================================================================
 
-function Click(float X, float Y) {
+ function Click(float X, float Y)
+ {
 
-  Super.Click(X, Y);
+ 	Super.Click(X, Y);
 
-  if (Len(TextUrlCurrent) == 0)
-    return;
+ 	if (Len(TextUrlCurrent) == 0)
+ 	{
+ 		return;
+ 	}
 
-  if (Left(TextUrlCurrent, 4) ~= "www.")
-    GetPlayerOwner().ConsoleCommand("start http://" $ TextUrlCurrent);
-  else if (Left(TextUrlCurrent, 4) ~= "ftp.")
-    GetPlayerOwner().ConsoleCommand("start ftp://" $ TextUrlCurrent);
-  else if (Left(TextUrlCurrent, 9) ~= "unreal://")
-    GetPlayerOwner().ClientTravel(TextUrlCurrent, TRAVEL_Absolute, false);
-  else
-    GetPlayerOwner().ConsoleCommand("start" @ TextUrlCurrent);
-  }
+ 	if (Left(TextUrlCurrent, 4) ~= "www.")
+ 	{
+ 		GetPlayerOwner().ConsoleCommand("start http://" $ TextUrlCurrent);
+ 	}
+ 	else if (Left(TextUrlCurrent, 4) ~= "ftp.")
+ 	{
+ 		GetPlayerOwner().ConsoleCommand("start ftp://" $ TextUrlCurrent);
+ 	}
+ 	else if (Left(TextUrlCurrent, 9) ~= "unreal://")
+ 	{
+ 		GetPlayerOwner().ClientTravel(TextUrlCurrent, TRAVEL_Absolute, false);
+ 	}
+ 	else
+ 	{
+ 		GetPlayerOwner().ConsoleCommand("start" @ TextUrlCurrent);
+ 	}
+ }
 
 
 // ============================================================================
 // BeforePaint
 // ============================================================================
 
-function BeforePaint(Canvas Canvas, float X, float Y) {
+ function BeforePaint(Canvas Canvas, float X, float Y)
+ {
 
-  Update(Canvas);
+ 	Update(Canvas);
 
-  Super.BeforePaint(Canvas, X, Y);
-  }
+ 	Super.BeforePaint(Canvas, X, Y);
+ }
+
+// ============================================================================
+// Resize
+// ============================================================================
+
+ function Resize()
+ {
+ 	local int IndexLine;
+
+ 	for(IndexLine = 0; IndexLine < ArrayCount(Lines); IndexLine++)
+ 	{
+ 		Lines[IndexLine].Indent = (WinWidth - Lines[IndexLine].Width) / 2;
+ 	}
+ }
 
 
 // ============================================================================
 // Paint
 // ============================================================================
 
-function Paint(Canvas Canvas, float X, float Y) {
+ function Paint(Canvas Canvas, float X, float Y)
+ {
 
-  local int IndexLine;
-  local int OffsetCurrent;
+ 	local int IndexLine;
+ 	local int OffsetCurrent;
 
-  if (bMouseDown)
-    if (FlagDrag)
-      Offset = OffsetDrag - Y;
-    else
-      OffsetDrag = Offset + Y;
-  FlagDrag = bMouseDown;
+ 	if (bMouseDown)
+ 	{
+ 		if (FlagDrag)
+ 		{
+ 			Offset = OffsetDrag - Y;
+ 		}
+ 		else
+ 		{
+ 			OffsetDrag = Offset + Y;
+ 		}
+ 	}
 
-  DrawStretchedTexture(Canvas, 0, 0, WinWidth, WinHeight, Texture 'UWindow.BlackTexture');
+ 	FlagDrag = bMouseDown;
 
-  OffsetCurrent = -Offset;
+ 	DrawStretchedTexture(Canvas, 0, 0, WinWidth, WinHeight, Texture 'UWindow.BlackTexture');
 
-  for (IndexLine = 0; IndexLine < CountLines; IndexLine++) {
-    if (OffsetCurrent + Lines[IndexLine].Height > 0)
-      break;
-    OffsetCurrent += Lines[IndexLine].Height + Lines[IndexLine].Padding;
-    }
+ 	OffsetCurrent = -Offset;
 
-  TextUrlCurrent = "";
-  Canvas.bNoSmooth = false;
+ 	for (IndexLine = 0; IndexLine < CountLines; IndexLine++)
+ 	{
+ 		if (OffsetCurrent + Lines[IndexLine].Height > 0)
+ 		{
+ 			break;
+ 		}
+ 		OffsetCurrent += Lines[IndexLine].Height + Lines[IndexLine].Padding;
+ 	}
 
-  for (IndexLine = IndexLine; IndexLine < CountLines; IndexLine++) {
-    if (OffsetCurrent > WinHeight)
-      break;
+ 	TextUrlCurrent = "";
+ 	Canvas.bNoSmooth = false;
 
-    if (Len(Lines[IndexLine].Text) > 0) {
-      if (Lines[IndexLine].Color.R == 0 &&
-          Lines[IndexLine].Color.G == 0 &&
-          Lines[IndexLine].Color.B == 0)
-        Canvas.DrawColor = ColorDefault;
-      else
-        Canvas.DrawColor = Lines[IndexLine].Color;
+ 	for (IndexLine = IndexLine; IndexLine < CountLines; IndexLine++)
+ 	{
+ 		if (OffsetCurrent > WinHeight)
+ 		{
+ 			break;
+ 		}
 
-      Canvas.DrawColor = Canvas.DrawColor * Fade;
-      Canvas.Font = Root.Fonts[Lines[IndexLine].Font];
-      ClipText(Canvas, Lines[IndexLine].Indent, OffsetCurrent, Lines[IndexLine].Text);
+ 		if (Len(Lines[IndexLine].Text) > 0)
+ 		{
+ 			if (Lines[IndexLine].Color.R == 0 &&
+ 					Lines[IndexLine].Color.G == 0 &&
+ 					Lines[IndexLine].Color.B == 0)
+ 			Canvas.DrawColor = ColorDefault;
+ 		}
+ 		else
+ 		{
+ 			Canvas.DrawColor = Lines[IndexLine].Color;
+ 		}
 
-      if (Lines[IndexLine].Underline)
-        DrawStretchedTexture(Canvas, Lines[IndexLine].Indent,
-                                     Lines[IndexLine].Height + OffsetCurrent - 1,
-                                     Lines[IndexLine].Width,
-                                     1,
-                                     Texture 'UWindow.WhiteTexture');
+ 		Canvas.DrawColor = Canvas.DrawColor * Fade;
+ 		Canvas.Font = Root.Fonts[Lines[IndexLine].Font];
 
-      if (Len(Lines[IndexLine].Url) > 0 &&
-          Clamp(X, Lines[IndexLine].Indent, Lines[IndexLine].Indent + Lines[IndexLine].Width) == int(X) &&
-          Clamp(Y, OffsetCurrent, OffsetCurrent + Lines[IndexLine].Height) == int(Y))
-        TextUrlCurrent = Lines[IndexLine].Url;
-      }
+ 		// Top line
+ 		if(Lines[IndexLine].Text == "Chat Diamond")
+ 		{
+ 			ClipText(Canvas, Lines[IndexLine].Indent, OffsetCurrent, Lines[IndexLine].Text);
+ 			DrawStretchedTexture(Canvas, Lines[IndexLine].Indent - AnimDiamond.Atlas[AnimDiamond.CurrentAnimFrame].USize - 2,
+ 					OffsetCurrent,
+ 					AnimDiamond.Atlas[AnimDiamond.CurrentAnimFrame].USize,
+ 					AnimDiamond.Atlas[AnimDiamond.CurrentAnimFrame].VSize, AnimDiamond.Atlas[AnimDiamond.CurrentAnimFrame]);
+ 			DrawStretchedTexture(Canvas, Lines[IndexLine].Indent + Lines[IndexLine].Width + 2,
+ 					OffsetCurrent,
+ 					AnimDiamond.Atlas[AnimDiamond.CurrentAnimFrame].USize,
+ 					AnimDiamond.Atlas[AnimDiamond.CurrentAnimFrame].VSize, AnimDiamond.Atlas[AnimDiamond.CurrentAnimFrame]);
+ 		}
+ 		else
+ 		{
+ 			ClipText(Canvas, Lines[IndexLine].Indent, OffsetCurrent, Lines[IndexLine].Text);
+ 		}
 
-    else if (Lines[IndexLine].Image != None) {
-      Canvas.DrawColor = ColorImage * Fade;
-      DrawStretchedTexture(Canvas, Lines[IndexLine].Indent,
-                                   OffsetCurrent,
-                                   Lines[IndexLine].Width,
-                                   Lines[IndexLine].Height, Lines[IndexLine].Image);
-      }
+ 		if (Lines[IndexLine].Underline)
+ 		{
+ 			DrawStretchedTexture(Canvas, Lines[IndexLine].Indent,
+ 					Lines[IndexLine].Height + OffsetCurrent - 1,
+ 					Lines[IndexLine].Width,
+ 					1,
+ 					Texture 'UWindow.WhiteTexture');
+ 		}
 
-    OffsetCurrent += Lines[IndexLine].Height + Lines[IndexLine].Padding;
-    }
+ 		if (Len(Lines[IndexLine].Url) > 0 &&
+ 			Clamp(X, Lines[IndexLine].Indent, Lines[IndexLine].Indent + Lines[IndexLine].Width) == int(X) &&
+ 			Clamp(Y, OffsetCurrent, OffsetCurrent + Lines[IndexLine].Height) == int(Y))
+ 			{
+ 				TextUrlCurrent = Lines[IndexLine].Url;
+ 			}
 
-  if (Len(TextUrlCurrent) == 0)
-    Cursor = Root.NormalCursor;
-  else
-    Cursor = Root.HandCursor;
+ 		else if (Lines[IndexLine].Image != None)
+ 		{
+ 			Canvas.DrawColor = ColorImage * Fade;
+ 			DrawStretchedTexture(Canvas, Lines[IndexLine].Indent,
+ 					OffsetCurrent,
+ 					Lines[IndexLine].Width,
+ 					Lines[IndexLine].Height, Lines[IndexLine].Image);
+ 		}
 
-  if (OffsetCurrent + Lines[IndexLine - 1].Height <= 0)
-    Reset();
-  }
+ 		OffsetCurrent += Lines[IndexLine].Height + Lines[IndexLine].Padding;
+ 	}
+
+ 	if (Len(TextUrlCurrent) == 0)
+ 	{
+ 		Cursor = Root.NormalCursor;
+ 	}
+ 	else
+ 	{
+ 		Cursor = Root.HandCursor;
+ 	}
+
+ 	if (OffsetCurrent + Lines[IndexLine - 1].Height <= 0)
+ 	{
+ 		Reset();
+ 	}
+ }
 
 
 // ============================================================================
 // Color Operators
 // ============================================================================
 
-static final operator(16) Color * (float Fade, Color Color) {
+ static final operator(16) Color * (float Fade, Color Color)
+ {
 
-  Color.R = byte(FClamp(Fade, 0.0, 1.0) * float(Color.R));
-  Color.G = byte(FClamp(Fade, 0.0, 1.0) * float(Color.G));
-  Color.B = byte(FClamp(Fade, 0.0, 1.0) * float(Color.B));
+ 	Color.R = byte(FClamp(Fade, 0.0, 1.0) * float(Color.R));
+ 	Color.G = byte(FClamp(Fade, 0.0, 1.0) * float(Color.G));
+ 	Color.B = byte(FClamp(Fade, 0.0, 1.0) * float(Color.B));
+ 	
+ 	return Color;
+ }
 
-  return Color;
-  }
-
-
-static final operator(16) Color * (Color Color, float Fade) {
-
-  return Fade * Color;
-  }
+ static final operator(16) Color * (Color Color, float Fade)
+ {
+ 	return Fade * Color;
+ }
 
 
 // ============================================================================
 // Default Properties
 // ============================================================================
 
-defaultproperties {
-
-  ColorDefault=(R=224,G=224,B=224)
-  ColorImage=(R=255,G=255,B=255)
-  ColorLink=(R=64,G=64,B=255)
-
-  DelayFade=1.5
-  DelayScroll=0.5
-
-  SpeedFade=1.0
-  SpeedScroll=50.0
-  }
-
+ defaultproperties
+ {
+ 	ColorDefault=(R=224,G=224,B=224)
+ 	ColorImage=(R=255,G=255,B=255)
+ 	ColorLink=(R=64,G=64,B=255)
+ 	
+ 	DelayFade=0.2
+ 	DelayScroll=0
+ 	
+ 	SpeedFade=1.0
+ 	SpeedScroll=32.0
+ }

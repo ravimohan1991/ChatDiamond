@@ -36,12 +36,16 @@ class CDModMenuWindowFrame expands UWindowConsoleWindow Config (ChatDiamond);
  var() config int Wpos;
  var() config int Hpos;
  var() config float FrameWidth, FrameHeight;
- var() config bool bIsCached;
 
  function created()
  {
  	SetDimensions();
+
  	super.created();
+
+ 	// The outer constraint for all the pages and window of ChatDiamond
+ 	MinWinWidth = 495;
+ 	MinWinHeight = 445;
 
  	bLeaveOnScreen = true;
  	bStatusBar = true;
@@ -49,14 +53,16 @@ class CDModMenuWindowFrame expands UWindowConsoleWindow Config (ChatDiamond);
  	bSizable = True;
  	bMoving = true;
 
- 	MinWinWidth = 395;
- 	MinWinHeight = 322;
-
- 	// The function call with specified dimensions is in CDModMenuItem::Execute
- 	if(bIsCached)
+ 	// Cached value from previous session
+ 	if(FrameWidth > 0 && FrameHeight > 0)
  	{
  		WinWidth = FrameWidth;
  		WinHeight = FrameHeight;
+ 	}
+ 	else
+ 	{
+ 		WinWidth = 495;
+ 		WinHeight = 445;
  	}
 
  	SetSizePos();
@@ -150,7 +156,7 @@ class CDModMenuWindowFrame expands UWindowConsoleWindow Config (ChatDiamond);
 
  	FrameWidth = WinWidth;
  	FrameHeight = WinHeight;
- 	bIsCached = true;
+ 	//bIsCached = true;
  	SaveConfig();
 
  	ClientArea.Close(True);

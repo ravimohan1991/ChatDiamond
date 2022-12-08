@@ -43,7 +43,7 @@ class CDModMenuItem expands UMenuModMenuItem;
  {
  	local UWindowWindow ChatDiamondWindowFrame;
 
- 	ChatDiamondWindowFrame = MenuItem.Owner.Root.CreateWindow(class'CDModMenuWindowFrame', 50, 50, 395, 322);
+ 	ChatDiamondWindowFrame = MenuItem.Owner.Root.CreateWindow(class'CDModMenuWindowFrame', 50, 50, 495, 444);
  	ChatDiamondWindowFrame.ShowWindow();
  }
 
