@@ -67,6 +67,7 @@ function Message(PlayerReplicationInfo PRI, coerce string Msg, name N)
  	if(ChatWindow != none)
  	{
  		ChatWindow.InterpretAndDisplayTextClientSide(PRI, Msg, N);
+ 		Log("In the console: " $ Msg @ "Type: " $ N $ " PRI:" @ PRI.PlayerName);
  	}
 }
 

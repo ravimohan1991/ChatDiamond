@@ -1,0 +1,16 @@
+Spectator self to all
+ScriptLog:                             Message to spectator:  somasup:hola somasup Event
+ScriptLog: In the console: somasup:hola Type: Event PRI: somasup
+
+
+Spectator different to all
+ScriptLog:                             Message to spectator:  hatseflats:u want to play? somasup Event
+ScriptLog: Inside interpreattion of messages when sendername is not local player: hatseflats:u want to play? somasup Event
+
+Different Player to all
+ScriptLog: PRI is none, message is:  faza play smart  isspectator:  False Say the_truth
+ScriptLog: In the console: faza play smart Type: Say PRI: the_truth
+
+Self player to all
+ScriptLog: PRI is none, message is:  smart player flee  isspectator:  False Say somasup
+ScriptLog: In the console: smart player flee Type: Say PRI: somasup

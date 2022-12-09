@@ -209,12 +209,14 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
 
  function InterpretAndDisplayTextClientSide(PlayerReplicationInfo PRI, coerce string Message, name MessageType)
  {
- 	local string SkinName, FaceName, DisplayableSpectatorMessage;
+ 	local string SkinName, FaceName, DisplayableSpectatorMessage, SenderString;
  	local Pawn LP;
- 	local PlayerReplicationInfo SpectatorLPRI;
+ 	local PlayerReplicationInfo SpectatorLPRI, SomeDifferentPRI;
 
  	if(Message == "")
- 	return;
+ 	{
+ 		return;
+ 	}
 
  	if(MessageType == 'Say' || MessageType == 'TeamSay')
  	{
@@ -256,9 +258,14 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
  			LoadMessages(FaceName $ ":" $ SkinName $ "::" $ LocalTimeAndMPOVMarker("-") $ "  " $ PRI.PlayerName $ ": " $ Message);
  		}
  	}
-
- 	if(PRI.bIsSpectator)
+ 	else
  	{
+
+	}
+
+ 	if(PRI != none && PRI.bIsSpectator)
+ 	{
+ 		Log("                            Message to spectator: " @ Message @ PRI.PLayerName @ MessageType);
  		// Maybe exhaustive.
  		// Well, player join leave and server adds and whatnot. So we shall use
  		// our filter. Spectators' message is of the form
@@ -280,8 +287,54 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
  				SkinName = "Dummy";
  			}
 
- 			LoadMessages(FaceName $ ":" $ SkinName $ "::" $ LocalTimeAndMPOVMarker("-") $ "  " $ PrepareSpectatorMessageForDisplay(Message));
+ 			LoadMessages(FaceName $ ":" $ SkinName $ "::" $ LocalTimeAndMPOVMarker("-") $ "  " $ DisplayableSpectatorMessage);//PrepareSpectatorMessageForDisplay(Message));
  		}
+ 		else
+ 		{
+ 			SenderString = FilterSenderName(Message);
+
+ 			foreach Root.GetPlayerOwner().AllActors(class'PlayerReplicationInfo', SomeDifferentPRI)
+ 			{
+ 				if(SomeDifferentPRI.PlayerName == SenderString)
+ 				{
+ 					break;
+ 				}
+ 			}
+
+ 			Log("Inside interpreattion of messages when sendername is not local player: " $ Message @ PRI.PLayerName @ MessageType);
+ 			
+ 			// Ok the message may be of the case
+ 			// (somespectator name):hola
+ 			// SomeDifferentPRI seems like spectator pri
+ 			if(SomeDifferentPRI != none)
+ 			{
+ 			Log("Some spectator on multiplay has responded. " $ SomeDifferentPRI.PlayerName);
+
+ 			DisplayableSpectatorMessage =  PrepareSpectatorMessageForDisplay(Message, SpectatorLPRI);
+
+ 			Log("SomeDifferentPRI is: " @ SomeDifferentPRI.PlayerName @ " SpectatorLPRI detected is: " @ SpectatorLPRI.PlayerName);
+
+ 			LP = Pawn(SpectatorLPRI.Owner);
+
+ 			LP.GetMultiSkin(LP, SkinName, FaceName);
+
+ 			if(FaceName == "")
+ 			{
+ 				FaceName = "Dummy";
+ 			}
+
+ 			if(SkinName == "")
+ 			{
+ 				SkinName = "Dummy";
+ 			}
+
+ 			 LoadMessages(FaceName $ ":" $ SkinName $ "::" $ LocalTimeAndMPOVMarker("-") $ "  " $ DisplayableSpectatorMessage);
+ 			}
+ 		}
+ 	}
+ 	else
+ 	{
+ 		Log("PRI is none, message is: " @ Message @ " isspectator: " @ PRI.bIsSpectator @ MessageType @ PRI.PlayerName);
  	}
  }
 
