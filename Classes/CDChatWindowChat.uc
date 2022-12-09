@@ -30,6 +30,10 @@
 
 class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
 
+// About the naming, Kernel is defined
+// "the central or most important part of something."
+ #exec AUDIO IMPORT FILE="Sounds\telegram.wav" NAME=MessageKernel GROUP="Sound"
+
  var() config string ChatLog[200];
 
  var UMenuLabelControl  lblHeading;
@@ -137,7 +141,7 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
  	PrevWinHeight = WinHeight;
  }
 
- function LoadMessages(optional string sMesg)
+ function LoadMessages(optional string sMesg, optional bool bTalkMessage)
  {
  	local string sTemp;
  	local int i;
@@ -147,6 +151,10 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
  		TheTextArea.AddText(sMesg);
  		CacheMessage(sMesg);
  		ButSave.bDisabled = false;
+ 		if(bTalkMessage)
+ 		{
+ 			Root.GetPlayerOwner().ClientPlaySound(sound'MessageKernel', true);
+ 		}
  	}
  	else
  	{
@@ -243,19 +251,19 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
 
  		if(PRI.bAdmin)
  		{
- 			LoadMessages(FaceName $ ":" $ SkinName $ "::" $ LocalTimeAndMPOVMarker("+") $ "  " $ PRI.PlayerName $ ": " $ Message);
+ 			LoadMessages(FaceName $ ":" $ SkinName $ "::" $ LocalTimeAndMPOVMarker("+") $ "  " $ PRI.PlayerName $ ": " $ Message, true);
  		}
  		else if(PRI.Team == 0)
  		{
- 		 LoadMessages(FaceName $ ":" $ SkinName $ "::" $ LocalTimeAndMPOVMarker("<") $ "  " $ PRI.PlayerName $ ": " $ Message);
+ 			LoadMessages(FaceName $ ":" $ SkinName $ "::" $ LocalTimeAndMPOVMarker("<") $ "  " $ PRI.PlayerName $ ": " $ Message, true);
  		}
  		else if(PRI.Team == 1)
  		{
- 			LoadMessages(FaceName $ ":" $ SkinName $ "::" $ LocalTimeAndMPOVMarker(">") $ "  " $ PRI.PlayerName $ ": " $ Message);
+ 			LoadMessages(FaceName $ ":" $ SkinName $ "::" $ LocalTimeAndMPOVMarker(">") $ "  " $ PRI.PlayerName $ ": " $ Message, true);
  		}
  		else // for 4-way I need to think
  		{
- 			LoadMessages(FaceName $ ":" $ SkinName $ "::" $ LocalTimeAndMPOVMarker("-") $ "  " $ PRI.PlayerName $ ": " $ Message);
+ 			LoadMessages(FaceName $ ":" $ SkinName $ "::" $ LocalTimeAndMPOVMarker("-") $ "  " $ PRI.PlayerName $ ": " $ Message, true);
  		}
  	}
  	else
@@ -287,7 +295,7 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
  				SkinName = "Dummy";
  			}
 
- 			LoadMessages(FaceName $ ":" $ SkinName $ "::" $ LocalTimeAndMPOVMarker("-") $ "  " $ DisplayableSpectatorMessage);//PrepareSpectatorMessageForDisplay(Message));
+ 			LoadMessages(FaceName $ ":" $ SkinName $ "::" $ LocalTimeAndMPOVMarker("-") $ "  " $ DisplayableSpectatorMessage, true);//PrepareSpectatorMessageForDisplay(Message));
  		}
  		else
  		{
@@ -302,7 +310,7 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
  			}
 
  			Log("Inside interpreattion of messages when sendername is not local player: " $ Message @ PRI.PLayerName @ MessageType);
- 			
+
  			// Ok the message may be of the case
  			// (somespectator name):hola
  			// SomeDifferentPRI seems like spectator pri
@@ -328,7 +336,7 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
  				SkinName = "Dummy";
  			}
 
- 			 LoadMessages(FaceName $ ":" $ SkinName $ "::" $ LocalTimeAndMPOVMarker("-") $ "  " $ DisplayableSpectatorMessage);
+ 			 LoadMessages(FaceName $ ":" $ SkinName $ "::" $ LocalTimeAndMPOVMarker("-") $ "  " $ DisplayableSpectatorMessage, true);
  			}
  		}
  	}
