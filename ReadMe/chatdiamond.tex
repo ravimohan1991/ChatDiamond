@@ -6,12 +6,36 @@
 \usepackage{amsmath}
 \usepackage{csquotes}
 \usepackage{changelog}
+\usepackage{tabularx}
+\usepackage{mathtools}
+\usepackage{mdframed}
+\usepackage{array}
+\usepackage{float}
+\usepackage{tikz}
+\usepackage{soul}
+\usepackage{makecell}
 
 \definecolor{mygreen}{rgb}{0,0.6,0}
 \definecolor{mygray}{rgb}{0.5,0.5,0.5}
 \definecolor{mymauve}{rgb}{0.58,0,0.82}
 
 \newcommand{\ChatDiamondVersion}{0.1.0-alpha}
+
+% Container for tabularx
+\floatstyle{plain}
+\newfloat{tabcontainer}{thp}{lop}
+\floatname{tabcontainer}{Table}
+
+% Container for tikz flow-charts
+\floatstyle{plain}
+\newfloat{fccontainer}{thp}{lop}
+\floatname{fccontainer}{FlowChart}
+
+% For visual representation of Flow-Charts
+\usetikzlibrary{shapes.geometric, arrows}
+\tikzstyle{startstop} = [rectangle, rounded corners, minimum width=3cm, minimum height=1cm,text centered, draw=black, fill=red!30]
+\tikzstyle{process} = [rectangle, minimum width=3cm, minimum height=1cm, text centered, draw=black, fill=orange!30]
+\tikzstyle{arrow} = [thick,->,>=stealth]
     
 \title{Chat Diamond}
 \author{The\_Cowboy}
@@ -125,6 +149,60 @@ The basic premise of many cheats providing aim assist is to modify the HUD clien
 
 If the notion of ``cheat-anticheat'' interplay exists in the UT standards, then that simply doesn't fit with the tenant we began with.  We don't want to be sending request to server administrators for specifically whitelisting ChatDiamond which will be reverted by cold silent treatment to say the most and some naggy jibber jabber about the unknown-ness of ChatDiamond, especially when the mod is not that popular.
 
+So with this thiking in mind, the better option would be to replace the client console, which I haven't seen any anticheat scanning. This not only gets the client out of hook for sending whitelisting requests but also provides a powerful mechanism to mould the console, specificifically for generic needs (see the concept of \emph{filters}).
 
+\subsection{A minor PhD on console messages}
+
+We start with the \href{http://uncodex.ut-files.com/UT/v436/Source_engine/playerpawn.html}{code} 
+
+\begin{lstlisting}[frame=single]
+event ClientMessage( coerce string S, optional Name Type, optional bool bBeep )
+{
+     %* \ldots *)    
+    if (Player.Console != None)
+        Player.Console.Message( PlayerReplicationInfo, S, Type );
+    if (bBeep && bMessageBeep)
+        PlayBeepSound();
+    if ( myHUD != None )
+        myHUD.Message( PlayerReplicationInfo, S, Type );
+}       
+\end{lstlisting}
+and
+\begin{lstlisting}[frame=single]
+event TeamMessage( PlayerReplicationInfo PRI, coerce string S, name Type, optional bool bBeep  )
+{
+    if (Player.Console != None)
+        Player.Console.Message ( PRI, S, Type );
+    if (bBeep && bMessageBeep)
+        PlayBeepSound();
+    if ( myHUD != None )
+        myHUD.Message( PRI, S, Type );
+}     
+\end{lstlisting}
+
+It is clear that both the console and HUD should receieve same messages with no discrimination (unless if coder specifically demands, as mentioned in \ref{foot:hudconsolediff}).  The console would display them, in what I would like to think, \emph{raw} form.  The diff, between console and HUD, is shown in the figure \ref{fig:chatdiamond_console_hud}
+
+\begin{figure}
+\centering
+\label{fig:chatdiamond_console_hud}
+\includegraphics[width=0.4\textwidth]{consoleundhud}
+\caption{UT99 HUD with ChatDiamond console}
+\end{figure}
+
+Please note that ChatDiamond's console is not much different from default UT99 visually.  The changes are how ChatDiamond interprets the raw messages thrown and utilized them in a constructive way. So this is where magic \href{https://github.com/ravimohan1991/ChatDiamond/blob/859323fbd80266b21c9dab163b067cacfa318463/Classes/CDUTConsole.uc#L52-L71}{code} comes in.  In order to understand that let me first demonstrate UT messaging by a table\footnote{\label{foot:hudconsolediff} The ``messages'' for instance: `plushie was smaked down by Mental\_Instituitions's Rocket Launcher', are actually strings which can be seen in the line 117 of the \href{http://uncodex.ut-files.com/UT/v436/Source_botpack/deathmessageplus.html}{code}.  This also shows how some deathmessages can be suppressed in the console thus differing from HUD.}.
+
+\begin{tabcontainer}
+ \begin{tabularx}{\textwidth}{| X | X | X |}
+ \hline
+ \makecell{Console\\ Owner\\ State} & Death Messages\footnote{A string rather.  See \ref{foot:hudconsolediff}}  & \makecell{Server\\ Announcements\footnote{Server adds?}} \\ [0.5ex] 
+ \hline\hline
+ \makecell{Multiplayer \\Spectator} & \makecell{\color{red}{plushie was}\\ \color{red}{smaked down by}\\ \color{red}{Mental\_Instituitions's}\\ \color{red}{Rocket Launcher}} & \makecell{Type !cg to\\ visit combogib\\ grapple server} \\
+    \hline
+  \end{tabularx}
+  \caption{Table of Messages.}
+  \label{tab:messform}
+\end{tabcontainer}
+
+ 
 
 \end{document}
