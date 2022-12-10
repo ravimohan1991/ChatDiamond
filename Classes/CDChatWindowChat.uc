@@ -35,6 +35,9 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
  #exec AUDIO IMPORT FILE="Sounds\telegram.wav" NAME=MessageKernel GROUP="Sound"
 
  var() config string ChatLog[200];
+ var() config string IgnorableStrings[40];
+
+ var() config bool bIgnoreMessageFilter;
 
  var UMenuLabelControl  lblHeading;
  var CDUTChatTextTextureAnimEmoteArea TheTextArea;
@@ -221,7 +224,7 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
  	local Pawn LP;
  	local PlayerReplicationInfo SpectatorLPRI, SomeDifferentPRI;
 
- 	if(Message == "")
+ 	if(Message == "" || (bIgnoreMessageFilter && IsMessageIgnorable(Message)))
  	{
  		return;
  	}
@@ -390,6 +393,38 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
  	}
 
  	return SenderName;
+ }
+
+/*******************************************************************************
+ * A routine to gauge what to ignore and what not!
+ *
+ * @PARAM Message              The message to be gauged
+ * @return                     True if the message is to be ignored
+ *                             False if the message is not to be ignored
+ *
+ *******************************************************************************
+ */
+
+ function bool IsMessageIgnorable(coerce string Message)
+ {
+ 	local int IgnorableMessageCounter;
+ 	
+ 	// Lot of string comparison
+ 	for(IgnorableMessageCounter = 0; IgnorableMessageCounter < 40; IgnorableMessageCounter++)
+ 	{
+ 		// Remember the continuation concept
+ 		if(IgnorableStrings[IgnorableMessagecounter] == "")
+ 		{
+ 		 return false;
+ 		}
+
+ 		if(instr(Message, IgnorableStrings[IgnorableMessageCounter]) != -1)
+ 		{
+ 			return true;
+ 		}
+ 	}
+
+ 	return false;
  }
 
 
@@ -712,6 +747,24 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
  	GrnColor=(R=0,G=255,B=32)
  	TxtColor=(R=255,G=255,B=255,A=0)
  	YelColor=(R=192,G=192,B=1)
+ 	IgnorableStrings(0)="Base is uncovered!"
+ 	IgnorableStrings(1)="Somebody get our flag back!"
+ 	IgnorableStrings(2)="I've got the flag."
+ 	IgnorableStrings(3)="I've got your back."
+ 	IgnorableStrings(4)="I'm hit! I'm hit!"
+ 	IgnorableStrings(5)="Man down!"
+ 	IgnorableStrings(6)="I'm under heavy attack!"
+ 	IgnorableStrings(7)="You got point."
+ 	IgnorableStrings(8)="I've got our flag."
+ 	IgnorableStrings(9)="I'm in position."
+ 	IgnorableStrings(10)="Hang in there."
+ 	IgnorableStrings(11)="Control point is secure."
+ 	IgnorableStrings(12)="Enemy flag carrier is here."
+ 	IgnorableStrings(13)="I need some backup."
+ 	IgnorableStrings(14)="Incoming!"
+ 	IgnorableStrings(15)="I've got your back."
+ 	IgnorableStrings(16)="Objective destroyed."
+ 	bIgnoreMessageFilter=true
  }
 
 /*

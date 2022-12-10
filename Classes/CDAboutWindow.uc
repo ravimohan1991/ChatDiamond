@@ -128,7 +128,6 @@ class CDAboutWindow expands UWindowPageWindow;
  {
  	Super.Paint(C,MouseX,MouseY);
 
- 	//DrawStretchedTexture(C, 0, 0, WinWidth, WinHeight, Texture'BlackTexture');
  	C.Style = GetPlayerOwner().ERenderStyle.STY_Normal;
  }
 
@@ -139,7 +138,7 @@ class CDAboutWindow expands UWindowPageWindow;
 
  defaultproperties
  {
-   ChatDiamondTitleColor=(R=180,G=180,B=180)
+ 	ChatDiamondTitleColor=(R=180,G=180,B=180)
  }
 
 /*

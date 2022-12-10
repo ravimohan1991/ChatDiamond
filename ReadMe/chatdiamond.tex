@@ -111,6 +111,47 @@ The console now has the following features
 \item A working status bar linked with console configuration modifiers.
 \end{itemize}
 
+\section{Installation}
+ChatDiamond is developed and tested with UT 469c client.  Although the mod should work on previous versions, I take no pains for maintaining that code simply because I feel that we all should work towards pushing forward the community effort in driving the game (and UE 1) towards modern experience.  So by not supporting the code for earlier versions I am supporting the later versions.
+
+With that being written, feel free to send pull requests to \href{https://github.com/ravimohan1991/ChatDiamond/}{ChatDiamond} repository, even for ealier game versions.
+
+ChatDiamond is essentially a console (and not for the server).  So open for installation do the following
+\begin{itemize}
+\item Open {\color{Purple}UnrealTournament.ini} and find the section \\
+
+\fbox{%
+    \parbox{\textwidth}{%
+       [Engine.Engine]\\
+       GameRenderDevice=VulkanDrv.VulkanRenderDevice\\
+       AudioDevice=ALAudio.ALAudioSubsystem\\
+        \ldots  \\       
+       {\color{Green}Console=UTMenu.UTConsole}\\
+       \ldots        
+    }%
+}
+\\
+
+\item Modify to \\
+
+\fbox{%
+    \parbox{\textwidth}{%
+        \ldots  \\       
+       {\color{Green}Console=ChatDiamond.CDUTConsole}\\
+       \ldots        
+    }%
+}
+\\
+
+\item And that is it!  You can now summon console by usual `$\sim$' key.
+
+\subsection{Configuration}
+I am not providing {\color{purple}ChatDiamond.ini}, which should be generated after first successful run of the mod.  
+
+Once that is done make sure to configure the file.
+
+\end{itemize}
+
 \section{A note on UT Messaging}
 ChatDiamond's functionality is based upon the tenet ``A complete clientside user interface with no dependencies with the server''.  This would imply conforming to the UT standards and any server not conforming to the standards, if so, is not worth visiting.
 
@@ -196,8 +237,10 @@ Please note that ChatDiamond's console is not much different from default UT99 v
  \hline
  \makecell{Console\\ Owner\\ State} & \makecell{Death\\ Messages}\footnote{A string rather.  See \ref{foot:hudconsolediff}}  & \makecell{Server\\ Announcements\footnote{Server adds?}} & \makecell{Talk \\ TeamTalk} \\ [0.5ex] 
  \hline\hline
- \makecell{Multiplayer \\Spectator} & \makecell{\color{red}{plushie was}\\ \color{red}{smaked down}\\ \color{red}{by MI's}\\ \color{red}{Rocket Launcher}} & \makecell{Type !cg to\\ visit combogib\\ grapple server}  & \makecell{A: Self Sent- \\RN\footnote{Receiever's (who is spectator) Name}:Hola\\  \\ B. By Player-\\ RN:SN\footnote{Sender's name, who is a player.}:Hola \\ \\ C. By spectator\footnote{A different spectator}\\ SN:Hola}\\
-    \hline
+ 
+\makecell{Multiplayer \\Spectator} & \makecell{\color{red}{plushie was}\\ \color{red}{smaked down}\\ \color{red}{by MI's}\\ \color{red}{Rocket Launcher}} & \makecell{Type !cg to\\ visit combogib\\ grapple server}  & \makecell{A: Self Sent- \\RN\footnote{Receiever's (who is spectator) Name}:Hola\\  \\ B. By Player-\\ RN:SN\footnote{Sender's name, who is a player.}:Hola \\ \\ C. By spectator\footnote{A different spectator}\\ SN:Hola}\\
+
+\hline
   \end{tabularx}
   \caption{Table of Messages.}
   \label{tab:messform}
@@ -210,7 +253,11 @@ The mapping to relevant arguments is like so
  \hline
  \makecell{Console\\ Owner\\ State} & \makecell{Death\\ Messages}\footnote{A string rather.  See \ref{foot:hudconsolediff}}  & \makecell{Server\\ Announcements\footnote{Server adds?}} & \makecell{Talk \\ TeamTalk} \\ [0.5ex] 
  \hline\hline
- \makecell{Multiplayer \\Spectator} & \makecell{MessageType:  \\ Event\footnote{Whatever event (CriticalEventPlus and all that)}\\ \\ PRI:  Local?} & \makecell{MessageType:\\ Event \\  \\ PRI: Local}  & \makecell{A. \\ MessagetType:\\ Event  \\ PRI: Local \\ \\  B.\\ MessageType: \\ Event \\ PRI: local\\ \\ C. \\  MessageType: \\ Event \\ PRI: Local}\\
+ 
+\makecell{Multiplayer \\Spectator} & \makecell{MessageType:  \\ DeathMessage?\\ \\ PRI:  Local?} & \makecell{MessageType:\\ Event \\  \\ PRI: Local}  & \makecell{A. \\ MessageType:\\ Event  \\ PRI: Local \\ \\  B.\\ MessageType: \\ Event \\ PRI: local\\ \\ C. \\  MessageType: \\ Event \\ PRI: Local}\\
+    \hline
+
+\makecell{Multiplayer\\ Player} & \makecell{Message Type: \\ Event \\ PRI: Local? } & \makecell{Message Type: \\ Event \\ PRI: None} & \makecell{A. \\ MessageType: \\ Say\\ PRI: Local\\ \\ B. \\ MessageType: \\ Say \\ PRI: SenderPRI \\ \\ C. \\ MessageType: \\ ? \\ PRI: ?}\\
     \hline
   \end{tabularx}
   \caption{Table of argument types.}

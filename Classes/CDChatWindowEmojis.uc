@@ -30,8 +30,22 @@
 
 class CDChatWindowEmojis extends UWindowPageWindow;
 
- var UWindowSmallButton ButClose;
- var UWindowEditControl EditMesg;
+ //var() int Element
+
+ struct MiniFrameDimensions
+ {
+ 	var int Width;
+ 	var int Height;
+
+ 	var int XPos, YPos;
+ 	var int MFNumber;
+ };
+ var MiniFrameDimensions MFEmo;
+
+ var int NumberOfColumnElements;
+ var float MFWidhtToHeightRatio;
+
+ var CDUTChatTextTextureAnimEmoteArea TheEmoDisplayArea;
 
  var color WhiteColor, GrayColor;
 
@@ -43,21 +57,23 @@ class CDChatWindowEmojis extends UWindowPageWindow;
 
  function Created ()
  {
+ 	local int /*NumberOfRowElements,*/ NumberOfColumnElements;
+
+ 	NumberOfColumnElements = 2;
+ 	MFWidhtToHeightRatio = 0.2;
+
+ 	MFEmo.Width = WinWidth / NumberOfColumnElements;
+ 	MFEmo.Height =  int(WinWidth * MFWidhtToHeightRatio);
+
  	Super.Created();
 
- 	DetailMode = GetPlayerOwner().ConsoleCommand("get ini:Engine.Engine.ViewportManager TextureDetail");
-
- 	ButClose = UWindowSmallButton(CreateControl(Class'UWindowSmallButton', 320, 250, 60, 25));
- 	ButClose.Text = "Close";
-
- 	EditMesg = UWindowEditControl(CreateControl(Class'UWindowEditControl', 10, 250, 300, 16));
- 	EditMesg.EditBoxWidth = 300;
-
- 	EditMesg.SetNumericOnly(False);
- 	EditMesg.SetFont(0);
- 	EditMesg.SetHistory(True);
- 	EditMesg.SetValue("");
- 	EditMesg.Align = TA_Left;
+ 	TheEmoDisplayArea = CDUTChatTextTextureAnimEmoteArea(CreateControl(Class'CDUTChatTextTextureAnimEmoteArea', 0, 0, WinWidth, WinHeight));
+ 	TheEmoDisplayArea.AbsoluteFont = Font(DynamicLoadObject("UWindowFonts.TahomaB12", class'Font'));
+ 	TheEmoDisplayArea.bAutoScrollbar = False;
+ 	TheEmoDisplayArea.SetTextColor(GrayColor);
+ 	TheEmoDisplayArea.Clear();
+ 	TheEmoDisplayArea.bVariableRowHeight = True;
+ 	TheEmoDisplayArea.bScrollOnResize = True;
 
  	SetAcceptsFocus();
 
@@ -76,9 +92,6 @@ class CDChatWindowEmojis extends UWindowPageWindow;
  		case DE_Click:
  			switch(C)
  			{
- 				case ButClose:
- 				ParentWindow.ParentWindow.Close();
- 				break;
  			}
  			break;
  		case 7:
@@ -91,11 +104,7 @@ class CDChatWindowEmojis extends UWindowPageWindow;
 
  function SendMessage()
  {
- 	if ( EditMesg.GetValue() != "" )
- 	{
- 		GetPlayerOwner().ConsoleCommand("SAY " $ EditMesg.GetValue());
- 		EditMesg.SetValue("");
- 	}
+
  }
 
  function Resized()
@@ -112,12 +121,8 @@ class CDChatWindowEmojis extends UWindowPageWindow;
  	DiffY = WinHeight - PrevWinHeight;
  	if ((DiffX != 0 || DiffY != 0))
  	{
- 			ButClose.WinLeft += DiffX;
- 			ButClose.WinTop += DiffY;
-
- 			EditMesg.WinTop += DiffY;
- 			EditMesg.SetSize(EditMesg.WinWidth + DiffX, EditMesg.WinHeight);
- 			EditMesg.EditBoxWidth = EditMesg.WinWidth;
+ 		TheEmoDisplayArea.SetSize(TheEmoDisplayArea.WinWidth + DiffX, TheEmoDisplayArea.WinHeight + DiffY);
+ 		TheEmoDisplayArea.WrapWidth = TheEmoDisplayArea.WinWidth - 80;
  	}
  	PrevWinWidth = WinWidth;
  	PrevWinHeight = WinHeight;
@@ -135,12 +140,32 @@ class CDChatWindowEmojis extends UWindowPageWindow;
 
  	C.DrawColor  = WhiteColor;
 
- 	if (DetailMode ~= "High")
- 		DrawStretchedTexture(C, 0.00, 0.00, WinWidth, WinHeight, Texture'Emojis1');
- 	else
- 		DrawStretchedTexture(C, 0.00, 0.00, WinWidth, WinHeight, Texture'Emojis2');
-
+ 	 //DrawStretchedTexture(C, WinWidth / 2, WinWidth / 2, MFEmo.Width, MFEmo.Height, Texture'UWindow.MenuBar');
+ 	 DrawMiniFrame(C, WinWidth / 4, WinWidth / 4, 2);
  	C.Style = GetPlayerOwner().ERenderStyle.STY_Normal;
+ }
+
+ function DrawMiniFrame(Canvas C, float X, float Y, int BorderWidth)
+ {
+ 	/* Maybe for later lazy sunday afternoons
+ 	local texture LT;
+
+ 	LT = self.GetLookAndFeelTexture();
+ 	*/
+
+ 	// Top Line
+ 	DrawStretchedTexture(C, X, Y, BorderWidth, BorderWidth, Texture'BlueMenuTL');
+	DrawStretchedTexture(C, X + BorderWidth, Y, MFEmo.Width - 2 * BorderWidth, BorderWidth, Texture'BlueMenuT');
+	DrawStretchedTexture(C, X + MFEmo.Width - BorderWidth, Y, BorderWidth, BorderWidth, Texture'BlueMenuTR');
+
+ 	// Bottom Line
+ 	DrawStretchedTexture(C, X, Y + MFEmo.Height - BorderWidth, BorderWidth, BorderWidth, Texture'BlueMenuBL');
+ 	DrawStretchedTexture(C, X + BorderWidth, Y + MFEmo.Height - BorderWidth, MFEmo.Width - 2 * BorderWidth, BorderWidth, Texture'BlueMenuB');
+ 	DrawStretchedTexture(C, X + MFEmo.Width - BorderWidth, Y + MFEmo.Height - BorderWidth, BorderWidth, BorderWidth, Texture'BlueMenuBR');
+
+ 	// Left and Right Lines
+ 	DrawStretchedTexture(C, X, Y + BorderWidth, BorderWidth, MFEmo.Height - 2 * BorderWidth, Texture'BlueMenuL');
+ 	DrawStretchedTexture(C, X + MFEmo.Width - BorderWidth, Y + BorderWidth, BorderWidth, MFEmo.Height - 2 * BorderWidth, Texture'BlueMenuR');
  }
 
  function Close (optional bool bByParent)
