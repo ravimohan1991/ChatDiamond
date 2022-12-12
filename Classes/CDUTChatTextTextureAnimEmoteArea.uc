@@ -25,7 +25,7 @@
 class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
 
  #exec Texture Import File=Textures\1faceless.pcx    Name=Faceless    Mips=off
- 
+
  #exec Texture Import File=Textures\smile.bmp        Name=Smile       Mips=off
  #exec Texture Import File=Textures\sad.bmp          Name=Sad         Mips=off
  #exec Texture Import File=Textures\eyes.bmp         Name=Eyes        Mips=off
@@ -54,7 +54,7 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  #exec Texture Import File=Textures\squint.bmp       Name=Squint      Mips=off
  #exec Texture Import File=Textures\facepalm.bmp     Name=FacePalm    Mips=off
  #exec Texture Import File=Textures\shrug.bmp        Name=Shrug       Mips=off
- 
+
  #exec Texture Import File=Textures\xsmile.bmp       Name=XSmile      Mips=off
  #exec Texture Import File=Textures\xsad.bmp         Name=XSad        Mips=off
  #exec Texture Import File=Textures\xeyes.bmp        Name=XEyes       Mips=off
@@ -83,7 +83,7 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  #exec Texture Import File=Textures\xsquint.bmp      Name=XSquint     Mips=off
  #exec Texture Import File=Textures\xfacepalm.bmp    Name=XFacePalm   Mips=off
  #exec Texture Import File=Textures\xshrug.bmp       Name=XShrug      Mips=off
- 
+
  #exec Texture Import File=Textures\welldone.bmp     Name=WellDone    Mips=off
  #exec Texture Import File=Textures\wtf.bmp          Name=WTF         Mips=off
  #exec Texture Import File=Textures\womg.bmp         Name=OMG         Mips=off
@@ -92,7 +92,7 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  #exec Texture Import File=Textures\wniceshot.bmp    Name=NiceShot    Mips=off
  #exec Texture Import File=Textures\wgoodgame.bmp    Name=GoodGame    Mips=off
  #exec Texture Import File=Textures\wniceone.bmp     Name=NiceOne     Mips=off
- 
+
  // Shock Rifle Emote
  #exec Texture Import File=Textures\04_SHOCK01.pcx  Name=ANEShock0    Mips=off
  #exec Texture Import File=Textures\04_SHOCK02.pcx  Name=ANEShock1    Mips=off
@@ -104,7 +104,7 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  #exec Texture Import File=Textures\04_SHOCK08.pcx  Name=ANEShock7    Mips=off
  #exec Texture Import File=Textures\04_SHOCK09.pcx  Name=ANEShock8    Mips=off
  #exec Texture Import File=Textures\04_SHOCK010.pcx  Name=ANEShock9    Mips=off
- 
+
  // Trash-talk Emote
  #exec Texture Import File=Textures\ARGUE01.pcx  Name=ANEArgue0    Mips=off
  #exec Texture Import File=Textures\ARGUE02.pcx  Name=ANEArgue1    Mips=off
@@ -209,6 +209,26 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  	return ChatEmojis[EmoCounter].Symbol;
  }
 
+ function string GetEmoteTextSymbol(int EmoCounter)
+ {
+ 	if(EmoCounter == 28)
+ 	{
+ 		return AnimShockEmote.TextSymbol;
+ 	}
+
+ 	 return "";
+ }
+
+ function string GetEmoteStatusBarText(int EmoCounter)
+ {
+ 	if(EmoCounter == 28)
+ 	{
+ 		return AnimShockEmote.StatusBarText;
+ 	}
+
+ 	return "";
+ }
+
  function texture GetEmojiTexture(int EmoCounter)
  {
  	return ChatEmojis[EmoCounter].Image1;
@@ -217,6 +237,17 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  function string GetEmojiStatusBarText(int EmoCounter)
  {
  	return ChatEmojis[EmoCounter].StatusBarText;
+ }
+
+ function texture GetEmoteTexture(int EmoCounter)
+ {
+ 	// Continuation from ChatEmojis end
+ 	if(EmoCounter == 28)
+ 	{
+ 		return  AnimShockEmote.Atlas[AnimShockEmote.CurrentAnimFrame];
+ 	}
+
+ 	return texture'faceless';
  }
 
  function Created()
@@ -245,6 +276,7 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  	AnimShockEmote.Atlas[8] = texture'ANEShock8';
  	AnimShockEmote.Atlas[9] = texture'ANEShock9';
  	AnimShockEmote.TexChatSizeFraction = 0.50;
+ 	AnimShockEmote.StatusBarText = "Shock Combo!";
 
  	AnimTrashTalkEmote.CurrentAnimFrame = 0;
  	AnimTrashTalkEmote.Atlas[0] = texture'ANEArgue0';
@@ -987,25 +1019,25 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
 
  function Click(float X, float Y)
  {
-   EmoWindowPage.EmoClick(X, Y);
+ 	EmoWindowPage.EmoClick(X, Y);
  }
 
  function MouseMove(float X, float Y)
  {
-	Super.MouseMove(X, Y);
-	EmoWindowPage.EmoHover(X, Y);
+ 	Super.MouseMove(X, Y);
+ 	EmoWindowPage.EmoHover(X, Y);
  }
 
  function LMouseDown(float X, float Y)
  {
-	super.LMouseDown(X, Y);
-	EmoWindowPage.bMiniFrameLMousePressed = true;
+ 	super.LMouseDown(X, Y);
+ 	EmoWindowPage.bMiniFrameLMousePressed = true;
  }
 
  function LMouseUp(float X, float Y)
  {
-	super.LMouseUp(X, Y);
-	EmoWindowPage.bMiniFrameLMousePressed = false;
+ 	super.LMouseUp(X, Y);
+ 	EmoWindowPage.bMiniFrameLMousePressed = false;
  }
 
  defaultproperties
@@ -1046,7 +1078,7 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  	ChatEmojis(20)=(Symbol=":z",Image1=Texture'Zzz',Image2=Texture'XZzz',StatusBarText="Zzzz!")
  	ChatEmojis(21)=(Symbol=":h",Image1=Texture'Heart',Image2=Texture'XHeart',StatusBarText="Heart!")
  	ChatEmojis(22)=(Symbol=":v",Image1=Texture'Peace',Image2=Texture'XPeace',StatusBarText="Peace!")
- 	ChatEmojis(23)=(Symbol=":#",Image1=Texture'Rockon',Image2=Texture'XRockon',StatusBarText="Rackon!")
+ 	ChatEmojis(23)=(Symbol=":#",Image1=Texture'Rockon',Image2=Texture'XRockon',StatusBarText="Hook'em!")
  	ChatEmojis(24)=(Symbol=":m",Image1=Texture'Mask',Image2=Texture'XMask',StatusBarText="Mask!")
  	ChatEmojis(25)=(Symbol=":>",Image1=Texture'Squint',Image2=Texture'XSquint',StatusBarText="Squint!")
  	ChatEmojis(26)=(Symbol=":o",Image1=Texture'FacePalm',Image2=Texture'XFacePalm',StatusBarText="FacePalm!")

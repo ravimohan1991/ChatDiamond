@@ -298,7 +298,14 @@ class CDChatWindowEmojis extends UWindowPageWindow;
 
  	if(IsHoveringOverMiniFrameCell(X, Y, MiniFrameCellNumber))
  	{
- 		EditMesg.EditBox.InsertText(TheEmoDisplayArea.GetEmojiTextSymbol(MiniFrameCellNumber));
+ 		if(MiniFrameCellNumber < 28)
+ 		{
+ 			EditMesg.EditBox.InsertText(TheEmoDisplayArea.GetEmojiTextSymbol(MiniFrameCellNumber));
+ 		}
+ 		else
+ 		{
+ 			EditMesg.EditBox.InsertText(TheEmoDisplayArea.GetEmoteTextSymbol(28));
+ 		}
  	}
  }
 
@@ -309,7 +316,6 @@ class CDChatWindowEmojis extends UWindowPageWindow;
  	if(IsHoveringOverMiniFrameCell(X, Y, MiniFrameCellNumber))
  	{
  		bIsHoveringStill = true;
- 		Log("Hovering over MiniFrameCell:" @ MiniFrameCellNumber);
  		MiniFrameBeingHovered = MiniFrameCellNumber;
  	}
  	else
@@ -319,7 +325,14 @@ class CDChatWindowEmojis extends UWindowPageWindow;
  			EmoMouseNoLongerHovering(X, Y);
  			bIsHoveringStill = false;
 
- 			EmoHelper(TheEmoDisplayArea.GetEmojiStatusBarText(MiniFrameBeingHovered), false);
+ 			if(MiniFrameBeingHovered < 28)
+ 			{
+ 				EmoHelper(TheEmoDisplayArea.GetEmojiStatusBarText(MiniFrameBeingHovered), false);
+ 			}
+ 			else
+ 			{
+ 				EmoHelper(TheEmoDisplayArea.GetEmoteStatusBarText(MiniFrameBeingHovered), false);
+ 			}
  			MiniFrameBeingHovered = -1;
  		}
  	}
@@ -333,7 +346,7 @@ class CDChatWindowEmojis extends UWindowPageWindow;
  {
  	local int Index;
 
- 	for(Index = 0; Index < 28; Index++)
+ 	for(Index = 0; Index <= 28; Index++)
  	{
  		if(IsCoordinateWithinRegion(X, Y, EmoFrames[Index].XTopLeftPos, EmoFrames[Index].YTopLeftPos,
  		EmoFrames[Index].XBottomRightPos, EmoFrames[Index].YBottomRightPos))
@@ -460,6 +473,31 @@ class CDChatWindowEmojis extends UWindowPageWindow;
  	}
 
  	// Emotes
+
+ 	MiniFrameX = MFEmo.Width * 0.2;
+ 	MiniFrameY += MFEmo.Height + 2 * BetweenTheMiniFrameSeperationY;
+
+ 	MiniFrameWidth = MFEmo.Width;
+ 	MiniFrameHeight = MFEmo.Height;
+ 	
+ 	if(MiniFrameBeingHovered == 28)
+ 	{
+ 		DrawDepressedMiniFrameCell(C, MiniFrameX, MiniFrameY, MiniFrameWidth, MiniFrameHeight,
+ 		TheEmoDisplayArea.GetEmoteTextSymbol(EmoCounter), TheEmoDisplayArea.GetEmoteTexture(28));
+ 		EmoHelper(TheEmoDisplayArea.GetEmoteStatusBarText(MiniFrameBeingHovered), true);
+ 	}
+ 	else
+ 	{
+ 		DrawMiniFrameCell(C, MiniFrameX, MiniFrameY, MiniFrameWidth, MiniFrameHeight,
+ 		TheEmoDisplayArea.GetEmoteTextSymbol(EmoCounter), TheEmoDisplayArea.GetEmoteTexture(28));
+ 	}
+
+ 	EmoFrames[28].MFNumber = 28;
+ 	EmoFrames[28].XTopLeftPos = MiniFrameX;
+ 	EmoFrames[28].YTopLeftPos = MiniFrameY;
+ 	EmoFrames[28].XBottomRightPos = MiniframeX + MiniFrameWidth;
+ 	EmoFrames[28].YBottomRightPos = MiniframeY + MiniFrameHeight;
+ 	EmoFrames[28].MFEmo = MFEmo;
  }
 
  function  DrawDepressedMiniFrameCell(Canvas C, float FrameStartX, float FrameStartY, float Width, float Height, string TextSymbol, Texture Tex)

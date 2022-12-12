@@ -71,7 +71,7 @@ class CDUTConsoleWindow extends UWindowPageWindow config (ChatDiamond);
  	NonChatMessageFilter.SetFont(F_Normal);
  	NonChatMessageFilter.Align = TA_Left;
 
- 	CleanConsoleWindow = UWindowSmallButton(CreateControl(class'UWindowSmallButton', WinWidth - 50, WinHeight - 15, 35, 16));
+ 	CleanConsoleWindow = UWindowSmallButton(CreateControl(class'UWindowSmallButton', WinWidth - 50, WinHeight - 17, 35, 16));
  	CleanConsoleWindow.SetText("Clear!");
  	CleanConsoleWindow.DownSound = sound'UnrealShare.FSHLITE2';
 
