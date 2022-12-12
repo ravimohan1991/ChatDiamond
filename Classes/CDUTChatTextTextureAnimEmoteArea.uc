@@ -24,109 +24,109 @@
 
 class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
 
-#exec Texture Import File=Textures\1faceless.pcx    Name=Faceless    Mips=off
-
-#exec Texture Import File=Textures\smile.bmp        Name=Smile       Mips=off
-#exec Texture Import File=Textures\sad.bmp          Name=Sad         Mips=off
-#exec Texture Import File=Textures\eyes.bmp         Name=Eyes        Mips=off
-#exec Texture Import File=Textures\tup.bmp          Name=ThumbUp     Mips=off
-#exec Texture Import File=Textures\tdown.bmp        Name=ThumbDown   Mips=off
-#exec Texture Import File=Textures\happy.bmp        Name=Happy       Mips=off
-#exec Texture Import File=Textures\bomb.bmp         Name=Bomb        Mips=off
-#exec Texture Import File=Textures\fist.bmp         Name=Fist        Mips=off
-#exec Texture Import File=Textures\hand.bmp         Name=Hand        Mips=off
-#exec Texture Import File=Textures\hundreds.bmp     Name=Hundreds    Mips=off
-#exec Texture Import File=Textures\grin.bmp         Name=Grin        Mips=off
-#exec Texture Import File=Textures\ok.bmp           Name=Okey        Mips=off
-#exec Texture Import File=Textures\pointup.bmp      Name=PointUp     Mips=off
-#exec Texture Import File=Textures\question.bmp     Name=Question    Mips=off
-#exec Texture Import File=Textures\rofl.bmp         Name=ROFL        Mips=off
-#exec Texture Import File=Textures\sunglasses.bmp   Name=Sunglass    Mips=off
-#exec Texture Import File=Textures\think.bmp        Name=Think       Mips=off
-#exec Texture Import File=Textures\tongue.bmp       Name=Tongue      Mips=off
-#exec Texture Import File=Textures\zzz.bmp          Name=Zzz         Mips=off
-#exec Texture Import File=Textures\wink.bmp         Name=Wink        Mips=off
-#exec Texture Import File=Textures\silly.bmp        Name=Silly       Mips=off
-#exec Texture Import File=Textures\heart.bmp        Name=Heart       Mips=off
-#exec Texture Import File=Textures\peace.bmp        Name=Peace       Mips=off
-#exec Texture Import File=Textures\rockon.bmp       Name=Rockon      Mips=off
-#exec Texture Import File=Textures\mask.bmp         Name=Mask        Mips=off
-#exec Texture Import File=Textures\squint.bmp       Name=Squint      Mips=off
-#exec Texture Import File=Textures\facepalm.bmp     Name=FacePalm    Mips=off
-#exec Texture Import File=Textures\shrug.bmp        Name=Shrug       Mips=off
-
-#exec Texture Import File=Textures\xsmile.bmp       Name=XSmile      Mips=off
-#exec Texture Import File=Textures\xsad.bmp         Name=XSad        Mips=off
-#exec Texture Import File=Textures\xeyes.bmp        Name=XEyes       Mips=off
-#exec Texture Import File=Textures\xtup.bmp         Name=XThumbUp    Mips=off
-#exec Texture Import File=Textures\xtdown.bmp       Name=XThumbDown  Mips=off
-#exec Texture Import File=Textures\xhappy.bmp       Name=XHappy      Mips=off
-#exec Texture Import File=Textures\xbomb.bmp        Name=XBomb       Mips=off
-#exec Texture Import File=Textures\xfist.bmp        Name=XFist       Mips=off
-#exec Texture Import File=Textures\xhand.bmp        Name=XHand       Mips=off
-#exec Texture Import File=Textures\xhundreds.bmp    Name=XHundreds   Mips=off
-#exec Texture Import File=Textures\xgrin.bmp        Name=XGrin       Mips=off
-#exec Texture Import File=Textures\xok.bmp          Name=XOkey       Mips=off
-#exec Texture Import File=Textures\xpointup.bmp     Name=XPointUp    Mips=off
-#exec Texture Import File=Textures\xquestion.bmp    Name=XQuestion   Mips=off
-#exec Texture Import File=Textures\xrofl.bmp        Name=XROFL       Mips=off
-#exec Texture Import File=Textures\xsunglasses.bmp  Name=XSunglass   Mips=off
-#exec Texture Import File=Textures\xthink.bmp       Name=XThink      Mips=off
-#exec Texture Import File=Textures\xtongue.bmp      Name=XTongue     Mips=off
-#exec Texture Import File=Textures\xzzz.bmp         Name=XZzz        Mips=off
-#exec Texture Import File=Textures\xwink.bmp        Name=XWink       Mips=off
-#exec Texture Import File=Textures\xsilly.bmp       Name=XSilly      Mips=off
-#exec Texture Import File=Textures\xheart.bmp       Name=XHeart      Mips=off
-#exec Texture Import File=Textures\xpeace.bmp       Name=XPeace      Mips=off
-#exec Texture Import File=Textures\xrockon.bmp      Name=XRockon     Mips=off
-#exec Texture Import File=Textures\xmask.bmp        Name=XMask       Mips=off
-#exec Texture Import File=Textures\xsquint.bmp      Name=XSquint     Mips=off
-#exec Texture Import File=Textures\xfacepalm.bmp    Name=XFacePalm   Mips=off
-#exec Texture Import File=Textures\xshrug.bmp       Name=XShrug      Mips=off
-
-#exec Texture Import File=Textures\welldone.bmp     Name=WellDone    Mips=off
-#exec Texture Import File=Textures\wtf.bmp          Name=WTF         Mips=off
-#exec Texture Import File=Textures\womg.bmp         Name=OMG         Mips=off
-#exec Texture Import File=Textures\wlol.bmp         Name=LOL         Mips=off
-#exec Texture Import File=Textures\wthankyou.bmp    Name=ThankYou    Mips=off
-#exec Texture Import File=Textures\wniceshot.bmp    Name=NiceShot    Mips=off
-#exec Texture Import File=Textures\wgoodgame.bmp    Name=GoodGame    Mips=off
-#exec Texture Import File=Textures\wniceone.bmp     Name=NiceOne     Mips=off
-
-// Shock Rifle Emote
-#exec Texture Import File=Textures\04_SHOCK01.pcx  Name=ANEShock0    Mips=off
-#exec Texture Import File=Textures\04_SHOCK02.pcx  Name=ANEShock1    Mips=off
-#exec Texture Import File=Textures\04_SHOCK03.pcx  Name=ANEShock2    Mips=off
-#exec Texture Import File=Textures\04_SHOCK04.pcx  Name=ANEShock3    Mips=off
-#exec Texture Import File=Textures\04_SHOCK05.pcx  Name=ANEShock4    Mips=off
-#exec Texture Import File=Textures\04_SHOCK06.pcx  Name=ANEShock5    Mips=off
-#exec Texture Import File=Textures\04_SHOCK07.pcx  Name=ANEShock6    Mips=off
-#exec Texture Import File=Textures\04_SHOCK08.pcx  Name=ANEShock7    Mips=off
-#exec Texture Import File=Textures\04_SHOCK09.pcx  Name=ANEShock8    Mips=off
-#exec Texture Import File=Textures\04_SHOCK010.pcx  Name=ANEShock9    Mips=off
-
-// Trash-talk Emote
-#exec Texture Import File=Textures\ARGUE01.pcx  Name=ANEArgue0    Mips=off
-#exec Texture Import File=Textures\ARGUE02.pcx  Name=ANEArgue1    Mips=off
-#exec Texture Import File=Textures\ARGUE03.pcx  Name=ANEArgue2    Mips=off
-#exec Texture Import File=Textures\ARGUE04.pcx  Name=ANEArgue3    Mips=off
-#exec Texture Import File=Textures\ARGUE05.pcx  Name=ANEArgue4    Mips=off
-#exec Texture Import File=Textures\ARGUE06.pcx  Name=ANEArgue5    Mips=off
-#exec Texture Import File=Textures\ARGUE07.pcx  Name=ANEArgue6    Mips=off
-#exec Texture Import File=Textures\ARGUE08.pcx  Name=ANEArgue7    Mips=off
-#exec Texture Import File=Textures\ARGUE09.pcx  Name=ANEArgue8    Mips=off
-#exec Texture Import File=Textures\ARGUE10.pcx  Name=ANEArgue9    Mips=off
-#exec Texture Import File=Textures\ARGUE11.pcx  Name=ANEArgue10    Mips=off
-#exec Texture Import File=Textures\ARGUE12.pcx  Name=ANEArgue11    Mips=off
-#exec Texture Import File=Textures\ARGUE13.pcx  Name=ANEArgue12    Mips=off
-#exec Texture Import File=Textures\ARGUE14.pcx  Name=ANEArgue13    Mips=off
-#exec Texture Import File=Textures\ARGUE15.pcx  Name=ANEArgue14    Mips=off
-#exec Texture Import File=Textures\ARGUE16.pcx  Name=ANEArgue15    Mips=off
-#exec Texture Import File=Textures\ARGUE17.pcx  Name=ANEArgue16    Mips=off
-#exec Texture Import File=Textures\ARGUE18.pcx  Name=ANEArgue17    Mips=off
-#exec Texture Import File=Textures\ARGUE19.pcx  Name=ANEArgue18    Mips=off
-#exec Texture Import File=Textures\ARGUE20.pcx  Name=ANEArgue19    Mips=off
-#exec Texture Import File=Textures\ARGUE21.pcx  Name=ANEArgue20    Mips=off
+ #exec Texture Import File=Textures\1faceless.pcx    Name=Faceless    Mips=off
+ 
+ #exec Texture Import File=Textures\smile.bmp        Name=Smile       Mips=off
+ #exec Texture Import File=Textures\sad.bmp          Name=Sad         Mips=off
+ #exec Texture Import File=Textures\eyes.bmp         Name=Eyes        Mips=off
+ #exec Texture Import File=Textures\tup.bmp          Name=ThumbUp     Mips=off
+ #exec Texture Import File=Textures\tdown.bmp        Name=ThumbDown   Mips=off
+ #exec Texture Import File=Textures\happy.bmp        Name=Happy       Mips=off
+ #exec Texture Import File=Textures\bomb.bmp         Name=Bomb        Mips=off
+ #exec Texture Import File=Textures\fist.bmp         Name=Fist        Mips=off
+ #exec Texture Import File=Textures\hand.bmp         Name=Hand        Mips=off
+ #exec Texture Import File=Textures\hundreds.bmp     Name=Hundreds    Mips=off
+ #exec Texture Import File=Textures\grin.bmp         Name=Grin        Mips=off
+ #exec Texture Import File=Textures\ok.bmp           Name=Okey        Mips=off
+ #exec Texture Import File=Textures\pointup.bmp      Name=PointUp     Mips=off
+ #exec Texture Import File=Textures\question.bmp     Name=Question    Mips=off
+ #exec Texture Import File=Textures\rofl.bmp         Name=ROFL        Mips=off
+ #exec Texture Import File=Textures\sunglasses.bmp   Name=Sunglass    Mips=off
+ #exec Texture Import File=Textures\think.bmp        Name=Think       Mips=off
+ #exec Texture Import File=Textures\tongue.bmp       Name=Tongue      Mips=off
+ #exec Texture Import File=Textures\zzz.bmp          Name=Zzz         Mips=off
+ #exec Texture Import File=Textures\wink.bmp         Name=Wink        Mips=off
+ #exec Texture Import File=Textures\silly.bmp        Name=Silly       Mips=off
+ #exec Texture Import File=Textures\heart.bmp        Name=Heart       Mips=off
+ #exec Texture Import File=Textures\peace.bmp        Name=Peace       Mips=off
+ #exec Texture Import File=Textures\rockon.bmp       Name=Rockon      Mips=off
+ #exec Texture Import File=Textures\mask.bmp         Name=Mask        Mips=off
+ #exec Texture Import File=Textures\squint.bmp       Name=Squint      Mips=off
+ #exec Texture Import File=Textures\facepalm.bmp     Name=FacePalm    Mips=off
+ #exec Texture Import File=Textures\shrug.bmp        Name=Shrug       Mips=off
+ 
+ #exec Texture Import File=Textures\xsmile.bmp       Name=XSmile      Mips=off
+ #exec Texture Import File=Textures\xsad.bmp         Name=XSad        Mips=off
+ #exec Texture Import File=Textures\xeyes.bmp        Name=XEyes       Mips=off
+ #exec Texture Import File=Textures\xtup.bmp         Name=XThumbUp    Mips=off
+ #exec Texture Import File=Textures\xtdown.bmp       Name=XThumbDown  Mips=off
+ #exec Texture Import File=Textures\xhappy.bmp       Name=XHappy      Mips=off
+ #exec Texture Import File=Textures\xbomb.bmp        Name=XBomb       Mips=off
+ #exec Texture Import File=Textures\xfist.bmp        Name=XFist       Mips=off
+ #exec Texture Import File=Textures\xhand.bmp        Name=XHand       Mips=off
+ #exec Texture Import File=Textures\xhundreds.bmp    Name=XHundreds   Mips=off
+ #exec Texture Import File=Textures\xgrin.bmp        Name=XGrin       Mips=off
+ #exec Texture Import File=Textures\xok.bmp          Name=XOkey       Mips=off
+ #exec Texture Import File=Textures\xpointup.bmp     Name=XPointUp    Mips=off
+ #exec Texture Import File=Textures\xquestion.bmp    Name=XQuestion   Mips=off
+ #exec Texture Import File=Textures\xrofl.bmp        Name=XROFL       Mips=off
+ #exec Texture Import File=Textures\xsunglasses.bmp  Name=XSunglass   Mips=off
+ #exec Texture Import File=Textures\xthink.bmp       Name=XThink      Mips=off
+ #exec Texture Import File=Textures\xtongue.bmp      Name=XTongue     Mips=off
+ #exec Texture Import File=Textures\xzzz.bmp         Name=XZzz        Mips=off
+ #exec Texture Import File=Textures\xwink.bmp        Name=XWink       Mips=off
+ #exec Texture Import File=Textures\xsilly.bmp       Name=XSilly      Mips=off
+ #exec Texture Import File=Textures\xheart.bmp       Name=XHeart      Mips=off
+ #exec Texture Import File=Textures\xpeace.bmp       Name=XPeace      Mips=off
+ #exec Texture Import File=Textures\xrockon.bmp      Name=XRockon     Mips=off
+ #exec Texture Import File=Textures\xmask.bmp        Name=XMask       Mips=off
+ #exec Texture Import File=Textures\xsquint.bmp      Name=XSquint     Mips=off
+ #exec Texture Import File=Textures\xfacepalm.bmp    Name=XFacePalm   Mips=off
+ #exec Texture Import File=Textures\xshrug.bmp       Name=XShrug      Mips=off
+ 
+ #exec Texture Import File=Textures\welldone.bmp     Name=WellDone    Mips=off
+ #exec Texture Import File=Textures\wtf.bmp          Name=WTF         Mips=off
+ #exec Texture Import File=Textures\womg.bmp         Name=OMG         Mips=off
+ #exec Texture Import File=Textures\wlol.bmp         Name=LOL         Mips=off
+ #exec Texture Import File=Textures\wthankyou.bmp    Name=ThankYou    Mips=off
+ #exec Texture Import File=Textures\wniceshot.bmp    Name=NiceShot    Mips=off
+ #exec Texture Import File=Textures\wgoodgame.bmp    Name=GoodGame    Mips=off
+ #exec Texture Import File=Textures\wniceone.bmp     Name=NiceOne     Mips=off
+ 
+ // Shock Rifle Emote
+ #exec Texture Import File=Textures\04_SHOCK01.pcx  Name=ANEShock0    Mips=off
+ #exec Texture Import File=Textures\04_SHOCK02.pcx  Name=ANEShock1    Mips=off
+ #exec Texture Import File=Textures\04_SHOCK03.pcx  Name=ANEShock2    Mips=off
+ #exec Texture Import File=Textures\04_SHOCK04.pcx  Name=ANEShock3    Mips=off
+ #exec Texture Import File=Textures\04_SHOCK05.pcx  Name=ANEShock4    Mips=off
+ #exec Texture Import File=Textures\04_SHOCK06.pcx  Name=ANEShock5    Mips=off
+ #exec Texture Import File=Textures\04_SHOCK07.pcx  Name=ANEShock6    Mips=off
+ #exec Texture Import File=Textures\04_SHOCK08.pcx  Name=ANEShock7    Mips=off
+ #exec Texture Import File=Textures\04_SHOCK09.pcx  Name=ANEShock8    Mips=off
+ #exec Texture Import File=Textures\04_SHOCK010.pcx  Name=ANEShock9    Mips=off
+ 
+ // Trash-talk Emote
+ #exec Texture Import File=Textures\ARGUE01.pcx  Name=ANEArgue0    Mips=off
+ #exec Texture Import File=Textures\ARGUE02.pcx  Name=ANEArgue1    Mips=off
+ #exec Texture Import File=Textures\ARGUE03.pcx  Name=ANEArgue2    Mips=off
+ #exec Texture Import File=Textures\ARGUE04.pcx  Name=ANEArgue3    Mips=off
+ #exec Texture Import File=Textures\ARGUE05.pcx  Name=ANEArgue4    Mips=off
+ #exec Texture Import File=Textures\ARGUE06.pcx  Name=ANEArgue5    Mips=off
+ #exec Texture Import File=Textures\ARGUE07.pcx  Name=ANEArgue6    Mips=off
+ #exec Texture Import File=Textures\ARGUE08.pcx  Name=ANEArgue7    Mips=off
+ #exec Texture Import File=Textures\ARGUE09.pcx  Name=ANEArgue8    Mips=off
+ #exec Texture Import File=Textures\ARGUE10.pcx  Name=ANEArgue9    Mips=off
+ #exec Texture Import File=Textures\ARGUE11.pcx  Name=ANEArgue10    Mips=off
+ #exec Texture Import File=Textures\ARGUE12.pcx  Name=ANEArgue11    Mips=off
+ #exec Texture Import File=Textures\ARGUE13.pcx  Name=ANEArgue12    Mips=off
+ #exec Texture Import File=Textures\ARGUE14.pcx  Name=ANEArgue13    Mips=off
+ #exec Texture Import File=Textures\ARGUE15.pcx  Name=ANEArgue14    Mips=off
+ #exec Texture Import File=Textures\ARGUE16.pcx  Name=ANEArgue15    Mips=off
+ #exec Texture Import File=Textures\ARGUE17.pcx  Name=ANEArgue16    Mips=off
+ #exec Texture Import File=Textures\ARGUE18.pcx  Name=ANEArgue17    Mips=off
+ #exec Texture Import File=Textures\ARGUE19.pcx  Name=ANEArgue18    Mips=off
+ #exec Texture Import File=Textures\ARGUE20.pcx  Name=ANEArgue19    Mips=off
+ #exec Texture Import File=Textures\ARGUE21.pcx  Name=ANEArgue20    Mips=off
 
  // Style for rendering sprites, meshes.
  var(Display) enum ERenderStyle
@@ -143,6 +143,7 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  	var string  Symbol;
  	var Texture Image1;
  	var Texture Image2;
+ 	var string StatusBarText;
  };
 
  struct AnEmote
@@ -153,6 +154,7 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  	var int CurrentAnimFrame;
  	var int TotalElements;
  	var string TextSymbol;
+ 	var string StatusBarText;
  };
 
  struct EmoStatus
@@ -176,6 +178,7 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  var bool bCol;
  var Color ChatColor, GrnColor, YelColor, BluColor, RedColor, WhiteColor, TxtColor, FaceColor;
  var texture StaticTransparencyTexture;
+ var CDChatWindowEmojis EmoWindowPage;
 
  var float FrameRate;
  var int TickCounter;
@@ -200,6 +203,21 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  // The vertical padding between Date and Chatface in single TextTextureLine
  var() config float ChatFaceVerticalPadding;
 
+ // Getters
+ function string GetEmojiTextSymbol(int EmoCounter)
+ {
+ 	return ChatEmojis[EmoCounter].Symbol;
+ }
+
+ function texture GetEmojiTexture(int EmoCounter)
+ {
+ 	return ChatEmojis[EmoCounter].Image1;
+ }
+
+ function string GetEmojiStatusBarText(int EmoCounter)
+ {
+ 	return ChatEmojis[EmoCounter].StatusBarText;
+ }
 
  function Created()
  {
@@ -646,7 +664,7 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
 
  	if(FaceNameString == "faceless" || FaceNameString == "")
  	{
- 	  return texture'faceless';
+ 		return texture'faceless';
  	}
  	/*
  	for(i = 0; i< 50; i++)
@@ -967,6 +985,29 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  	}
  }
 
+ function Click(float X, float Y)
+ {
+   EmoWindowPage.EmoClick(X, Y);
+ }
+
+ function MouseMove(float X, float Y)
+ {
+	Super.MouseMove(X, Y);
+	EmoWindowPage.EmoHover(X, Y);
+ }
+
+ function LMouseDown(float X, float Y)
+ {
+	super.LMouseDown(X, Y);
+	EmoWindowPage.bMiniFrameLMousePressed = true;
+ }
+
+ function LMouseUp(float X, float Y)
+ {
+	super.LMouseUp(X, Y);
+	EmoWindowPage.bMiniFrameLMousePressed = false;
+ }
+
  defaultproperties
  {
  	bScrollOnResize=True
@@ -982,34 +1023,34 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  	UniformHorizontalPadding=10
  	ChatFaceVerticalPadding=9
 
- 	ChatEmojis(0)=(Symbol=":)",Image1=Texture'Smile',Image2=Texture'XSmile')
- 	ChatEmojis(1)=(Symbol=":(",Image1=Texture'Sad',Image2=Texture'XSad')
- 	ChatEmojis(2)=(Symbol=":^",Image1=Texture'Eyes',Image2=Texture'XEyes')
- 	ChatEmojis(3)=(Symbol=":+",Image1=Texture'ThumbUp',Image2=Texture'XThumbUp')
- 	ChatEmojis(4)=(Symbol=":_",Image1=Texture'ThumbDown',Image2=Texture'XThumbDown')
- 	ChatEmojis(5)=(Symbol=":d",Image1=Texture'Happy',Image2=Texture'XHappy')
- 	ChatEmojis(6)=(Symbol=":b",Image1=Texture'Bomb',Image2=Texture'XBomb')
- 	ChatEmojis(7)=(Symbol=":f",Image1=Texture'Fist',Image2=Texture'XFist')
- 	ChatEmojis(8)=(Symbol=":w",Image1=Texture'Hand',Image2=Texture'XHand')
- 	ChatEmojis(9)=(Symbol=":1",Image1=Texture'Hundreds',Image2=Texture'XHundreds')
- 	ChatEmojis(10)=(Symbol=":/",Image1=Texture'Grin',Image2=Texture'XGrin')
- 	ChatEmojis(11)=(Symbol=":k",Image1=Texture'Okey',Image2=Texture'XOkey')
- 	ChatEmojis(12)=(Symbol=":u",Image1=Texture'PointUp',Image2=Texture'XPointUp')
- 	ChatEmojis(13)=(Symbol=":q",Image1=Texture'Question',Image2=Texture'XQuestion')
- 	ChatEmojis(14)=(Symbol=":r",Image1=Texture'ROFL',Image2=Texture'XROFL')
- 	ChatEmojis(15)=(Symbol=":c",Image1=Texture'Sunglass',Image2=Texture'XSunglass')
- 	ChatEmojis(16)=(Symbol=":t",Image1=Texture'Think',Image2=Texture'XThink')
- 	ChatEmojis(17)=(Symbol=":p",Image1=Texture'Tongue',Image2=Texture'XTongue')
- 	ChatEmojis(18)=(Symbol=":;",Image1=Texture'Wink',Image2=Texture'XWink')
- 	ChatEmojis(19)=(Symbol=":s",Image1=Texture'Silly',Image2=Texture'XSilly')
- 	ChatEmojis(20)=(Symbol=":z",Image1=Texture'Zzz',Image2=Texture'XZzz')
- 	ChatEmojis(21)=(Symbol=":h",Image1=Texture'Heart',Image2=Texture'XHeart')
- 	ChatEmojis(22)=(Symbol=":v",Image1=Texture'Peace',Image2=Texture'XPeace')
- 	ChatEmojis(23)=(Symbol=":#",Image1=Texture'Rockon',Image2=Texture'XRockon')
- 	ChatEmojis(24)=(Symbol=":m",Image1=Texture'Mask',Image2=Texture'XMask')
- 	ChatEmojis(25)=(Symbol=":>",Image1=Texture'Squint',Image2=Texture'XSquint')
- 	ChatEmojis(26)=(Symbol=":o",Image1=Texture'FacePalm',Image2=Texture'XFacePalm')
- 	ChatEmojis(27)=(Symbol=":y",Image1=Texture'Shrug',Image2=Texture'XShrug')
+ 	ChatEmojis(0)=(Symbol=":)",Image1=Texture'Smile',Image2=Texture'XSmile',StatusBarText="Smiley!")
+ 	ChatEmojis(1)=(Symbol=":(",Image1=Texture'Sad',Image2=Texture'XSad',StatusBarText="Sad!")
+ 	ChatEmojis(2)=(Symbol=":^",Image1=Texture'Eyes',Image2=Texture'XEyes',StatusBarText="Eyes!")
+ 	ChatEmojis(3)=(Symbol=":+",Image1=Texture'ThumbUp',Image2=Texture'XThumbUp',StatusBarText="ThumbUp!")
+ 	ChatEmojis(4)=(Symbol=":_",Image1=Texture'ThumbDown',Image2=Texture'XThumbDown',StatusBarText="ThumbDown!")
+ 	ChatEmojis(5)=(Symbol=":d",Image1=Texture'Happy',Image2=Texture'XHappy',StatusBarText="Happy!")
+ 	ChatEmojis(6)=(Symbol=":b",Image1=Texture'Bomb',Image2=Texture'XBomb',StatusBarText="Bomb!")
+ 	ChatEmojis(7)=(Symbol=":f",Image1=Texture'Fist',Image2=Texture'XFist',StatusBarText="Riot Fist!")
+ 	ChatEmojis(8)=(Symbol=":w",Image1=Texture'Hand',Image2=Texture'XHand',StatusBarText="Hand!")
+ 	ChatEmojis(9)=(Symbol=":1",Image1=Texture'Hundreds',Image2=Texture'XHundreds',StatusBarText="Hundred!")
+ 	ChatEmojis(10)=(Symbol=":/",Image1=Texture'Grin',Image2=Texture'XGrin',StatusBarText="Esoteric Grin!")
+ 	ChatEmojis(11)=(Symbol=":k",Image1=Texture'Okey',Image2=Texture'XOkey',StatusBarText="Okey!")
+ 	ChatEmojis(12)=(Symbol=":u",Image1=Texture'PointUp',Image2=Texture'XPointUp',StatusBarText="PointUp!")
+ 	ChatEmojis(13)=(Symbol=":q",Image1=Texture'Question',Image2=Texture'XQuestion',StatusBarText="Question!")
+ 	ChatEmojis(14)=(Symbol=":r",Image1=Texture'ROFL',Image2=Texture'XROFL',StatusBarText="ROFL!")
+ 	ChatEmojis(15)=(Symbol=":c",Image1=Texture'Sunglass',Image2=Texture'XSunglass',StatusBarText="Sunglass!")
+ 	ChatEmojis(16)=(Symbol=":t",Image1=Texture'Think',Image2=Texture'XThink',StatusBarText="Think!")
+ 	ChatEmojis(17)=(Symbol=":p",Image1=Texture'Tongue',Image2=Texture'XTongue',StatusBarText="Tongue!")
+ 	ChatEmojis(18)=(Symbol=":;",Image1=Texture'Wink',Image2=Texture'XWink',StatusBarText="Wink!")
+ 	ChatEmojis(19)=(Symbol=":s",Image1=Texture'Silly',Image2=Texture'XSilly',StatusBarText="Silly!")
+ 	ChatEmojis(20)=(Symbol=":z",Image1=Texture'Zzz',Image2=Texture'XZzz',StatusBarText="Zzzz!")
+ 	ChatEmojis(21)=(Symbol=":h",Image1=Texture'Heart',Image2=Texture'XHeart',StatusBarText="Heart!")
+ 	ChatEmojis(22)=(Symbol=":v",Image1=Texture'Peace',Image2=Texture'XPeace',StatusBarText="Peace!")
+ 	ChatEmojis(23)=(Symbol=":#",Image1=Texture'Rockon',Image2=Texture'XRockon',StatusBarText="Rackon!")
+ 	ChatEmojis(24)=(Symbol=":m",Image1=Texture'Mask',Image2=Texture'XMask',StatusBarText="Mask!")
+ 	ChatEmojis(25)=(Symbol=":>",Image1=Texture'Squint',Image2=Texture'XSquint',StatusBarText="Squint!")
+ 	ChatEmojis(26)=(Symbol=":o",Image1=Texture'FacePalm',Image2=Texture'XFacePalm',StatusBarText="FacePalm!")
+ 	ChatEmojis(27)=(Symbol=":y",Image1=Texture'Shrug',Image2=Texture'XShrug',StatusBarText="Shrug!")
 
  	WordEmojis(0)=(Symbol="WD!",Image1=Texture'WellDone',Image2=None)
  	WordEmojis(1)=(Symbol="TF!",Image1=Texture'WTF',Image2=None)
@@ -1019,8 +1060,6 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  	WordEmojis(5)=(Symbol="NS!",Image1=Texture'NiceShot',Image2=None)
  	WordEmojis(6)=(Symbol="GG!",Image1=Texture'GoodGame',Image2=None)
  	WordEmojis(7)=(Symbol="N1!",Image1=Texture'NiceOne',Image2=None)
-
- 	//AnimShockEmote=(Atlas[0]=Texture'ChatDiamond.ANEShock0',Atlas[1]=Texture'ChatDiamond.ANEShock1',Atlas[2]=Texture'ChatDiamond.ANEShock2',Atlas[3]=Texture'ChatDiamond.ANEShock3',Atlas[4]=Texture'ChatDiamond.ANEShock4',Atlas[5]=Texture'ChatDiamond.ANEShock5',Atlas[6]=Texture'ChatDiamond.ANEShock6',Atlas[7]=Texture'ChatDiamond.ANEShock7',Atlas[8]=Texture'ChatDiamond.ANEShock8',Atlas[9]=Texture'ChatDiamond.ANEShock9',CurrentAnimFrame=0,TotalElements=1,TextSymbol=":4")
  }
 
  /*

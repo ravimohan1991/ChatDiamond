@@ -53,6 +53,7 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
  var PlayerReplicationInfo LocalPRI;
  var bool bIsWindowChatFunctional;
  var CDUTConsole ChatDiamondConsole;
+ var CDChatWindowEmojis EmoWindowPage;
 
  // Server being visited
  struct VisitingServerInformation
@@ -156,7 +157,7 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
  		ButSave.bDisabled = false;
  		if(bTalkMessage)
  		{
- 			Root.GetPlayerOwner().ClientPlaySound(sound'MessageKernel', true);
+ 			Root.GetPlayerOwner().ClientPlaySound(sound'MessageKernel');
  		}
  	}
  	else
@@ -205,6 +206,7 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
  * 3. Contextual deletion of History?
  * 4. Filter default messages (for instance I have got the flag! or custom cmds)
  * 5. Face loading (done)
+ * 6. Player Join/Leave notififcation with time stamp
  *
  * @PARAM PRI                 The PlayerReplicationInfo of involved individual
  *                            Behavior differs (as far as I understand)
@@ -408,7 +410,7 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
  function bool IsMessageIgnorable(coerce string Message)
  {
  	local int IgnorableMessageCounter;
- 	
+
  	// Lot of string comparison
  	for(IgnorableMessageCounter = 0; IgnorableMessageCounter < 40; IgnorableMessageCounter++)
  	{
@@ -590,6 +592,12 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
  		case DE_Change:
  			switch(C)
  				{
+ 				case EditMesg:
+ 					if(EmoWindowPage.EditMesg.GetValue() != EditMesg.GetValue())
+ 					{
+ 						EmoWindowPage.EditMesg.SetValue(EditMesg.GetValue());
+ 					}
+ 				break;
  				}
  		break;
 
@@ -638,20 +646,20 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
  	}
  }
 
- function SendMessage()
+ function SendMessage(optional UWindowEditControl EditMessage)
  {
- 	local string MessageString;
-
- 	if (EditMesg.GetValue() != "")
+ 	if(EditMessage != none && EditMessage.GetValue() != "")
  	{
- 		GetPlayerOwner().ConsoleCommand("SAY " $ EditMesg.GetValue());
-
- 		MessageString = Root.GetPlayerOwner().PlayerReplicationInfo.PlayerName $ ": " $  EditMesg.GetValue();
-
- 		// Only for experiments.
- 		// LoadMessages(MessageString);
-
- 		EditMesg.SetValue("");
+ 		GetPlayerOwner().ConsoleCommand("SAY " $ EditMessage.GetValue());
+ 		EditMessage.SetValue("");
+ 	}
+ 	else
+ 	{
+ 		if (EditMesg.GetValue() != "")
+ 		{
+ 			GetPlayerOwner().ConsoleCommand("SAY " $ EditMesg.GetValue());
+ 			EditMesg.SetValue("");
+ 		}
  	}
  }
 
@@ -741,6 +749,7 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
  	Super.Close(bByParent);
  }
 
+ // How about all the talk messages on ignore list?
  defaultproperties
  {
  	SilColor=(R=180,G=180,B=180)
