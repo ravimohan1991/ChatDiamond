@@ -1,3 +1,7 @@
+![CDBanner](https://user-images.githubusercontent.com/2173654/207157208-aee2c72f-3879-4529-9f4e-b787e3940f9d.png)
+"One can't get better friend than Pen!"
+                                   ~ Anonymous
+
 # ChatDiamond
 Let the text make sound!
 And let the sound text shine bright!!
