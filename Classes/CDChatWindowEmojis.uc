@@ -30,7 +30,8 @@
 
 class CDChatWindowEmojis extends UWindowPageWindow;
 
-#exec Texture Import File=Textures\emodisplay.bmp    Name=IYellow    Mips=off
+ #exec Texture Import File=Textures\emodisplay.bmp    Name=IYellow    Mips=off
+ #exec AUDIO IMPORT FILE="Sounds\hover.wav" NAME=HoverSound GROUP="Sound"
 
  //var() int Element
 
@@ -50,7 +51,9 @@ class CDChatWindowEmojis extends UWindowPageWindow;
  	var MiniFrameDimensions MFEmo;
  };
 
- var MiniFrame  EmoFrames[100];
+ var MiniFrame EmoFrames[100];
+
+ var CDMiniFrameList DrawnMiniFrameList;
 
  var int NumberOfColumnElements;
 
@@ -61,7 +64,7 @@ class CDChatWindowEmojis extends UWindowPageWindow;
 
  var CDModMenuWindowFrame FrameWindow;
 
- var UWindowButton AButton;
+ var int MaxMFRows;
 
  var color WhiteColor, GrayColor;
  var color PinkColor;
@@ -75,6 +78,7 @@ class CDChatWindowEmojis extends UWindowPageWindow;
  var float MiniFrameGotClicked;
 
  var bool bMiniFrameLMousePressed;
+ var bool bPlayHoverSound;
 
  var UWindowSmallButton ButSend;
  var UWindowSmallButton ButSave;
@@ -92,7 +96,7 @@ class CDChatWindowEmojis extends UWindowPageWindow;
 
  	Super.Created();
 
- 	TheEmoDisplayArea = CDUTChatTextTextureAnimEmoteArea(CreateControl(Class'CDUTChatTextTextureAnimEmoteArea', 1, 16, 385, 212));
+ 	TheEmoDisplayArea = CDUTChatTextTextureAnimEmoteArea(CreateControl(Class'CDUTChatTextTextureAnimEmoteArea', 0, 0, 385, 212));
  	TheEmoDisplayArea.AbsoluteFont = Font(DynamicLoadObject("UWindowFonts.TahomaB12", class'Font'));
  	TheEmoDisplayArea.bAutoScrollbar = False;
  	TheEmoDisplayArea.SetTextColor(GrayColor);
@@ -140,6 +144,19 @@ class CDChatWindowEmojis extends UWindowPageWindow;
  	EditMesg.SetHistory(True);
  	EditMesg.SetValue("");
  	EditMesg.Align = TA_Left;
+
+ 	if(DrawnMiniFrameList != None)
+ 	{
+ 		if(DrawnMiniFrameList.Next == None)
+ 		{
+ 			return;
+ 		}
+ 		DrawnMiniFrameList.DestroyList();
+ 	}
+ 
+ 	// Initialize LL
+ 	// DrawnMiniFrameList = new class'CDMiniFrameList';
+ 	// DrawnMiniFrameList.SetupSentinel();
 
  	SetAcceptsFocus();
 
@@ -235,10 +252,6 @@ class CDChatWindowEmojis extends UWindowPageWindow;
  		case DE_Click:
  			switch(C)
  			{
- 				case AButton:
- 					Root.GetPlayerOwner().Say("Yeehaw! :4");
- 				break;
-
  				case ButSave:
  							ChatWindow.SaveConfig();
  							ButSave.bDisabled = True;
@@ -317,11 +330,19 @@ class CDChatWindowEmojis extends UWindowPageWindow;
  	{
  		bIsHoveringStill = true;
  		MiniFrameBeingHovered = MiniFrameCellNumber;
+
+ 		if(bPlayHoverSound)
+ 		{
+ 			Root.GetPlayerOwner().ClientPlaySound(sound'HoverSound');
+ 			bPlayHoverSound = false;
+ 		}
  	}
  	else
  	{
  		if(bIsHoveringStill)
  		{
+ 			bPlayHoverSound = true;
+
  			EmoMouseNoLongerHovering(X, Y);
  			bIsHoveringStill = false;
 
@@ -376,9 +397,6 @@ class CDChatWindowEmojis extends UWindowPageWindow;
  		TheEmoDisplayArea.SetSize(TheEmoDisplayArea.WinWidth + DiffX, TheEmoDisplayArea.WinHeight + DiffY);
  		TheEmoDisplayArea.WrapWidth = TheEmoDisplayArea.WinWidth - 80;
 
- 		AButton.WinTop += DiffY;
- 		AButton.WinLeft += DiffX;
-
  		ButSave.WinTop += DiffY;
 
  		ButSend.WinLeft += DiffX;
@@ -411,8 +429,20 @@ class CDChatWindowEmojis extends UWindowPageWindow;
  	local float MaximumFrameWidth;
  	local int EmoCounter;
  	local float BetweenTheMiniFrameSeperationX, BetweenTheMiniFrameSeperationY;
+ 	local CDMiniFrameList Tempo;
+ 	local Region ThisWindowRegion;
 
  	Super.Paint(C,MouseX,MouseY);
+
+ 	// Initialize LL
+ 	DrawnMiniFrameList = new class'CDMiniFrameList';
+	DrawnMiniFrameList.SetupSentinel();
+	DrawnMiniFrameList.MaxDisplayHeight = TheEmoDisplayArea.WinHeight;
+
+ 	ThisWindowRegion.X = 0;
+ 	ThisWindowRegion.Y = 0;
+ 	ThisWindowRegion.W = WinWidth;
+ 	ThisWindowRegion.H = WinHeight;
 
  	MaximumFrameWidth = WinWidth * Root.GUIScale;
 
@@ -434,8 +464,12 @@ class CDChatWindowEmojis extends UWindowPageWindow;
  	BetweenTheMiniFrameSeperationY = MFEmo.Height * 0.4;
 
  	// EMO display starting point
- 	MiniFrameY = 2 * TitleYLength;
+ 	MiniFrameY = 2 * TitleYLength / Root.GUIScale;
  	MiniFrameX = MFEmo.Width * 0.2;
+
+ 	//Log("The y statring coordinate is: " @ MiniFrameY);
+
+ 	//VisibleRows = WinHeight / DefaultTextTextureLineHeight;
 
  	// For all emojis
  	for(EmoCounter = 0; EmoCounter < 28; EmoCounter++)
@@ -461,6 +495,15 @@ class CDChatWindowEmojis extends UWindowPageWindow;
  		EmoFrames[EmoCounter].YBottomRightPos = MiniframeY + MiniFrameHeight;
  		EmoFrames[EmoCounter].MFEmo = MFEmo;
 
+ 		// Add to MF display list
+ 		Tempo = CDMiniFrameList(DrawnMiniFrameList.Append(class'CDMiniFrameList'));
+
+ 		Tempo.MFWidth = MiniFrameWidth;
+ 		Tempo.MFHeight = MiniFrameHeight;
+
+ 		Tempo.MFNumber = EmoCounter;
+ 		//Log(Tempo.MFNumber @ "Tempo.MFHeight = " @ MiniFrameHeight);
+
  		MiniFrameX += MFEmo.Width + BetweenTheMiniFrameSeperationX;
 
  		if(MiniFrameX + MFEmo.Width >= WinWidth)
@@ -472,6 +515,8 @@ class CDChatWindowEmojis extends UWindowPageWindow;
  		}
  	}
 
+ 	//Log("Printing DrawnMF");
+
  	// Emotes
 
  	MiniFrameX = MFEmo.Width * 0.2;
@@ -479,7 +524,7 @@ class CDChatWindowEmojis extends UWindowPageWindow;
 
  	MiniFrameWidth = MFEmo.Width;
  	MiniFrameHeight = MFEmo.Height;
- 	
+
  	if(MiniFrameBeingHovered == 28)
  	{
  		DrawDepressedMiniFrameCell(C, MiniFrameX, MiniFrameY, MiniFrameWidth, MiniFrameHeight,
@@ -498,7 +543,62 @@ class CDChatWindowEmojis extends UWindowPageWindow;
  	EmoFrames[28].XBottomRightPos = MiniframeX + MiniFrameWidth;
  	EmoFrames[28].YBottomRightPos = MiniframeY + MiniFrameHeight;
  	EmoFrames[28].MFEmo = MFEmo;
+
+ 	Tempo = CDMiniFrameList(DrawnMiniFrameList.Append(class'CDMiniFrameList'));
+
+ 	Tempo.MFWidth = MiniFrameWidth;
+ 	Tempo.MFHeight = MiniFrameHeight;
+ 	Tempo.MFNumber = 28;
+ 	Tempo.bSplitByHand = true;// Helps in gauging the row and column numbers of MF
+ 	
+ 	//Log(MiniFrameY @ "Y depth is: " @ MiniFrameY + MiniFrameHeight);
+ 	
+ 	DrawnMiniFrameList.ComputeRowAndColumnOfElements(ThisWindowRegion, TitleYLength, BetweenTheMiniFrameSeperationX,
+ 	BetweenTheMiniFrameSeperationY);
+ 	// Log(Root.GUIScale @ "Display Height is: " $ TheEmoDisplayArea.WinHeight * Root.GUIScale $ " LL height is: " $ DrawnMiniFrameList.GetMiniFrameListHieght());
+
+ 	DrawnMiniFrameList.Clear();
  }
+
+function PrepareMFDrawLL()
+{
+}
+
+function CDMiniFrameList AddMiniFrame(string NewLine)
+{
+	local CDMiniFrameList L;
+
+	return L;
+}
+
+function CDMiniFrameList CheckMaxRows()
+{
+	local CDMiniFrameList L;
+	L = None;
+
+	while(MaxMFRows > 0 && DrawnMiniFrameList.Count() > MaxMFRows - 1 && DrawnMiniFrameList.Next != None)
+	{
+		L = CDMiniFrameList(DrawnMiniFrameList.Next);
+		RemoveWrap(L);
+		L.Remove();
+	}
+
+	return L;
+}
+
+function RemoveWrap(CDMiniFrameList L)
+{
+	local CDMiniFrameList N;
+
+	// Remove previous word-wrapping
+	N = CDMiniFrameList(L.Next);
+	while(N != None && N.WrapParent == L)
+	{
+		L.Text = L.Text $ N.Text;
+		N.Remove();
+		N = CDMiniFrameList (L.Next);
+	}
+}
 
  function  DrawDepressedMiniFrameCell(Canvas C, float FrameStartX, float FrameStartY, float Width, float Height, string TextSymbol, Texture Tex)
  {
