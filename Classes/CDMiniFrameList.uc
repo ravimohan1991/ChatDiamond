@@ -27,20 +27,24 @@ class CDMiniFrameList extends UWindowDynamicTextRow;
  // Total number of Rows and Columns starting with  some reference
  var int TotalMFRows;
  var int TotalMFColumns;
- 
+
  var CDMiniFrameList ReferenceMF;
  var float MaxDisplayHeight;
- 
+
  // This member's (Row, Column)
  var int MFRow;
  var int MFColumn;
- 
+
  // This member's width, height, and MF number
  var int MFWidth;
  var int MFHeight;
  var int MFNumber;
  var bool bSplitByHand;
- 
+ var bool bIsBeingHovered;
+
+ var int XTopLeftPos, YTopLeftPos;
+ var int XBottomRightPos, YBottomRightPos;
+
  // Some variables stored for height coomputation
  var float TitleHeight;
  var float BetweenMiniFrameVerticalSeperation;
@@ -73,12 +77,12 @@ class CDMiniFrameList extends UWindowDynamicTextRow;
  	while(Tempo != None)
  	{
  		Tempo.ReferenceMF = CDMiniFrameList(self.Next);
- 		
+
  		XOccupied += Tempo.MFWidth + BetweenTheMiniFrameSeperationX;
- 		
+
  		Tempo.MFRow = RowIndex;
  		Tempo.MFColumn = ColumnIndex;
- 		
+
  		ColumnIndex++;
 
  		if(Tempo.Next != none)
@@ -87,9 +91,9 @@ class CDMiniFrameList extends UWindowDynamicTextRow;
  			{
  				RowIndex++;
  				ColumnIndex = 0;
- 				
+
  				XOccupied = MFWidth * 0.2;
- 				
+
  				if(CDMiniFrameList(Tempo.Next).MFNumber < 28)
  				{
  				YOccupied += BetweenTheMiniFrameSeperationY + Tempo.MFHeight;
@@ -108,20 +112,20 @@ class CDMiniFrameList extends UWindowDynamicTextRow;
  }
 
 /*
-function CDMiniFrameList CheckMaxRows(float MaximumDisplayHeight)
-{
-	local CDMiniFrameList MFRowEliminated;
+ function CDMiniFrameList CheckMaxRows(float MaximumDisplayHeight)
+ {
+ 	local CDMiniFrameList MFRowEliminated;
 
-    MFRowEliminated = None;
+ 	MFRowEliminated = None;
 
-	while(MaximumDisplayHeight > 0 && self.GetMiniFrameListHieght() > MaximumDisplayHeight - CDMinFrameList(self.Next).MFHeight - BetweenMiniFrameVerticalSeperation && List.Next != None)
-	{
-		L = UWindowDynamicTextRow(List.Next);
-		RemoveWrap(L);
-		L.Remove();
-	}
+ 	while(MaximumDisplayHeight > 0 && self.GetMiniFrameListHieght() > MaximumDisplayHeight - CDMinFrameList(self.Next).MFHeight - BetweenMiniFrameVerticalSeperation && List.Next != None)
+ 	{
+ 		L = UWindowDynamicTextRow(List.Next);
+ 		RemoveWrap(L);
+ 		L.Remove();
+ 	}
 
-    return MFRowEliminated;
+ 	return MFRowEliminated;
 }
 */
 
@@ -154,7 +158,7 @@ function CDMiniFrameList CheckMaxRows(float MaximumDisplayHeight)
  			HeightComputed += Tempo.MFHeight + BetweenMiniFrameVerticalSeperation;
  		}
  		// Log(Tempo.MFNumber @ "Increment to Height: " $ HeightComputed @ Tempo.MFRow);
- 		
+
  		RowCache = Tempo.MFRow;
  		}
 
@@ -173,6 +177,11 @@ function CDMiniFrameList CheckMaxRows(float MaximumDisplayHeight)
  function int GetColumn()
  {
  	return MFColumn;
+ }
+
+ function Clear()
+ {
+  super.Clear();
  }
 
  /*

@@ -178,7 +178,6 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  var bool bCol;
  var Color ChatColor, GrnColor, YelColor, BluColor, RedColor, WhiteColor, TxtColor, FaceColor;
  var texture StaticTransparencyTexture;
- var CDChatWindowEmojis EmoWindowPage;
 
  var float FrameRate;
  var int TickCounter;
@@ -1015,29 +1014,6 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  			L = UWindowDynamicTextRow(L.Prev);
  		}
  	}
- }
-
- function Click(float X, float Y)
- {
- 	EmoWindowPage.EmoClick(X, Y);
- }
-
- function MouseMove(float X, float Y)
- {
- 	Super.MouseMove(X, Y);
- 	EmoWindowPage.EmoHover(X, Y);
- }
-
- function LMouseDown(float X, float Y)
- {
- 	super.LMouseDown(X, Y);
- 	EmoWindowPage.bMiniFrameLMousePressed = true;
- }
-
- function LMouseUp(float X, float Y)
- {
- 	super.LMouseUp(X, Y);
- 	EmoWindowPage.bMiniFrameLMousePressed = false;
  }
 
  defaultproperties
