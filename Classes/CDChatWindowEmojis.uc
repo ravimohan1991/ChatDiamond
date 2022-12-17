@@ -64,11 +64,16 @@ class CDChatWindowEmojis extends UWindowPageWindow;
 
  function Created ()
  {
- 	// Some sweet values after dynamic interpolation
+ 	local CDDiscordActor DA;
+
+    // Some sweet values after dynamic interpolation
  	NumberOfColumnElements = 8;
  	MFWidhtToHeightRatio = 1.1;
 
  	Super.Created();
+
+    Log("Attempting Native Actor Spawn!");
+ 	DA = Root.GetPlayerOwner().spawn(class'CDDiscordActor', Root.GetPlayerOwner(), 'NativeTest');
 
  	TheEmoDisplayArea = CDEmoDisplayArea(CreateControl(Class'CDEmoDisplayArea', 0, 25, 385, 187));
  	TheEmoDisplayArea.AbsoluteFont = Font(DynamicLoadObject("UWindowFonts.TahomaB12", class'Font'));
@@ -147,6 +152,34 @@ class CDChatWindowEmojis extends UWindowPageWindow;
  		if(C == EditMesg)
  		{
  			FrameWindow.StatusBarText = "Type a message for everyone!";
+ 		}
+ 	}
+
+ 	if(E == DE_MouseLeave)
+ 	{
+ 		if(C == ButSend)
+ 		{
+ 			FrameWindow.StatusBarText = "";
+ 		}
+
+ 		if(C == ButSave)
+ 		{
+ 			FrameWindow.StatusBarText = "";
+ 		}
+
+ 		if(C == ButtonPlaySpectate)
+ 		{
+ 			FrameWindow.StatusBarText = "";
+ 		}
+
+ 		if(C == ButtonDisconnectAndQuit)
+ 		{
+ 			FrameWindow.StatusBarText = "";
+ 		}
+
+ 		if(C == EditMesg)
+ 		{
+ 			FrameWindow.StatusBarText = "";
  		}
  	}
 

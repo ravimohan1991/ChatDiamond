@@ -55,9 +55,9 @@ class CDMiniFrameList extends UWindowDynamicTextRow;
  {
  	local int NumberOfRows;
  	local CDMiniFrameList Tempo;
- 	
+
  	NumberOfRows = -1;
- 	
+
  	Tempo = CDMiniFrameList(self.Next);
 
  	while(Tempo != none)
@@ -66,7 +66,7 @@ class CDMiniFrameList extends UWindowDynamicTextRow;
  		{
  		 NumberOfRows = Tempo.MFRow;
  		}
- 		
+
  		Tempo = CDMiniFrameList(Tempo.Next);
  	}
 
@@ -78,14 +78,14 @@ class CDMiniFrameList extends UWindowDynamicTextRow;
  {
  	local CDMiniFrameList Tempo;
  	local int RowCounterGauge, RowRegister;
- 	
+
  	Tempo = CDMiniFrameList(self.Next);
  	RowRegister = Tempo.MFRow;
- 	
+
  	while(Tempo.Next != none && RowCounterGauge != Number)
  	{
  		Tempo = CDMiniFrameList(Tempo.Next);
- 		
+
  		if(Tempo.MFRow != RowRegister)
  		{
  		RowCounterGauge++;
@@ -235,7 +235,7 @@ class CDMiniFrameList extends UWindowDynamicTextRow;
  	super.Clear();
  }
 
- /*
+/*
  *
  *		                                  /\
  *		                                 / /
