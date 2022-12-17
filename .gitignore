@@ -4,3 +4,7 @@ chatdiamond.log
 *.out
 chatdiamond.pdf
 chatdiamond.synctex.gz
+
+# UTNativeEssentials
+ChatDiamondBin
+UTNativeLightHouse
