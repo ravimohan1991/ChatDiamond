@@ -53,7 +53,9 @@
  var CDMiniFrameList DrawnMiniFrameList;
 
  var float MiniFrameBeingHovered;
-
+ var float VerticalSBPos;
+ var float VSBPosDiff;
+ var CDMiniFrameList VerticalSBTempo;
  var bool bPlayHoverSound;
  var bool bMiniFrameLMousePressed;
 
@@ -69,6 +71,9 @@
  	MiniFrameBeingHovered = -1;
 
  	bMiniFrameLMousePressed = false;
+ 	VerticalSBPos = VertSB.Pos;
+
+ 	VerticalSBPos = VertSB.ThumbStart;
 
  	if(DrawnMiniFrameList != None)
  	{
@@ -86,7 +91,14 @@
  {
  	local float MiniFrameX, MiniFrameY;
  	local float BetweenTheMiniFrameSeperationX, BetweenTheMiniFrameSeperationY;
- 	local CDMiniFrameList Tempo;
+ 	local CDMiniFrameList TempoMFToPaint;
+ 	local Region ThisWindowRegion;
+ 	local int SkipCount;
+
+ 	ThisWindowRegion.X = 0;
+ 	ThisWindowRegion.Y = 0;
+ 	ThisWindowRegion.W = WinWidth;
+ 	ThisWindowRegion.H = WinHeight;
 
  	// Some sweet values after dynamic interpolation
  	// More information: when no scaling, with minimum size
@@ -100,43 +112,73 @@
  	MiniFrameY = MFEmo.Height * 0.2;
  	MiniFrameX = MFEmo.Width * 0.2;
 
- 	// to see which one are to be painted and prepare LL accordingly
+ 	// See which one are to be painted and prepare LL accordingly
+
+ 	// First include all the mini frames in LL
  	PrepareMFDrawLL(MiniFrameY);
 
+ 	// Estimate and compute the row and column of each frame
+ 	DrawnMiniFrameList.ComputeRowAndColumnOfElements(ThisWindowRegion, MiniFrameY, BetweenTheMiniFrameSeperationX,
+ 	BetweenTheMiniFrameSeperationY);
+
+ 	// Compute visible rows
+ 	VisibleRows = ThisWindowRegion.H / (MFEmo.Height + 2 * BetweenTheMiniFrameSeperationY);
+ 	Count =  DrawnMiniFrameList.RowCount();
+
+ 	VertSB.SetRange(0, Count, VisibleRows);
+
+ 	if(Count <= VisibleRows)
+ 	{
+ 		VertSB.HideWindow();
+ 	}
+ 	else
+ 	{
+ 		VertSB.ShowWindow();
+ 	}
+
+ 	//Log("After skipping 2 rows, mini frame number got is: " @ CDMiniFrameList(DrawnMiniFrameList.Next).SkipRows(2).MFNumber);
+
+
+ 	SkipCount = VertSB.Pos;
+ 	TempoMFToPaint = DrawnMiniFrameList.SkipRows(SkipCount);
+
+
+ 	//Log("Display Height is: " $ WinHeight $ " LL height is: " $ DrawnMiniFrameList.GetMiniFrameListHieght());
+
  	// Iterate over the DrawnMiniFrameList LL
- 	Tempo = CDMiniFrameList(DrawnMiniFrameList.Next);
+ 	//Tempo = CDMiniFrameList(DrawnMiniFrameList.Next);
 
  	// For all emojis with vertical scrolling enabled
- 	while(Tempo != none)
+ 	while(TempoMFToPaint != none && MiniFrameY < WinHeight)
  	{
- 		if(Tempo.bIsBeingHovered)
+ 		if(TempoMFToPaint.bIsBeingHovered)
  		{
- 			if(Tempo.MFNumber < 28)
+ 			if(TempoMFToPaint.MFNumber < 28)
  			{
- 				DrawDepressedMiniFrameCell(C, MiniFrameX, MiniFrameY, Tempo.MFWidth, Tempo.MFHeight, GetEmojiTextSymbol(Tempo.MFNumber), GetEmojiTexture(Tempo.MFNumber));
- 				EmoWindowPage.EmoHelper(GetEmojiStatusBarText(Tempo.MFNumber), true);
+ 				DrawDepressedMiniFrameCell(C, MiniFrameX, MiniFrameY, TempoMFToPaint.MFWidth, TempoMFToPaint.MFHeight, GetEmojiTextSymbol(TempoMFToPaint.MFNumber), GetEmojiTexture(TempoMFToPaint.MFNumber));
+ 				EmoWindowPage.EmoHelper(GetEmojiStatusBarText(TempoMFToPaint.MFNumber), true);
  			}
  			else
  			{
- 				DrawDepressedMiniFrameCell(C, MiniFrameX, MiniFrameY, Tempo.MFWidth, Tempo.MFHeight, GetEmoteTextSymbol(Tempo.MFNumber), GetEmoteTexture(Tempo.MFNumber));
- 				EmoWindowPage.EmoHelper(GetEmoteStatusBarText(Tempo.MFNumber), true);
+ 				DrawDepressedMiniFrameCell(C, MiniFrameX, MiniFrameY, TempoMFToPaint.MFWidth, TempoMFToPaint.MFHeight, GetEmoteTextSymbol(TempoMFToPaint.MFNumber), GetEmoteTexture(TempoMFToPaint.MFNumber));
+ 				EmoWindowPage.EmoHelper(GetEmoteStatusBarText(TempoMFToPaint.MFNumber), true);
  			}
  		}
  		else
  		{
- 			if(Tempo.MFNumber < 28)
+ 			if(TempoMFToPaint.MFNumber < 28)
  			{
- 				DrawMiniFrameCell(C, MiniFrameX, MiniFrameY, Tempo.MFWidth, Tempo.MFHeight, GetEmojiTextSymbol(Tempo.MFNumber), GetEmojiTexture(Tempo.MFNumber));
+ 				DrawMiniFrameCell(C, MiniFrameX, MiniFrameY, TempoMFToPaint.MFWidth, TempoMFToPaint.MFHeight, GetEmojiTextSymbol(TempoMFToPaint.MFNumber), GetEmojiTexture(TempoMFToPaint.MFNumber));
  			}
  			else
  			{
- 				DrawMiniFrameCell(C, MiniFrameX, MiniFrameY, Tempo.MFWidth, Tempo.MFHeight, GetEmoteTextSymbol(Tempo.MFNumber), GetEmoteTexture(Tempo.MFNumber));
+ 				DrawMiniFrameCell(C, MiniFrameX, MiniFrameY, TempoMFToPaint.MFWidth, TempoMFToPaint.MFHeight, GetEmoteTextSymbol(TempoMFToPaint.MFNumber), GetEmoteTexture(TempoMFToPaint.MFNumber));
  			}
  		}
 
  		MiniFrameX += MFEmo.Width + BetweenTheMiniFrameSeperationX;
 
- 		if(Tempo.Next != none && CDMiniFrameList(Tempo.Next).bSplitByHand)
+ 		if(TempoMFToPaint.Next != none && CDMiniFrameList(TempoMFToPaint.Next).bSplitByHand)
  		{
  			MiniFrameX = MFEmo.Width * 0.2;
  			MiniFrameY += MFEmo.Height + 2 * BetweenTheMiniFrameSeperationY;
@@ -148,14 +190,24 @@
  			MiniFrameY += MFEmo.Height + BetweenTheMiniFrameSeperationY;
  		}
 
- 		Tempo = CDMiniFrameList(Tempo.Next);
+ 		TempoMFToPaint = CDMiniFrameList(TempoMFToPaint.Next);
  	}
 
  }
 
  function Click(float X, float Y)
  {
- 	EmoClick(X, Y);
+ 	EmoClick(X, Y + VSBPosDiff);
+ }
+
+ function Tick(float DeltaTime)
+ {
+ 	super.Tick(DeltaTime);
+
+ 	if(VertSB.ThumbStart != VerticalSBPos)
+ 	{
+ 		VSBPosDiff = VertSB.ThumbStart - VerticalSBPos;
+ 	}
  }
 
 /*******************************************************************************
@@ -188,7 +240,7 @@
  function MouseMove(float X, float Y)
  {
  	Super.MouseMove(X, Y);
- 	EmoHover(X, Y);
+ 	EmoHover(X, Y + VSBPosDiff);
  }
 
 /*******************************************************************************

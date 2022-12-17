@@ -273,14 +273,7 @@ class CDChatWindowEmojis extends UWindowPageWindow;
  	local float TitleXLength, TitleYLength;
  	local string StringToDraw;
 
- 	local Region ThisWindowRegion;
-
  	Super.Paint(C,MouseX,MouseY);
-
- 	ThisWindowRegion.X = 0;
- 	ThisWindowRegion.Y = 0;
- 	ThisWindowRegion.W = WinWidth;
- 	ThisWindowRegion.H = WinHeight;
 
  	// Page Title
  	C.Font = Root.Fonts[F_LargeBold];

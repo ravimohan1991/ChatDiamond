@@ -46,10 +46,62 @@ class CDMiniFrameList extends UWindowDynamicTextRow;
  var int XBottomRightPos, YBottomRightPos;
 
  // Some variables stored for height coomputation
- var float TitleHeight;
+ var float BeginHeight;
  var float BetweenMiniFrameVerticalSeperation;
 
- function ComputeRowAndColumnOfElements(Region DisplayArea, float TitleYLength,
+
+ // Should be called after ComputeRowAndColumnOfElements()
+ function int RowCount()
+ {
+ 	local int NumberOfRows;
+ 	local CDMiniFrameList Tempo;
+ 	
+ 	NumberOfRows = -1;
+ 	
+ 	Tempo = CDMiniFrameList(self.Next);
+
+ 	while(Tempo != none)
+ 	{
+ 		if(Tempo.MFRow != NumberOfRows)
+ 		{
+ 		 NumberOfRows = Tempo.MFRow;
+ 		}
+ 		
+ 		Tempo = CDMiniFrameList(Tempo.Next);
+ 	}
+
+ 	return NumberOfRows + 1;
+ }
+
+ // Starting from current MF
+ function CDMiniFrameList SkipRows(int Number)
+ {
+ 	local CDMiniFrameList Tempo;
+ 	local int RowCounterGauge, RowRegister;
+ 	
+ 	Tempo = CDMiniFrameList(self.Next);
+ 	RowRegister = Tempo.MFRow;
+ 	
+ 	while(Tempo.Next != none && RowCounterGauge != Number)
+ 	{
+ 		Tempo = CDMiniFrameList(Tempo.Next);
+ 		
+ 		if(Tempo.MFRow != RowRegister)
+ 		{
+ 		RowCounterGauge++;
+ 		RowRegister++;
+ 		}
+ 	}
+
+ 	if(Tempo != none)
+ 	{
+ 		return Tempo;
+ 	}
+
+ 	return none;
+ }
+
+ function ComputeRowAndColumnOfElements(Region DisplayArea, float YBegin,
           float BetweenTheMiniFrameSeperationX, float BetweenTheMiniFrameSeperationY)
  {
  	local CDMiniFrameList Tempo;
@@ -65,10 +117,10 @@ class CDMiniFrameList extends UWindowDynamicTextRow;
  	RowIndex = 0;
  	ColumnIndex = 0;
 
- 	XOccupied += MFWidth * 0.2 + MFWidth + BetweenTheMiniFrameSeperationX;
- 	YOccupied += 2 * TitleYLength;
+ 	XOccupied += MFWidth * 0.2;
+ 	YOccupied = YBegin;
 
- 	TitleHeight = TitleYLength;
+ 	BeginHeight = YBegin;
  	BetweenMiniFrameVerticalSeperation = BetweenTheMiniFrameSeperationY;
 
  	// LL iteration
@@ -137,7 +189,7 @@ class CDMiniFrameList extends UWindowDynamicTextRow;
  	local float HeightComputed;
  	local int RowCache;
 
- 	HeightComputed = 2 * TitleHeight;
+ 	HeightComputed = BeginHeight;
  	RowCache = -1;// Heh, fix for the first LL element being dummy
 
  	// Log("Ystarting point for computation: " @ HeightComputed @ BetweenMiniFrameVerticalSeperation);
@@ -153,20 +205,19 @@ class CDMiniFrameList extends UWindowDynamicTextRow;
  			{
  				HeightComputed += Tempo.MFHeight + 2 * BetweenMiniFrameVerticalSeperation;
  			}
- 		else
- 		{
- 			HeightComputed += Tempo.MFHeight + BetweenMiniFrameVerticalSeperation;
- 		}
- 		// Log(Tempo.MFNumber @ "Increment to Height: " $ HeightComputed @ Tempo.MFRow);
+ 			else
+ 			{
+ 				HeightComputed += Tempo.MFHeight + BetweenMiniFrameVerticalSeperation;
+ 			}
+ 			// Log(Tempo.MFNumber @ "Increment to Height: " $ HeightComputed @ Tempo.MFRow);
 
- 		RowCache = Tempo.MFRow;
+ 			RowCache = Tempo.MFRow;
  		}
 
  		Tempo = CDMiniFrameList(Tempo.Next);
  	}
 
- 	// Since gap after last row shouldn't be counted!!
- 	return HeightComputed - BetweenMiniFrameVerticalSeperation;
+ 	return HeightComputed;
  }
 
  function int GetRow()
@@ -181,7 +232,7 @@ class CDMiniFrameList extends UWindowDynamicTextRow;
 
  function Clear()
  {
-  super.Clear();
+ 	super.Clear();
  }
 
  /*

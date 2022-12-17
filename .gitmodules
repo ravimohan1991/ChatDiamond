@@ -1,0 +1,3 @@
+[submodule "UTMiniSDK"]
+	path = UTMiniSDK
+	url = https://github.com/ravimohan1991/UTMiniSDK.git
