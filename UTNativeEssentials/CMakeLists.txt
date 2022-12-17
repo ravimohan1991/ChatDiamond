@@ -120,13 +120,13 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${REPOSITORYROOT}/ChatDiamondBin/${PLATFORM_
 # Set compiler and linker flags
 ################################################################################
 
-add_compile_definitions("$<$<CONFIG:Debug>:_DEBUG>")
-add_compile_definitions("$<$<CONFIG:Release>:_RELEASE>")
-add_compile_definitions("$<$<CONFIG:Release>:NDEBUG>")
-add_compile_definitions("$<$<CONFIG:Release>:RELEASE>")
+#add_compile_definitions("$<$<CONFIG:Debug>:_DEBUG>")
+#add_compile_definitions("$<$<CONFIG:Release>:_RELEASE>")
+#add_compile_definitions("$<$<CONFIG:Release>:NDEBUG>")
+#add_compile_definitions("$<$<CONFIG:Release>:RELEASE>")
 
-add_compile_definitions(UTGLR_UT_BUILD)
-add_compile_definitions(UTGLR_USES_ALPHABLEND=1)
+#add_compile_definitions(UTGLR_UT_BUILD)
+#add_compile_definitions(UTGLR_USES_ALPHABLEND=1)
 add_compile_definitions(ENGINE_ARCHITECTURE="${OLDUNREAL_CPU}")
 
 if(LINUX)
@@ -220,8 +220,6 @@ if(CMAKE_COMPILER_IS_GNUCC OR (CMAKE_CXX_COMPILER_ID MATCHES "Clang"))
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pipe -fsigned-char -fno-strict-aliasing -Wno-inline-new-delete")
   set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -pipe -fsigned-char -fno-strict-aliasing")
 endif()
-
-set(OLDUNREAL_PACKAGE_LINKAGE SHARED)
 
 if(OLDUNREAL_USE_ASAN)
   add_compile_options("-fsanitize=address")

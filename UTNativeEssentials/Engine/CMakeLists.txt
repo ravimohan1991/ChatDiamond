@@ -11,7 +11,7 @@ project(Engine)
 
 file(GLOB Engine_HEADERS Inc/*.h)
 
-add_library(Engine ${OLDUNREAL_PACKAGE_LINKAGE} IMPORTED)
+add_library(Engine SHARED IMPORTED)
 
 # INTERFACE (Something that Consumers require but Producers don't)
 # Since I am a library coder here, I am the Producer

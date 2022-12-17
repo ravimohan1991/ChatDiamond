@@ -11,7 +11,7 @@ project(Core)
 
 file(GLOB CORE_HEADERS Inc/*.h)
 
-add_library(Core ${OLDUNREAL_PACKAGE_LINKAGE} IMPORTED)
+add_library(Core SHARED IMPORTED)
 
 # INTERFACE (Something that Consumers require but Producers don't)
 # Since I am a library coder here, I am the Producer
