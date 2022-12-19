@@ -31,7 +31,7 @@
 class CDAboutWindow expands UWindowPageWindow;
 
  var color WhiteColor, GrayColor;
- var color ChatDiamondTitleColor;
+ var color ChatDiamondTitleColor, CreditsCategoryColor;
 
  var float  PrevWinWidth, PrevWinHeight;
  var string DetailMode;
@@ -40,7 +40,16 @@ class CDAboutWindow expands UWindowPageWindow;
 
  function Created()
  {
- 	Super.Created();
+    local int CategoryPadding, AfterCategoryTitlePadding;
+    local int CategoryItemPadding;
+
+    Super.Created();
+
+    CategoryPadding = 40;
+    AfterCategoryTitlePadding = 20;
+
+    CategoryItemPadding = 10;
+
 
  	CDCreditsControl = CDUWindowCreditsControl(CreateWindow(class'CDUWindowCreditsControl', 0, 0, WinWidth, WinHeight));
  	CDCreditsControl.Register(Self);
@@ -48,26 +57,40 @@ class CDAboutWindow expands UWindowPageWindow;
  	CDCreditsControl.Initiate();
 
  	CDCreditsControl.AddLineText("Chat Diamond", 3, ChatDiamondTitleColor, true);
- 	CDCreditsControl.AddPadding(5);
+ 	CDCreditsControl.AddPadding(AfterCategoryTitlePadding);
  	CDCreditsControl.AddLineText("Version: "$ class'CDUTConsole'.default.Version);
- 	CDCreditsControl.AddPadding(10);
+ 	CDCreditsControl.AddPadding(CategoryPadding);
 
- 	CDCreditsControl.AddLineText("Coder:");
- 	CDCreditsControl.AddPadding(4);
+ 	CDCreditsControl.AddLineText("Coder:",, CreditsCategoryColor);
+ 	CDCreditsControl.AddPadding(AfterCategoryTitlePadding);
  	CDCreditsControl.AddLineText("The_Cowboy", 1);
- 	CDCreditsControl.AddPadding(15);
- 	CDCreditsControl.AddLineText("Special Thanks To:");
- 	CDCreditsControl.AddPadding(4);
+ 	CDCreditsControl.AddPadding(CategoryPadding);
+
+ 	CDCreditsControl.AddLineText("Special Thanks To:",, CreditsCategoryColor);
+ 	CDCreditsControl.AddPadding(AfterCategoryTitlePadding);
+ 	CDCreditsControl.AddLineText("No0ne (for nice suggestions)", 1);
+ 	CDCreditsControl.AddPadding(CategoryItemPadding);
  	CDCreditsControl.AddLineText("ProAsm", 1);
+ 	CDCreditsControl.AddPadding(CategoryItemPadding);
  	CDCreditsControl.AddLineText("Daan 'Defrost' Scheerens from Zeropoint Productions", 1);
  	CDCreditsControl.AddLineUrl("https://github.com/dscheerens/nexgen",, "GitHub");
- 	CDCreditsControl.AddLineText("No0ne", 1);
+ 	CDCreditsControl.AddPadding(CategoryItemPadding);
  	CDCreditsControl.AddLineText("Bruce Bickar aka BDB", 1);
  	CDCreditsControl.AddLineUrl("https://www.utassault.net/leagueas/",, "LeagueAS");
+ 	CDCreditsControl.AddPadding(CategoryItemPadding);
  	CDCreditsControl.AddLineText("Mongo and DrSin", 1);
+ 	CDCreditsControl.AddPadding(CategoryItemPadding);
  	CDCreditsControl.AddLineText("[os]sphx", 1);
+ 	CDCreditsControl.AddPadding(CategoryItemPadding);
  	CDCreditsControl.AddLineText("Dean Harmon (for WOT Greal)", 1);
- 	CDCreditsControl.AddPadding(20);
+ 	CDCreditsControl.AddPadding(CategoryItemPadding);
+ 	CDCreditsControl.AddLineText("Anthrax and UT99 patch team", 1);
+ 	CDCreditsControl.AddLineText("Anthrax again for UTDemo Manager", 1);
+ 	CDCreditsControl.AddPadding(CategoryItemPadding);
+ 	CDCreditsControl.AddLineText("[]KAOS[]Casey for", 1);
+ 	CDCreditsControl.AddLineUrl("https://www.oldunreal.com/phpBB3/viewtopic.php?f=37&t=3938",, "Native-Mod Tutorial");
+ 	CDCreditsControl.AddPadding(CategoryPadding);
+
  	CDCreditsControl.AddLineUrl("https://eatsleeput.com/d/192-chatdiamond", 2 ,"Forum");
  	CDCreditsControl.AddLineText("Please visit the forum for suggestions and feedbacks");
 
@@ -139,6 +162,7 @@ class CDAboutWindow expands UWindowPageWindow;
  defaultproperties
  {
  	ChatDiamondTitleColor=(R=180,G=180,B=180)
+ 	CreditsCategoryColor=(R=200,G=40,B=100)
  }
 
 /*

@@ -106,7 +106,7 @@ class CDUWindowCreditsControl extends UWindowDialogControl;
  	var string Text;
  	var string Url;
  	var byte Font;
- 	var Color Color;
+ 	var Color LineColor;
  	var bool Underline;
 
  	var Texture Image;
@@ -186,7 +186,7 @@ class CDUWindowCreditsControl extends UWindowDialogControl;
 // ============================================================================
 
  function bool AddLineText(string Text, optional byte Font,
-                                       optional Color Color,
+                                       optional Color TextColor,
                                        optional bool Underline)
  {
 
@@ -198,7 +198,7 @@ class CDUWindowCreditsControl extends UWindowDialogControl;
  	Lines[CountLines].Text      = Text;
  	Lines[CountLines].Url       = "";
  	Lines[CountLines].Font      = Font;
- 	Lines[CountLines].Color     = Color;
+ 	Lines[CountLines].LineColor = TextColor;
  	Lines[CountLines].Underline = Underline;
  	Lines[CountLines].Padding   = 0;
 
@@ -228,7 +228,7 @@ class CDUWindowCreditsControl extends UWindowDialogControl;
 
  	Lines[CountLines].Url       = Url;
  	Lines[CountLines].Font      = Font;
- 	Lines[CountLines].Color     = ColorLink;
+ 	Lines[CountLines].LineColor = ColorLink;
  	Lines[CountLines].Underline = true;
  	Lines[CountLines].Padding   = 2;
 
@@ -618,14 +618,16 @@ class CDUWindowCreditsControl extends UWindowDialogControl;
 
  		if (Len(Lines[IndexLine].Text) > 0)
  		{
- 			if (Lines[IndexLine].Color.R == 0 &&
- 					Lines[IndexLine].Color.G == 0 &&
- 					Lines[IndexLine].Color.B == 0)
- 			Canvas.DrawColor = ColorDefault;
- 		}
- 		else
- 		{
- 			Canvas.DrawColor = Lines[IndexLine].Color;
+ 			if (Lines[IndexLine].LineColor.R == 0 &&
+ 					Lines[IndexLine].LineColor.G == 0 &&
+ 					Lines[IndexLine].LineColor.B == 0)
+			{
+ 			    Canvas.DrawColor = ColorDefault;
+ 			}
+ 		    else
+ 		    {
+ 			    Canvas.DrawColor = Lines[IndexLine].LineColor;
+ 		    }
  		}
 
  		Canvas.DrawColor = Canvas.DrawColor * Fade;
@@ -703,7 +705,7 @@ class CDUWindowCreditsControl extends UWindowDialogControl;
  	Color.R = byte(FClamp(Fade, 0.0, 1.0) * float(Color.R));
  	Color.G = byte(FClamp(Fade, 0.0, 1.0) * float(Color.G));
  	Color.B = byte(FClamp(Fade, 0.0, 1.0) * float(Color.B));
- 	
+
  	return Color;
  }
 
@@ -722,10 +724,10 @@ class CDUWindowCreditsControl extends UWindowDialogControl;
  	ColorDefault=(R=224,G=224,B=224)
  	ColorImage=(R=255,G=255,B=255)
  	ColorLink=(R=64,G=64,B=255)
- 	
+
  	DelayFade=0.2
  	DelayScroll=0
- 	
+
  	SpeedFade=1.0
  	SpeedScroll=32.0
  }

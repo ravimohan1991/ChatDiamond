@@ -15,6 +15,7 @@
 \usepackage{soul}
 \usepackage{makecell}
 \usepackage{makeidx}
+\usepackage{forest}
 
 \definecolor{mygreen}{rgb}{0,0.6,0}
 \definecolor{mygray}{rgb}{0.5,0.5,0.5}
@@ -81,7 +82,7 @@
   title=\lstname                   % show the filename of files included with \lstinputlisting; also %try caption instead of title
 } %optionally)
 
-Chat Diamond (version \ChatDiamondVersion) is a purely client-side mod for Unreal Tournament G.O.T.Y which relplaces the default UT console with a more appropriate one.  This functionality allows the achievement of the following
+Chat Diamond (version \ChatDiamondVersion) is a purely client-side mod for Unreal Tournament G.O.T.Y (UT99) which relplaces the default UT console with a more appropriate one.  This functionality allows the achievement of the following
 \begin{itemize}
 \item Gathering of raw messages delivered to the console and relevant categorization, along with chat message seperation, of them.
 \item Introduction of appropriate web-query for translation to local or demand of the language.
@@ -90,7 +91,7 @@ Chat Diamond (version \ChatDiamondVersion) is a purely client-side mod for Unrea
 \begin{figure}
 \centering
 \includegraphics[width=0.4\textwidth]{img}
-\caption{A screenshot of the Chat Diamond \ChatDiamondVersion~Chat.}
+\caption{Chat Diamond \ChatDiamondVersion~Chat.}
 \label{fig:chatdiamond}
 \end{figure}
 
@@ -148,7 +149,7 @@ Please keep in mind that this is very initial stage of Chat Diamond (\ChatDiamon
 and date format shall be made available as we progress with the development cycle.
 
 \section{Installation}
-Chat Diamond is developed and tested with UT 469c client.  Although the mod should work on previous versions, I take no pains for maintaining that code simply because I feel that we all should work towards pushing forward the community effort in driving the game (and UE 1) towards modern experience.  So by not supporting the code for earlier versions I am supporting the later versions.
+Chat Diamond is developed and tested with UT99, 469c client.  Although the mod should work on previous versions, I take no pains for maintaining that code simply because I feel that we all should work towards pushing forward the community effort in driving the game (and UE 1) towards modern experience.  So by not supporting the code for earlier versions I am supporting the later versions.
 
 With that being written, feel free to send pull requests to \href{https://github.com/ravimohan1991/ChatDiamond/}{Chat Diamond} repository, even for ealier game versions.
 
@@ -258,48 +259,19 @@ event TeamMessage( PlayerReplicationInfo PRI, coerce string S, name Type, option
 }     
 \end{lstlisting}
 
-It is clear that both the console and HUD should receieve same messages with no discrimination (unless if coder specifically demands, as mentioned in \ref{foot:hudconsolediff}).  The console would display them, in what I would like to think, \emph{raw} form.  The diff, between console and HUD, is shown in the figure \ref{fig:chatdiamond_console_hud}
+It is clear that both the console and HUD should receieve same messages with no discrimination (unless if coder specifically demands, as mentioned in \ref{foot:hudconsolediff}).  The console would display them, in what I would like to think, \emph{raw} form.  The \emph{diff}, between console and HUD, is shown in the figure \ref{fig:chatdiamond_console_hud}
 
 \begin{figure}
 \centering
-\label{fig:chatdiamond_console_hud}
 \includegraphics[width=0.4\textwidth]{consoleundhud}
 \caption{UT99 HUD with Chat Diamond console}
+\label{fig:chatdiamond_console_hud}
 \end{figure}
 
-Please note that Chat Diamond's console is not much different from default UT99 visually.  The changes are how Chat Diamond interprets the raw messages thrown and utilize them in a constructive way. So this is where magic \href{https://github.com/ravimohan1991/ChatDiamond/blob/859323fbd80266b21c9dab163b067cacfa318463/Classes/CDUTConsole.uc#L52-L71}{code} comes in.  In order to understand that let me first demonstrate UT messaging by a table\footnote{\label{foot:hudconsolediff} The ``messages'' for instance: `plushie was smaked down by Mental\_Instituitions's Rocket Launcher', are actually strings which can be seen in the line 117 of the \href{http://uncodex.ut-files.com/UT/v436/Source_botpack/deathmessageplus.html}{code}.  This also shows how some deathmessages can be suppressed in the console thus differing from HUD.}.
+Please note that Chat Diamond's console is not much different from default UT99, visually.  The changes are how Chat Diamond interprets the raw messages thrown and utilize them in a constructive way. So this is where magic \href{https://github.com/ravimohan1991/ChatDiamond/blob/859323fbd80266b21c9dab163b067cacfa318463/Classes/CDUTConsole.uc#L52-L71}{code} comes in.  In order to understand that let me first demonstrate UT messaging by a table\footnote{\label{foot:hudconsolediff} The ``messages'' for instance: `plushie was smaked down by Mental\_Instituitions's Rocket Launcher', are actually strings which can be seen in the line 117 of the \href{http://uncodex.ut-files.com/UT/v436/Source_botpack/deathmessageplus.html}{code}.  This also shows how some deathmessages can be suppressed in the console thus differing from HUD.}.
 
-\begin{tabcontainer}
- \begin{tabularx}{\textwidth}{| X | X | X | X |}
- \hline
- \makecell{Console\\ Owner\\ State} & \makecell{Death\\ Messages}\footnote{A string rather.  See \ref{foot:hudconsolediff}}  & \makecell{Server\\ Announcements\footnote{Server adds?}} & \makecell{Talk \\ TeamTalk} \\ [0.5ex] 
- \hline\hline
- 
-\makecell{Multiplayer \\Spectator} & \makecell{\color{red}{plushie was}\\ \color{red}{smaked down}\\ \color{red}{by MI's}\\ \color{red}{Rocket Launcher}} & \makecell{Type !cg to\\ visit combogib\\ grapple server}  & \makecell{A: Self Sent- \\RN\footnote{Receiever's (who is spectator) Name}:Hola\\  \\ B. By Player-\\ RN:SN\footnote{Sender's name, who is a player.}:Hola \\ \\ C. By spectator\footnote{A different spectator}\\ SN:Hola}\\
+The mapping to relevant arguments is like so in Table \ref{tab:messageform}.
 
-\hline
-  \end{tabularx}
-  \caption{Table of Messages.}
-  \label{tab:messform}
-\end{tabcontainer}
-
-The mapping to relevant arguments is like so
-
-\begin{tabcontainer}
- \begin{tabularx}{\textwidth}{| X | X | X | X |}
- \hline
- \makecell{Console\\ Owner\\ State} & \makecell{Death\\ Messages}\footnote{A string rather.  See \ref{foot:hudconsolediff}}  & \makecell{Server\\ Announcements\footnote{Server adds?}} & \makecell{Talk \\ TeamTalk} \\ [0.5ex] 
- \hline\hline
- 
-\makecell{Multiplayer \\Spectator} & \makecell{MessageType:  \\ DeathMessage?\\ \\ PRI:  Local?} & \makecell{MessageType:\\ Event \\  \\ PRI: Local}  & \makecell{A. \\ MessageType:\\ Event  \\ PRI: Local \\ \\  B.\\ MessageType: \\ Event \\ PRI: local\\ \\ C. \\  MessageType: \\ Event \\ PRI: Local}\\
-    \hline
-
-\makecell{Multiplayer\\ Player} & \makecell{Message Type: \\ Event \\ PRI: Local? } & \makecell{Message Type: \\ Event \\ PRI: None} & \makecell{A. \\ MessageType: \\ Say\\ PRI: Local\\ \\ B. \\ MessageType: \\ Say \\ PRI: SenderPRI \\ \\ C. \\ MessageType: \\ ? \\ PRI: ?}\\
-    \hline
-  \end{tabularx}
-  \caption{Table of argument types.}
-  \label{tab:messform}
-\end{tabcontainer}
 
 The tables need to be explained and pondered.
 
@@ -387,5 +359,100 @@ first hints of reflection system.
 \item In order to linearize the story of native coding and start producing practical code, we need to first learn few ``game-dev'' terminologies
 and practices.
 \end{itemize}
+
+\subsection{Why Native Code?}
+Unrealscript is a highly managed language which comes with limitations, which is characteristic of any managed language actually, such as slow(er) 
+runtime (when compared with C++), ability to fuse with well defined C++ applications (like Discord), and lack of programmers' choice or taste.  Don't get
+me wrong, the language is best for what it does, scripting mods for the game.  Since this is 2020 decade, along with native support, there is no 2000's environment 
+limitation, especially with the new community patches.
+
+\subsection{Build System}
+I have been using combination of Wot Greal (unrealscript code) and Microsoft Visual Studio 2022 (C++ code) IDEs for developing Chat Diamond.  
+Therefore I have organized the repository with the conforming hierarchical structure.
+
+\begin{forest}
+  for tree={
+    font=\ttfamily,
+    grow'=0,
+    child anchor=west,
+    parent anchor=south,
+    anchor=west,
+    calign=first,
+    edge path={
+      \noexpand\path [draw, \forestoption{edge}]
+      (!u.south west) +(7.5pt,0) |- node[fill,inner sep=1.25pt] {} (.child anchor)\forestoption{edge label};
+    },
+    before typesetting nodes={
+      if n=1
+        {insert before={[,phantom]}}
+        {}
+    },
+    fit=band,
+    before computing xy={l=15pt},
+  }
+[UnrealTournament
+  [ChatDiamond (repository)
+    [Classes]
+    [Sounds]
+    [Textures]
+    [UTNativeEssentials
+        [ChatDiamond
+            [Inc(C++)]
+            [Src(C++)]
+        ]
+        [Core]
+        [Engine]
+        [CamkeLists.txt]
+        [GenerateProjectFiles.bat]
+    ]
+  ]
+  [System
+    [UnrealTournament.exe]
+    [UCC.exe]
+  ]
+]
+\end{forest}
+
+What we have achieved by doing so is a reconcolication of UT99's unrealscript modding environemnt with C++ dev environment yielding a schematic version control framework (Github 
+\href{https://github.com/ravimohan1991/ChatDiamond}{repository}).  
+All the C++ code goes to the folders marked with, well, C++ and unrealscript code goes to top level \FolderColor{ChatDiamond \textbackslash Classes} directory.  
+
+
+
+Make sure that your machine has \href{https://cmake.org/}{CMake} installed.
+
+\appendix
+
+\section{Messaging Tables}
+
+\begin{tabcontainer}
+ \begin{tabularx}{\textwidth}{| X | X | X | X |}
+ \hline
+ \makecell{Console\\ Owner\\ State} & \makecell{Death\\ Messages}\footnote{A string rather.  See \ref{foot:hudconsolediff}}  & \makecell{Server\\ Announcements\footnote{Server adds?}} & \makecell{Talk \\ TeamTalk} \\ [0.5ex] 
+ \hline\hline
+ 
+\makecell{Multiplayer \\Spectator} & \makecell{\color{red}{plushie was}\\ \color{red}{smaked down}\\ \color{red}{by MI's}\\ \color{red}{Rocket Launcher}} & \makecell{Type !cg to\\ visit combogib\\ grapple server}  & \makecell{A: Self Sent- \\RN\footnote{Receiever's (who is spectator) Name}:Hola\\  \\ B. By Player-\\ RN:SN\footnote{Sender's name, who is a player.}:Hola \\ \\ C. By spectator\footnote{A different spectator}\\ SN:Hola}\\
+
+\hline
+  \end{tabularx}
+  \caption{Table of Messages.}
+  \label{tab:messform}
+\end{tabcontainer}
+
+\begin{tabcontainer}
+ \begin{tabularx}{\textwidth}{| X | X | X | X |}
+ \hline
+ \makecell{Console\\ Owner\\ State} & \makecell{Death\\ Messages}\footnote{A string rather.  See \ref{foot:hudconsolediff}}  & \makecell{Server\\ Announcements\footnote{Server adds?}} & \makecell{Talk \\ TeamTalk} \\ [0.5ex] 
+ \hline\hline
+ 
+\makecell{Multiplayer \\Spectator} & \makecell{MessageType:  \\ DeathMessage?\\ \\ PRI:  Local?} & \makecell{MessageType:\\ Event \\  \\ PRI: Local}  & \makecell{A. \\ MessageType:\\ Event  \\ PRI: Local \\ \\  B.\\ MessageType: \\ Event \\ PRI: local\\ \\ C. \\  MessageType: \\ Event \\ PRI: Local}\\
+    \hline
+
+\makecell{Multiplayer\\ Player} & \makecell{Message Type: \\ Event \\ PRI: Local? } & \makecell{Message Type: \\ Event \\ PRI: None} & \makecell{A. \\ MessageType: \\ Say\\ PRI: Local\\ \\ B. \\ MessageType: \\ Say \\ PRI: SenderPRI \\ \\ C. \\ MessageType: \\ ? \\ PRI: ?}\\
+    \hline
+  \end{tabularx}
+  \caption{Table of argument types.}
+  \label{tab:messageform}
+\end{tabcontainer}
 
 \end{document}
