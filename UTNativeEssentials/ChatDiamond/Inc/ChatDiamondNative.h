@@ -1,6 +1,6 @@
 /*
  *   -----------------------
- *  |  ChatDiamondNative.cpp
+ *  |  ChatDiamondNative.h
  *   -----------------------
  *   This file is part of ChatDiamond for UT99.
  *

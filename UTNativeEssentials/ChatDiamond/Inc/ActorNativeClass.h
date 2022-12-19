@@ -1,7 +1,7 @@
 /*
- *   -----------------------
- *  |  ChatDiamondNative.cpp
- *   -----------------------
+ *   ---------------------
+ *  |  ActorNativeClass.h
+ *   ---------------------
  *   This file is part of ChatDiamond for UT99.
  *
  *   ChatDiamond is free software: you can redistribute and/or modify
