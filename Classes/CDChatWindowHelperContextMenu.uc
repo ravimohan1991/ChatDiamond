@@ -25,42 +25,46 @@
 
 class CDChatWindowHelperContextMenu expands UWindowRightClickMenu;
 
- var UWindowPulldownMenuItem Copy, OpenLocation;
+ var UWindowPullDownMenuItem CopyChatMessage;
+ var UWindowPullDownMenuItem CopyIP;
 
  var localized string OpenLocationName;
- var localized string CopyName;
 
  var UBrowserServerGrid	Grid;
  var UBrowserServerList	List;
+
+ var string TextToCopyFromChatCache;
 
  function Created()
 {
  	Super.Created();
 
- 	Copy = AddMenuItem(CopyName, None);
-
- 	OpenLocation = AddMenuItem(OpenLocationName, None);
+ 	CopyChatMessage = AddMenuItem("Copy this message", None);
+ 	CopyIP = AddMenuItem("Copy IP", None);
  	//AddMenuItem("-", None);
  }
 
  function ExecuteItem(UWindowPulldownMenuItem I)
  {
+ 	local string ExtractedIP;
+ 	local int IPCategory;
+
  	switch(I)
  	{
- 		case OpenLocation:
- 			UBrowserMainWindow(Grid.GetParent(class'UBrowserMainWindow')).ShowOpenWindow();
+ 		case CopyIP:
+ 			ExtractedIP = class'CDDiscordActor'.static.SpitIpFromChatString(TextToCopyFromChatCache, IPCategory);
+ 			GetPlayerOwner().CopyToClipboard(ExtractedIP);
  		break;
- 		case Copy:
- 			GetPlayerOwner().CopyToClipboard("unreal://"$List.IP$":"$string(List.GamePort));
+ 		case CopyChatMessage:
+ 			GetPlayerOwner().CopyToClipboard(TextToCopyFromChatCache);
  		break;
  	}
- 
+
  	Super.ExecuteItem(I);
  }
 
  function ShowWindow()
  {
-
  //	Copy.bDisabled = List == None || List.GamePort == 0;
 
  	Selected = None;
@@ -70,10 +74,6 @@ class CDChatWindowHelperContextMenu expands UWindowRightClickMenu;
 
 defaultproperties
 {
- 	Copy=None
- 	OpenLocation=None
- 	OpenLocationName="Open &Location"
- 	CopyName="&Copy Server Location From Text"
  	Grid=None
  	List=None
 }

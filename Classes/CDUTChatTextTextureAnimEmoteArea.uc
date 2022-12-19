@@ -513,27 +513,27 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
 
  function MessagePass(Canvas C, float DrawX, float DrawY, coerce string Message)
  {
- 	 local string DecMessage;
- 	 local string URLStringExtract;
+ 	local string DecMessage;
+ 	local string URLStringExtract;
 
-    if(MouseMoveY >= DrawY - (DefaultTextTextureLineHeight- UniformHorizontalPadding) && MouseMoveY < DrawY + UniformHorizontalPadding)
+ 	if(MouseMoveY >= DrawY - (DefaultTextTextureLineHeight- UniformHorizontalPadding) && MouseMoveY < DrawY + UniformHorizontalPadding)
  	{
  		ChatTextCache = Message;
  		bIsMouseOverChatText = true;
 
- 		 URLStringExtract = ParseAndMakeURL(Message, DrawX, DrawY, DecMessage);
+ 		URLStringExtract = ParseAndMakeURL(Message, DrawX, DrawY, DecMessage);
 
- 		 if(URLStringExtract != "")
- 		 {
- 		  CDChatWindow.SetChatTextStatus(URLStringExtract);
-          TextUrlCurrent = URLStringExtract;
+ 		if(URLStringExtract != "")
+ 		{
+ 			CDChatWindow.SetChatTextStatus(URLStringExtract);
+ 			TextUrlCurrent = URLStringExtract;
 
-          Cursor = Root.HandCursor;
-         }
-         else
-         {
-          Cursor = Root.NormalCursor;
-         }
+ 			Cursor = Root.HandCursor;
+ 		}
+ 		else
+ 		{
+ 			Cursor = Root.NormalCursor;
+ 		}
  	}
 
  	DrawChatMessageWithEmoji(C, DrawX, DrawY, Message);
@@ -541,25 +541,25 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
 
  function string ParseAndMakeURL(string Message, float DrawX, float DrawY, out string DecoratedMessage)
  {
-     local string URLString;
-     local int ICategory;
+ 	local string URLString;
+ 	local int ICategory;
 
-     URLString = class'CDDiscordActor'.static.SpitIpFromChatString(Message, ICategory);
+ 	URLString = class'CDDiscordActor'.static.SpitIpFromChatString(Message, ICategory);
 
-     if(ICategory == 0)
-     {
-      URLString = "unreal://" $ URLString;
-     }
-     else if(ICategory == 1)
-     {
-      URLString = "http://" $ URLString;
-     }
-     else if(ICategory == 2)
-     {
-      URLString = "";
-     }
+ 	if(ICategory == 0)
+ 	{
+ 		URLString = "unreal://" $ URLString;
+ 	}
+ 	else if(ICategory == 1)
+ 	{
+ 		URLString = "http://" $ URLString;
+ 	}
+ 	else if(ICategory == 2)
+ 	{
+ 		URLString = "";
+ 	}
 
-     return URLString;
+ 	return URLString;
  }
 
 
@@ -570,11 +570,12 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  	local float SomeHeight, TextWidth;
  	local float EmojiMultiplier;
  	local string URLString;
+ 	local int IPCategory;
 
  	EmojiMultiplier = 0.5;
 
  	// Could be loation of URL too
-    EmojiLocation = LookForEmojiTextRepresentation(Message, Identifier, URLString);
+ 	EmojiLocation = LookForEmojiTextRepresentation(Message, Identifier, URLString);
 
  	while(EmojiLocation != -1)
  	{
@@ -638,21 +639,21 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
 
  		else if(Identifier == 101)
  		{
- 		   TextSize(C, URLString, TextWidth, SomeHeight);
+ 			TextSize(C, URLString, TextWidth, SomeHeight);
 
- 		   URLYDrawCoordinate = DrawY + SomeHeight + 1;
+ 			URLYDrawCoordinate = DrawY + SomeHeight + 1;
 
-           DrawStretchedTexture(C, DrawX, URLYDrawCoordinate, TextWidth, 1, Texture 'UWindow.WhiteTexture');
+ 			DrawStretchedTexture(C, DrawX, URLYDrawCoordinate, TextWidth, 1, Texture 'UWindow.WhiteTexture');
 
-           URLYDrawCoordinate = DrawY;
+ 			URLYDrawCoordinate = DrawY;
 
-           C.DrawColor = BluColor;
-           TextAreaClipText(C, DrawX, URLYDrawCoordinate, URLString);
-           DrawX += TextWidth;
-           C.DrawColor = WhiteColor;
+ 			C.DrawColor = BluColor;
+ 			TextAreaClipText(C, DrawX, URLYDrawCoordinate, URLString);
+ 			DrawX += TextWidth;
+ 			C.DrawColor = WhiteColor;
 
-           Message = Mid(Message, EmojiLocation + len(URLString));
-        }
+ 			Message = Mid(Message, EmojiLocation + len(class'CDDiscordActor'.static.SpitIpFromChatString(URLString, IPCategory)));
+ 		}
 
  		EmojiLocation = LookForEmojiTextRepresentation(Message, Identifier, URLString);
  	}
@@ -685,10 +686,18 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
 
  	TickCounter++;
 
- 	if(!bIsMouseOverChatText && bIsStatusSetByChatMessage)
+ 	if(!bIsMouseOverChatText)
  	{
- 		CDChatWindow.SetChatTextStatus("");
- 		bIsStatusSetByChatMessage = false;
+ 		ChatTextCache = "";
+ 		HelperContextMenu.TextToCopyFromChatCache = "";
+ 		HelperContextMenu.CopyChatMessage.bDisabled = true;
+ 		HelperContextMenu.CopyIP.bDisabled = true;
+
+ 		if(bIsStatusSetByChatMessage)
+ 		{
+ 			CDChatWindow.SetChatTextStatus("");
+ 			bIsStatusSetByChatMessage = false;
+ 		}
 
  		Cursor = Root.NormalCursor;
  	}
@@ -718,22 +727,22 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
 
  	if(URLString != "")
  	{
-       URLLocation = Instr(MessageStringPart, URLString);
+ 		URLLocation = Instr(MessageStringPart, URLString);
 
-      if(ICategory == 0)
-      {
-        URLString = "unreal://" $ URLString;
-      }
-      else if(ICategory == 1)
-      {
-        URLString = "www." $ URLString;
-      }
-      else if(ICategory == 2)
-      {
-        URLString = "";
-      }
-       //IdentifyingIndex = 101;// Need to make a table for identification indices
-    }
+ 		if(ICategory == 0)
+ 		{
+ 			URLString = "unreal://" $ URLString;
+ 		}
+ 		else if(ICategory == 1)
+ 		{
+ 			URLString = "www." $ URLString;
+ 		}
+ 		else if(ICategory == 2)
+ 		{
+ 			URLString = "";
+ 		}
+ 		 //IdentifyingIndex = 101;// Need to make a table for identification indices
+ 	}
 
  	for(Counter = 0; Counter <= 29; Counter++)
  	{
@@ -783,33 +792,32 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  		}
  	}
 
-    // Ok the assumption must be maintained
-    // Reading from left to right there can be 2 scenrios
-    // 1. Either URLString is present
-    //    If present check the ordering with respect to emoji
-    //         If emoji is present and before URLSTring, return with emoji information
-    //         Else return URL information
-    // 2. URLSTring not present
-    //    Heh, return emoji if present and should never be even here if even emoji is not present
-    if(URLString == "")
-    {
-       IdentifyingIndex = EmoArray[EmoCount].Identifier;
-       return EmoArray[EmoCount].Location;
-    }
-    else
-    {
-     if(EmoArray[EmoCount].Location < URLLocation && !bNoEmoTextSymbol)
-     {
- 	    IdentifyingIndex = EmoArray[EmoCount].Identifier;
- 	    return EmoArray[EmoCount].Location;
- 	 }
- 	 else
- 	 {
-        IdentifyingIndex = 101;
-        return URLLocation;
-     }
-
-    }
+ 	// Ok the assumption must be maintained
+ 	// Reading from left to right there can be 2 scenrios
+ 	// 1. Either URLString is present
+ 	//    If present check the ordering with respect to emoji
+ 	//         If emoji is present and before URLSTring, return with emoji information
+ 	//         Else return URL information
+ 	// 2. URLSTring not present
+ 	//    Heh, return emoji if present and should never be even here if even emoji is not present
+ 	if(URLString == "")
+ 	{
+ 		IdentifyingIndex = EmoArray[EmoCount].Identifier;
+ 		return EmoArray[EmoCount].Location;
+ 	}
+ 	else
+ 	{
+ 		if(EmoArray[EmoCount].Location < URLLocation && !bNoEmoTextSymbol)
+ 		{
+ 			IdentifyingIndex = EmoArray[EmoCount].Identifier;
+ 			return EmoArray[EmoCount].Location;
+ 		}
+ 		else
+ 		{
+ 			IdentifyingIndex = 101;
+ 			return URLLocation;
+ 		}
+ 	}
 
  }
 
@@ -1225,25 +1233,32 @@ function Click(float X, float Y)
  	}
  }
 
-function RMouseUp(float X, float Y)
-{
-	local float MenuX, MenuY;
+ function RMouseUp(float X, float Y)
+ {
+ 	local float MenuX, MenuY;
+ 	local int IPCategory;
 
-	super.RMouseUp(X, Y);
+ 	super.RMouseUp(X, Y);
 
-	if(HelperContextMenu != None)
-	{
-		WindowToGlobal(X, Y, MenuX, MenuY);
-		HelperContextMenu.WinLeft = MenuX;
-		HelperContextMenu.WinTop = MenuY;
-		HelperContextMenu.ShowWindow();
+ 	if(HelperContextMenu != None)
+ 	{
+ 		WindowToGlobal(X, Y, MenuX, MenuY);
+ 		HelperContextMenu.WinLeft = MenuX;
+ 		HelperContextMenu.WinTop = MenuY;
+ 		HelperContextMenu.ShowWindow();
 
-		if(ChatTextCache != "")
-		{
+ 		if(ChatTextCache != "")
+ 		{
+ 			HelperContextMenu.CopyChatMessage.bDisabled = false;
+ 			HelperContextMenu.TextToCopyFromChatCache = ChatTextCache;
 
-        }
-	}
-}
+ 			if(class'CDDiscordActor'.static.SpitIpFromChatString(ChatTextCache, IPCategory) != "")
+ 			{
+ 				HelperContextMenu.CopyIP.bDisabled = false;
+ 			}
+ 		}
+ 	}
+ }
 
  defaultproperties
  {
