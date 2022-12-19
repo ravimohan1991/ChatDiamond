@@ -183,6 +183,16 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  var int TickCounter;
  var int TickCounterWarpNumber;
  var int DesiredAnimationFrameRate;
+ var float MouseMoveY;
+
+ var CDChatWindowHelperContextMenu HelperContextMenu;
+ var CDChatWindowChat CDChatWindow;
+
+ var bool bIsMouseOverChatText;
+ var bool bIsStatusSetByChatMessage;
+
+ var string ChatTextCache;
+ var string TextUrlCurrent;
 
  struct SkinStore
  {
@@ -261,6 +271,12 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
 
  	DesiredAnimationFrameRate = 24;
  	TickCounterWarpNumber = (int(FrameRate) / 24);
+
+ 	bIsStatusSetByChatMessage = false;
+ 	TextUrlCurrent = "";
+
+ 	HelperContextMenu = CDChatWindowHelperContextMenu(Root.CreateWindow(class'CDChatWindowHelperContextMenu', 0, 0, 100, 100, Self));
+ 	HelperContextMenu.HideWindow();
 
  	AnimShockEmote.CurrentAnimFrame = 0;
  	AnimShockEmote.TextSymbol = ":4";
@@ -460,7 +476,8 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  				TextSize(C, sName $ "  ", X2, Y1);
  				X = X1 + 2 + ChatFaceVerticalPadding + TextureXOccupied + 2 + X2;
 
- 				DrawChatMessageWithEmoji(C, X, Y, sMesg);
+ 				MessagePass(C, X, Y, sMesg);
+ 				//DrawChatMessageWithEmoji(C, X, Y, sMesg);
  			}
  			return DefaultTextTextureLineHeight;
  		}
@@ -482,17 +499,82 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  	return DefaultTextTextureLineHeight;
  }
 
+/********************************************************************************
+ * A message pass between DrawTextTextureLine and DrawChatMessageWithEmoji
+ * for performing operations like copying of relevant text or right translation!!
+ *
+ * @PARAM C       The canvas being painted upon
+ * @PARAM X       The begining of text message absissa
+ * @PARAM Y       Ordinate above which(?) text is written
+ * @PARAM Message The actual human readable (hopefully!) message (after decoding)
+ *
+ ********************************************************************************
+ */
+
+ function MessagePass(Canvas C, float DrawX, float DrawY, coerce string Message)
+ {
+ 	 local string DecMessage;
+ 	 local string URLStringExtract;
+
+    if(MouseMoveY >= DrawY - (DefaultTextTextureLineHeight- UniformHorizontalPadding) && MouseMoveY < DrawY + UniformHorizontalPadding)
+ 	{
+ 		ChatTextCache = Message;
+ 		bIsMouseOverChatText = true;
+
+ 		 URLStringExtract = ParseAndMakeURL(Message, DrawX, DrawY, DecMessage);
+
+ 		 if(URLStringExtract != "")
+ 		 {
+ 		  CDChatWindow.SetChatTextStatus(URLStringExtract);
+          TextUrlCurrent = URLStringExtract;
+
+          Cursor = Root.HandCursor;
+         }
+         else
+         {
+          Cursor = Root.NormalCursor;
+         }
+ 	}
+
+ 	DrawChatMessageWithEmoji(C, DrawX, DrawY, Message);
+ }
+
+ function string ParseAndMakeURL(string Message, float DrawX, float DrawY, out string DecoratedMessage)
+ {
+     local string URLString;
+     local int ICategory;
+
+     URLString = class'CDDiscordActor'.static.SpitIpFromChatString(Message, ICategory);
+
+     if(ICategory == 0)
+     {
+      URLString = "unreal://" $ URLString;
+     }
+     else if(ICategory == 1)
+     {
+      URLString = "http://" $ URLString;
+     }
+     else if(ICategory == 2)
+     {
+      URLString = "";
+     }
+
+     return URLString;
+ }
+
+
  function DrawChatMessageWithEmoji(Canvas C, float DrawX, float DrawY, coerce string Message, optional out float LateralDisplacement, optional bool bCheckHotkey)
  {
  	local string TempoString;
- 	local int EmojiLocation, Identifier, EmojiYDrawCoordinate, EmoteYDrawCoordinate;
+ 	local int EmojiLocation, Identifier, EmojiYDrawCoordinate, EmoteYDrawCoordinate, URLYDrawCoordinate;
  	local float SomeHeight, TextWidth;
- 	local float EmojiMultiplier;//, EmoteMultiplier;
+ 	local float EmojiMultiplier;
+ 	local string URLString;
 
  	EmojiMultiplier = 0.5;
- 	//EmoteMultiplier = 0.50;
 
- 	EmojiLocation = LookForEmojiTextRepresentation(Message, Identifier);
+ 	// Could be loation of URL too
+    EmojiLocation = LookForEmojiTextRepresentation(Message, Identifier, URLString);
 
  	while(EmojiLocation != -1)
  	{
@@ -524,9 +606,11 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
 
  			LateralDisplacement +=  ChatEmojis[Identifier].Image1.USize * EmojiMultiplier;
  			DrawX += ChatEmojis[Identifier].Image1.USize * EmojiMultiplier;
+
+ 			Message = Mid(Message, EmojiLocation + 2);
  		}
 
- 		if(Identifier == 51)
+ 		else if(Identifier == 51)
  		{
  			EmoteYDrawCoordinate =  DrawY - AnimShockEmote.Atlas[AnimShockEmote.CurrentAnimFrame].VSize * AnimShockEmote.TexChatSizeFraction / 2 + SomeHeight / 2;
 
@@ -535,9 +619,11 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
 
  			LateralDisplacement +=  AnimShockEmote.Atlas[0].USize * AnimShockEmote.TexChatSizeFraction;
  			DrawX += AnimShockEmote.Atlas[0].USize * AnimShockEmote.TexChatSizeFraction;
+
+ 			Message = Mid(Message, EmojiLocation + 2);
  		}
 
- 		if(Identifier == 52)
+ 		else if(Identifier == 52)
  		{
  			EmoteYDrawCoordinate =  DrawY - AnimTrashTalkEmote.Atlas[AnimTrashTalkEmote.CurrentAnimFrame].VSize * AnimTrashTalkEmote.TexChatSizeFraction / 2 + SomeHeight / 2;
 
@@ -546,10 +632,29 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
 
  			LateralDisplacement +=  AnimTrashTalkEmote.Atlas[0].USize * AnimTrashTalkEmote.TexChatSizeFraction;
  			DrawX += AnimTrashTalkEmote.Atlas[0].USize * AnimTrashTalkEmote.TexChatSizeFraction;
+
+ 			Message = Mid(Message, EmojiLocation + 2);
  		}
 
- 		Message = Mid(Message, EmojiLocation + 2);
- 		EmojiLocation = LookForEmojiTextRepresentation(Message, Identifier);
+ 		else if(Identifier == 101)
+ 		{
+ 		   TextSize(C, URLString, TextWidth, SomeHeight);
+
+ 		   URLYDrawCoordinate = DrawY + SomeHeight + 1;
+
+           DrawStretchedTexture(C, DrawX, URLYDrawCoordinate, TextWidth, 1, Texture 'UWindow.WhiteTexture');
+
+           URLYDrawCoordinate = DrawY;
+
+           C.DrawColor = BluColor;
+           TextAreaClipText(C, DrawX, URLYDrawCoordinate, URLString);
+           DrawX += TextWidth;
+           C.DrawColor = WhiteColor;
+
+           Message = Mid(Message, EmojiLocation + len(URLString));
+        }
+
+ 		EmojiLocation = LookForEmojiTextRepresentation(Message, Identifier, URLString);
  	}
 
  	TextAreaClipText(C, DrawX, DrawY, Message);
@@ -580,18 +685,55 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
 
  	TickCounter++;
 
+ 	if(!bIsMouseOverChatText && bIsStatusSetByChatMessage)
+ 	{
+ 		CDChatWindow.SetChatTextStatus("");
+ 		bIsStatusSetByChatMessage = false;
+
+ 		Cursor = Root.NormalCursor;
+ 	}
+
+
+ 	bIsMouseOverChatText = false;
+
  	super.Tick(DeltaTime);
  }
 
- function int LookForEmojiTextRepresentation(string MessageStringPart, out int IdentifyingIndex)
+// May contain ip stuff (pun intended!)
+// Focus on order!!
+
+ function int LookForEmojiTextRepresentation(string MessageStringPart, out int IdentifyingIndex, optional out string URLString)
  {
  	local int EmoLocation, Counter;
  	local EmoStatus EmoArray[100];
  	local int EmoCount, SmallestRegister;
  	local bool bNoEmoTextSymbol;
+ 	local int URLLocation;
+ 	local int ICategory;
 
  	EmoCount = 0;
  	bNoEmoTextSymbol = true;
+
+ 	URLString = class'CDDiscordActor'.static.SpitIpFromChatString(MessageStringPart, ICategory);
+
+ 	if(URLString != "")
+ 	{
+       URLLocation = Instr(MessageStringPart, URLString);
+
+      if(ICategory == 0)
+      {
+        URLString = "unreal://" $ URLString;
+      }
+      else if(ICategory == 1)
+      {
+        URLString = "www." $ URLString;
+      }
+      else if(ICategory == 2)
+      {
+        URLString = "";
+      }
+       //IdentifyingIndex = 101;// Need to make a table for identification indices
+    }
 
  	for(Counter = 0; Counter <= 29; Counter++)
  	{
@@ -620,7 +762,7 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  		}
  	}
 
- 	if(bNoEmoTextSymbol)
+ 	if(bNoEmoTextSymbol && URLString == "")
  	{
  		return -1;
  	}
@@ -641,8 +783,33 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  		}
  	}
 
- 	IdentifyingIndex = EmoArray[EmoCount].Identifier;
- 	return EmoArray[EmoCount].Location;
+    // Ok the assumption must be maintained
+    // Reading from left to right there can be 2 scenrios
+    // 1. Either URLString is present
+    //    If present check the ordering with respect to emoji
+    //         If emoji is present and before URLSTring, return with emoji information
+    //         Else return URL information
+    // 2. URLSTring not present
+    //    Heh, return emoji if present and should never be even here if even emoji is not present
+    if(URLString == "")
+    {
+       IdentifyingIndex = EmoArray[EmoCount].Identifier;
+       return EmoArray[EmoCount].Location;
+    }
+    else
+    {
+     if(EmoArray[EmoCount].Location < URLLocation && !bNoEmoTextSymbol)
+     {
+ 	    IdentifyingIndex = EmoArray[EmoCount].Identifier;
+ 	    return EmoArray[EmoCount].Location;
+ 	 }
+ 	 else
+ 	 {
+        IdentifyingIndex = 101;
+        return URLLocation;
+     }
+
+    }
 
  }
 
@@ -874,6 +1041,7 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  	local bool bWrapped;
 
  	C.DrawColor = TextColor;
+ 	TextUrlCurrent = "";
 
  	if(AbsoluteFont != None)
  		C.Font = AbsoluteFont;
@@ -1011,10 +1179,71 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  		{
  			DrawTextTextureLine(C, L, Y);
  			Y = Y - DefaultTextTextureLineHeight;
+
  			L = UWindowDynamicTextRow(L.Prev);
  		}
  	}
  }
+
+ function MouseMove(float X, float Y)
+ {
+	Super.MouseMove(X, Y);
+
+ 	MouseMoveY = Y;
+ }
+
+function RClick(float X, float Y)
+{
+	//Log("Context click registered!");
+}
+
+function Click(float X, float Y)
+ {
+
+ 	Super.Click(X, Y);
+
+ 	if (Len(TextUrlCurrent) == 0)
+ 	{
+ 		return;
+ 	}
+
+ 	if (Left(TextUrlCurrent, 7) ~= "http://")
+ 	{
+ 		GetPlayerOwner().ConsoleCommand("start " $ TextUrlCurrent);
+ 	}
+ 	else if (Left(TextUrlCurrent, 4) ~= "ftp.")
+ 	{
+ 		GetPlayerOwner().ConsoleCommand("start ftp://" $ TextUrlCurrent);
+ 	}
+ 	else if (Left(TextUrlCurrent, 9) ~= "unreal://")
+ 	{
+ 		GetPlayerOwner().ClientTravel(TextUrlCurrent, TRAVEL_Absolute, false);
+ 	}
+ 	else
+ 	{
+ 		GetPlayerOwner().ConsoleCommand("start" @ TextUrlCurrent);
+ 	}
+ }
+
+function RMouseUp(float X, float Y)
+{
+	local float MenuX, MenuY;
+
+	super.RMouseUp(X, Y);
+
+	if(HelperContextMenu != None)
+	{
+		WindowToGlobal(X, Y, MenuX, MenuY);
+		HelperContextMenu.WinLeft = MenuX;
+		HelperContextMenu.WinTop = MenuY;
+		HelperContextMenu.ShowWindow();
+
+		if(ChatTextCache != "")
+		{
+
+        }
+	}
+}
 
  defaultproperties
  {

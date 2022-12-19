@@ -23,21 +23,48 @@
  *   December, 2022: Native experiments
  */
 
-//=============================================================================
+//==============================================================================
 // CDDiscordActor
-// Test native code for BlankProject. By []KAOS[]Casey.
-//=============================================================================
+// Test native code for CDDiscordActor. By []KAOS[]Casey.
+// Courtsey https://www.oldunreal.com/phpBB3/viewtopic.php?f=37&t=3938
+//==============================================================================
 class CDDiscordActor extends Actor
 	native
 	noexport;
 
-native final function bool TestFunction(string S, int I); //This function returns true, and prints the parameters.
+/*******************************************************************************
+ * A native routine for learning and testing basic native interface.
+ *
+ * @PARAM S           The string to print (log)
+ * @PARAM I           The integer number to print (log)
+ *
+ *******************************************************************************
+ */
+ native final function bool TestFunction(string S, int I); //This function returns true, and prints the parameters.
 
-function PostBeginPlay()
-{
-	Log("Testing out, well, the TestFunction!");
-    TestFunction("Test", 888); //Your log should output "Hello World! S=Test,I=888"
-}
+/*******************************************************************************
+ * A native routine to detect the first instance of IP in chat message.
+ * The format is as follows:
+ * 1. Game Server IP 139.162.235.XXX:4554 (note the port)
+ * 2. Web Server IP 192.168.1.2 (note no port)
+ *
+ * @PARAM Message              The chat message to be scanned
+ * @PARAM ICategory            Set to
+ *                                0 if found game server IP
+ *                                1 if found web server IP
+ *                                2 if no match is found
+ * @see https://github.com/ravimohan1991/ChatDiamond/blob/main/UTNativeEssentials/ChatDiamond/Src/ChatDiamondNative.cpp
+ *      for complete implementation of the native function
+ *
+ *******************************************************************************
+*/
+ native final static function string SpitIpFromChatString(string Message, out int ICategory); // For now, the routine shall fish for first instance only
+
+ function PostBeginPlay()
+ {
+ 	Log("Testing out, well, the TestFunction!");
+ 	TestFunction("Test", 888); //Your log should output "Hello World! S=Test,I=888"
+ }
 
 defaultproperties
 {

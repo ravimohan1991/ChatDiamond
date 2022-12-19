@@ -64,6 +64,7 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
  };
 
  var VisitingServerInformation VSRP;// Visiting Server Relevant Platter
+
  var string TemporaryServerHash;
  var string TemporaryServerName;
 
@@ -105,6 +106,7 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
  	TheTextArea.bChat = True;
  	TheTextArea.bVariableRowHeight = True;
  	TheTextArea.bScrollOnResize = True;
+ 	TheTextArea.CDChatWindow = self;
 
  	ButSave = UWindowSmallButton(CreateControl(class'UWindowSmallButton', 4, 230, 50, 25));
  	ButSave.SetText("Save");
@@ -178,7 +180,6 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
  function PadVerticallyWithHorizontal(optional int VerticalPaddingAmount)
  {
  	local int Counter, MaximumPadCount;
-
 
  	if(VerticalPaddingAmount > 0)
  	{
@@ -527,6 +528,12 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
  	}
  }
 
+ function SetChatTextStatus(string Text)
+ {
+ 	FrameWindow.StatusBarText = Text;
+ 	TheTextArea.bIsStatusSetByChatMessage = true;
+ }
+
  function Notify (UWindowDialogControl C, byte E)
  {
  	Super.Notify(C,E);
@@ -536,26 +543,31 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
  		if(C == ButSend)
  		{
  			FrameWindow.StatusBarText = "Send the message!";
+ 			TheTextArea.bIsStatusSetByChatMessage = false;
  		}
 
  		if(C == ButSave)
  		{
  			FrameWindow.StatusBarText = "Save the messages in ChatDiamond.ini!";
+ 			TheTextArea.bIsStatusSetByChatMessage = false;
  		}
 
  		if(C == ButtonPlaySpectate)
  		{
  			FrameWindow.StatusBarText = "Based on the context, play or spectate!";
+ 			TheTextArea.bIsStatusSetByChatMessage = false;
  		}
 
  		if(C == ButtonDisconnectAndQuit)
  		{
  			FrameWindow.StatusBarText = "Shut down the game and do `better` things!";
+ 			TheTextArea.bIsStatusSetByChatMessage = false;
  		}
 
  		if(C == EditMesg)
  		{
  			FrameWindow.StatusBarText = "Type a message for everyone!";
+ 			TheTextArea.bIsStatusSetByChatMessage = false;
  		}
  	}
 
@@ -593,7 +605,7 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
  			switch(C)
  				{
  				case EditMesg:
- 					if(EmoWindowPage.EditMesg.GetValue() != EditMesg.GetValue())
+ 					if(EmoWindowPage != None && EditMesg.GetValue() != "" && EmoWindowPage.EditMesg.GetValue() != EditMesg.GetValue())
  					{
  						EmoWindowPage.EditMesg.SetValue(EditMesg.GetValue());
  					}
@@ -652,13 +664,17 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
  	{
  		GetPlayerOwner().ConsoleCommand("SAY " $ EditMessage.GetValue());
  		EditMessage.SetValue("");
+
+ 		EditMesg.SetValue("");
  	}
- 	else
+ 	else// this class operation
  	{
  		if (EditMesg.GetValue() != "")
  		{
  			GetPlayerOwner().ConsoleCommand("SAY " $ EditMesg.GetValue());
  			EditMesg.SetValue("");
+
+ 			EmoWindowPage.EditMesg.SetValue("");
  		}
  	}
  }

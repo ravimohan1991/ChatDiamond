@@ -388,7 +388,10 @@ function PrepareMFDrawLL(float MiniFrameY)
  	local float BetweenTheMiniFrameSeperationX, BetweenTheMiniFrameSeperationY;
  	local CDMiniFrameList Tempo;
 
- 	DrawnMiniFrameList.DestroyList();
+ 	if(DrawnMiniFrameList != none)
+ 	{
+ 		DrawnMiniFrameList.DestroyList();
+ 	}
 
  	// Initialize LL
  	DrawnMiniFrameList = new class'CDMiniFrameList';
@@ -460,7 +463,7 @@ function PrepareMFDrawLL(float MiniFrameY)
  	EmoFrames[28].MFEmo = MFEmo;
 
  	// Add to MF display list
-	Tempo = CDMiniFrameList(DrawnMiniFrameList.Append(class'CDMiniFrameList'));
+ 	Tempo = CDMiniFrameList(DrawnMiniFrameList.Append(class'CDMiniFrameList'));
 
  	Tempo.MFWidth = MFEmo.Width;
  	Tempo.MFHeight = MFEmo.Height;
@@ -557,7 +560,6 @@ function DrawDepressedMiniFrameCell(Canvas C, float FrameStartX, float FrameStar
  {
  	bShouldPlayHoverSound=true
  }
-
 
 /*
  *

@@ -64,16 +64,16 @@ class CDChatWindowEmojis extends UWindowPageWindow;
 
  function Created ()
  {
- 	local CDDiscordActor DA;
+ 	//local CDDiscordActor DA;
 
-    // Some sweet values after dynamic interpolation
+ 	// Some sweet values after dynamic interpolation
  	NumberOfColumnElements = 8;
  	MFWidhtToHeightRatio = 1.1;
 
  	Super.Created();
 
-    Log("Attempting Native Actor Spawn!");
- 	DA = Root.GetPlayerOwner().spawn(class'CDDiscordActor', Root.GetPlayerOwner(), 'NativeTest');
+ 	//Log("Attempting Native Actor Spawn!");
+ 	//DA = Root.GetPlayerOwner().spawn(class'CDDiscordActor', Root.GetPlayerOwner(), 'NativeTest');
 
  	TheEmoDisplayArea = CDEmoDisplayArea(CreateControl(Class'CDEmoDisplayArea', 0, 25, 385, 187));
  	TheEmoDisplayArea.AbsoluteFont = Font(DynamicLoadObject("UWindowFonts.TahomaB12", class'Font'));
@@ -196,7 +196,7 @@ class CDChatWindowEmojis extends UWindowPageWindow;
  				break;
 
  				case EditMesg:
- 					if(ChatWindow.EditMesg.GetValue() != EditMesg.GetValue())
+ 					if(ChatWindow!= none && EditMesg.GetValue() != "" && ChatWindow.EditMesg.GetValue() != EditMesg.GetValue())
  					{
  						ChatWindow.EditMesg.SetValue(EditMesg.GetValue());
  					}
