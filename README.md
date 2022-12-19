@@ -2,7 +2,7 @@
 "One can't get better friend than Pen!"
                                    ~ Anonymous
 
-# ChatDiamond
+# ChatDiamond [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg)](CODE_OF_CONDUCT.md)
 Let the text make sound!
 And let the sound text shine bright!!
 
