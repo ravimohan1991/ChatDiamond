@@ -103,7 +103,15 @@ Figure \ref{fig:chatdiamond} shows the current form of the chat window. The foll
 \item Display of Date and Time (long format for now).
 \item Display of the Server name for reference purposes.
 \item Ability to copy text and IP address (both game and web server) from chat messages.
-\item Ability to display hyperlinks with clickable feature for relevant navigation
+\begin{itemize}
+\item IPs of the format xxx.xxx.xxx.xxx are considered web server IPs.
+\item IPs of the format xxx.xxx.xxx.xxx:xxxx are considered game server IPs.
+\end{itemize}
+\item Ability to display hyperlinks with clickable feature for relevant navigation and mouse cursor distinction.
+\begin{itemize}
+\item On clicking web or game server IP, the player can reach the relevant website (http:// only) or UT99 game server.
+\item On clicking http:://something.com or https://something.com, the player can reach the desired site, if valid url is posted.
+\end{itemize}
 \end{itemize}
 
 \subsection{Emoji Window}

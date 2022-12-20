@@ -513,7 +513,6 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
 
  function MessagePass(Canvas C, float DrawX, float DrawY, coerce string Message)
  {
- 	local string DecMessage;
  	local string URLStringExtract;
 
  	if(MouseMoveY >= DrawY - (DefaultTextTextureLineHeight- UniformHorizontalPadding) && MouseMoveY < DrawY + UniformHorizontalPadding)
@@ -521,45 +520,72 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  		ChatTextCache = Message;
  		bIsMouseOverChatText = true;
 
- 		URLStringExtract = ParseAndMakeURL(Message, DrawX, DrawY, DecMessage);
+ 		URLStringExtract = ParseAndMakeURL(Message);
 
  		if(URLStringExtract != "")
  		{
  			CDChatWindow.SetChatTextStatus(URLStringExtract);
  			TextUrlCurrent = URLStringExtract;
 
- 			Cursor = Root.HandCursor;
- 		}
- 		else
- 		{
- 			Cursor = Root.NormalCursor;
+ 			CDChatWindow.SetCursor(Root.HandCursor);
+ 			Log("Setting the cursor to Handcursor");
  		}
  	}
 
  	DrawChatMessageWithEmoji(C, DrawX, DrawY, Message);
  }
 
- function string ParseAndMakeURL(string Message, float DrawX, float DrawY, out string DecoratedMessage)
+ // Try to use the function for DrawChatMessageWithEmoji stuff
+ // assuming only either ip or http(s) itself is in the Message
+ function string ParseAndMakeURL(string Message, optional out string BareString)
  {
- 	local string URLString;
- 	local int ICategory;
+ 	local string DecoratedURLString;
+ 	local int ICategory, HttpPosition;
 
- 	URLString = class'CDDiscordActor'.static.SpitIpFromChatString(Message, ICategory);
+ 	DecoratedURLString = class'CDDiscordActor'.static.SpitIpFromChatString(Message, ICategory);
+ 	BareString = DecoratedURLString;
 
  	if(ICategory == 0)
  	{
- 		URLString = "unreal://" $ URLString;
+ 		DecoratedURLString = "unreal://" $ DecoratedURLString;
+ 		return DecoratedURLString;
  	}
  	else if(ICategory == 1)
  	{
- 		URLString = "http://" $ URLString;
+ 		DecoratedURLString = "http://" $ DecoratedURLString;
+ 		return DecoratedURLString;
  	}
- 	else if(ICategory == 2)
+ 	else if(ICategory == 2)// No ip of either kind is present in the message
  	{
- 		URLString = "";
+ 		DecoratedURLString = "";
  	}
 
- 	return URLString;
+ 	// Now look for http(s):// stuff
+ 	HttpPosition = instr(Message, "http://");
+
+ 	if(HttpPosition == -1)
+ 	{
+ 		HttpPosition = instr(Message, "https://");
+ 	}
+
+ 	// Smuggle? www. with http
+ 	if(HttpPosition == -1)
+ 	{
+ 		HttpPosition = instr(Message, "www.");
+ 	}
+
+ 	if(HttpPosition != -1)
+ 	{
+ 		DecoratedURLString = mid(Message, HttpPosition);
+
+ 		HttpPosition = Instr(DecoratedURLString, " ");
+ 		if(HttpPosition != -1)
+ 		{
+ 			DecoratedURLString = left(DecoratedURLString, HttpPosition);
+ 		}
+ 	}
+ 	BareString = DecoratedURLString;
+ 	return DecoratedURLString;
  }
 
 
@@ -569,13 +595,12 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  	local int EmojiLocation, Identifier, EmojiYDrawCoordinate, EmoteYDrawCoordinate, URLYDrawCoordinate;
  	local float SomeHeight, TextWidth;
  	local float EmojiMultiplier;
- 	local string URLString;
- 	local int IPCategory;
+ 	local string URLString, BareURLSTring;
 
  	EmojiMultiplier = 0.5;
 
  	// Could be loation of URL too
- 	EmojiLocation = LookForEmojiTextRepresentation(Message, Identifier, URLString);
+ 	EmojiLocation = LookForEmojiTextRepresentation(Message, Identifier, URLString, BareURLString);
 
  	while(EmojiLocation != -1)
  	{
@@ -652,10 +677,10 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  			DrawX += TextWidth;
  			C.DrawColor = WhiteColor;
 
- 			Message = Mid(Message, EmojiLocation + len(class'CDDiscordActor'.static.SpitIpFromChatString(URLString, IPCategory)));
+ 			Message = Mid(Message, EmojiLocation + len(BareURLString));
  		}
 
- 		EmojiLocation = LookForEmojiTextRepresentation(Message, Identifier, URLString);
+ 		EmojiLocation = LookForEmojiTextRepresentation(Message, Identifier, URLString, BareURLString);
  	}
 
  	TextAreaClipText(C, DrawX, DrawY, Message);
@@ -697,11 +722,10 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  		{
  			CDChatWindow.SetChatTextStatus("");
  			bIsStatusSetByChatMessage = false;
+
+ 			CDChatWindow.SetCursor(Root.NormalCursor);
  		}
-
- 		Cursor = Root.NormalCursor;
  	}
-
 
  	bIsMouseOverChatText = false;
 
@@ -711,37 +735,27 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
 // May contain ip stuff (pun intended!)
 // Focus on order!!
 
- function int LookForEmojiTextRepresentation(string MessageStringPart, out int IdentifyingIndex, optional out string URLString)
+ function int LookForEmojiTextRepresentation(string MessageStringPart, out int IdentifyingIndex, optional out string URLString, optional out string BareURLSTring)
  {
  	local int EmoLocation, Counter;
  	local EmoStatus EmoArray[100];
  	local int EmoCount, SmallestRegister;
  	local bool bNoEmoTextSymbol;
  	local int URLLocation;
- 	local int ICategory;
+ 	//local string BareURLString;
+ 	//local int ICategory;
 
  	EmoCount = 0;
  	bNoEmoTextSymbol = true;
 
- 	URLString = class'CDDiscordActor'.static.SpitIpFromChatString(MessageStringPart, ICategory);
+ 	//URLString = class'CDDiscordActor'.static.SpitIpFromChatString(MessageStringPart, ICategory);
 
- 	if(URLString != "")
+ 	// The decorated URL string
+ 	URLString = ParseAndMakeURL(MessageStringPart, BareURLString);
+
+ 	if(BareURLString != "" && URLString != "")
  	{
- 		URLLocation = Instr(MessageStringPart, URLString);
-
- 		if(ICategory == 0)
- 		{
- 			URLString = "unreal://" $ URLString;
- 		}
- 		else if(ICategory == 1)
- 		{
- 			URLString = "www." $ URLString;
- 		}
- 		else if(ICategory == 2)
- 		{
- 			URLString = "";
- 		}
- 		 //IdentifyingIndex = 101;// Need to make a table for identification indices
+ 		URLLocation = Instr(MessageStringPart, BareURLString);
  	}
 
  	for(Counter = 0; Counter <= 29; Counter++)
@@ -818,7 +832,6 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  			return URLLocation;
  		}
  	}
-
  }
 
  function string StripFaceNameAndSkinName(string EncodedString, out string FaceName, out string SkinName)

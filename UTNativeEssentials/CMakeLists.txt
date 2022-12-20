@@ -10,9 +10,9 @@ set(OLDUNREAL_VERSION "469c")
 cmake_minimum_required(VERSION 3.13) # we need add_link_options
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_PROJECT_VERSION_MAJOR "")
-set(CMAKE_PROJECT_VERSION_MINOR "")
-set(CMAKE_PROJECT_VERSION_PATCH "")
+set(CMAKE_PROJECT_VERSION_MAJOR "0")
+set(CMAKE_PROJECT_VERSION_MINOR "1")
+set(CMAKE_PROJECT_VERSION_PATCH "0")
 # uncomment this to see compiler/linker commands
 # set(CMAKE_VERBOSE_MAKEFILE ON)
 
@@ -129,92 +129,50 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${REPOSITORYROOT}/ChatDiamondBin/${PLATFORM_
 #add_compile_definitions(UTGLR_USES_ALPHABLEND=1)
 add_compile_definitions(ENGINE_ARCHITECTURE="${OLDUNREAL_CPU}")
 
-if(LINUX)
-  # Don't use -rpath (at least, not the silly one CMake forces).
-  set(CMAKE_SKIP_RPATH
-    ON
-      CACHE BOOL "Skip RPATH" FORCE
-  )
-  add_compile_definitions(UNICODE=1)
-  add_compile_definitions(_UNICODE=1)
-  add_compile_definitions(_REENTRANT=1)
-  add_compile_definitions(HAVE_PRAGMA_PACK=1)
-  add_definitions(-fPIC)
+# use multi-threaded version of C runtime lib and link it statically
+add_compile_definitions(_CRT_SECURE_NO_WARNINGS=1)
+add_compile_definitions(_CRT_NO_VA_START_VALIDATION)
+add_compile_definitions(UNICODE=1)
+add_compile_definitions(_UNICODE=1)
+add_compile_definitions(WIN32=1)
 
-  # disable A3D in Cluster
-  add_compile_definitions(USE_A3D2=0)
-
-  if(OLDUNREAL_ARM)
-    add_compile_definitions(__LINUX_ARM__=1)
-    add_compile_definitions(SDL_DISABLE_MM3DNOW_H=1)
-    add_compile_definitions(SDL_DISABLE_IMMINTRIN_H=1)
-    add_compile_definitions(SDL_DISABLE_MMINTRIN_H=1)
-    add_compile_definitions(SDL_DISABLE_XMMINTRIN_H=1)
-    add_compile_definitions(SDL_DISABLE_EMMINTRIN_H=1)
-    add_compile_definitions(SDL_DISABLE_PMMINTRIN_H=1)
-    add_definitions(-mfpu=neon-vfpv4)
-    add_definitions(-mfloat-abi=hard)
-  else()
-    add_compile_definitions(__LINUX_X86__=1)
-	
-	# stijn: statically link libstdc++ and libgcc as permitted by the GPL
-	# runtime exception
-
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -msse -msse2")
-	set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -msse -msse2")
-    set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS}  -static-libgcc -static-libstdc++ -fuse-ld=gold")
-    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS}  -static-libgcc -static-libstdc++ -fuse-ld=gold")
-
-	# strip symbols in release builds
-	add_link_options("$<$<CONFIG:Release>:-Wl,--strip-all>")
-  endif()
-  set(LIBRARY_SUFFIX ".so")
-    
+if(OLDUNREAL_AMD64)
+   add_compile_definitions(WIN64=1)
 else()
-  # use multi-threaded version of C runtime lib and link it statically
-  add_compile_definitions(_CRT_SECURE_NO_WARNINGS=1)
-  add_compile_definitions(_CRT_NO_VA_START_VALIDATION)
-  add_compile_definitions(UNICODE=1)
-  add_compile_definitions(_UNICODE=1)
-  add_compile_definitions(WIN32=1)
-  if(OLDUNREAL_AMD64)
-    add_compile_definitions(WIN64=1)
-  else()
-	#
-	# /Zc:wchar_t-
+    #
+    # /Zc:wchar_t-
     # do not treat wchar_t as a built-in type. Doing so would break binary
     # compat with almost all native mods for earlier UT versions
-	#
-	# /arch:SSE2
+    #
+    # /arch:SSE2
     # assume we have at least a Pentium 4
-	#
-	# /LARGEADDRESSAWARE
+    #
+    # /LARGEADDRESSAWARE
     # we can handle more than 2Gb of RAM even in 32bit builds
-	#
-	# /Zp4
-	# use 4-byte alignment for structs. This is necessary for binary compatibility
-	#
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /Zc:wchar_t- /arch:SSE2 /Zp4 -DWINDOWS_IGNORE_PACKING_MISMATCH")
-	set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /Zc:wchar_t- /arch:SSE2 /Zp4 -DWINDOWS_IGNORE_PACKING_MISMATCH")
-	set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /LARGEADDRESSAWARE")
-	set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} /LARGEADDRESSAWARE")
-	set(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} /LARGEADDRESSAWARE")
-	set(CMAKE_STATIC_LINKER_FLAGS "${CMAKE_STATIC_LINKER_FLAGS} /LARGEADDRESSAWARE")
-  endif()
-  #
-  # /MP
-  # enable parallel builds
-  #
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP")
-  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /MP")
-
-  # the recursive garbage collector needs a lot of stack space
-  set(CMAKE_EXE_LINKER_FLAGS
-      "${CMAKE_EXE_LINKER_FLAGS} /STACK:16000000,1000000 /LTCG"
-  )
-  set(LIBRARY_SUFFIX ".dll")
-	
+    #
+    # /Zp4
+    # use 4-byte alignment for structs. This is necessary for binary compatibility
+    #
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /Zc:wchar_t- /arch:SSE2 /Zp4 -DWINDOWS_IGNORE_PACKING_MISMATCH")
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /Zc:wchar_t- /arch:SSE2 /Zp4 -DWINDOWS_IGNORE_PACKING_MISMATCH")
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /LARGEADDRESSAWARE")
+    set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} /LARGEADDRESSAWARE")
+    set(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} /LARGEADDRESSAWARE")
+    set(CMAKE_STATIC_LINKER_FLAGS "${CMAKE_STATIC_LINKER_FLAGS} /LARGEADDRESSAWARE")
 endif()
+
+#
+# /MP
+# enable parallel builds
+#
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /MP")
+
+# the recursive garbage collector needs a lot of stack space
+set(CMAKE_EXE_LINKER_FLAGS
+    "${CMAKE_EXE_LINKER_FLAGS} /STACK:16000000,1000000 /LTCG"
+)
+set(LIBRARY_SUFFIX ".dll")	
 
 if(CMAKE_COMPILER_IS_GNUCC OR (CMAKE_CXX_COMPILER_ID MATCHES "Clang"))
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pipe -fsigned-char -fno-strict-aliasing -Wno-inline-new-delete")
