@@ -413,11 +413,17 @@ Therefore I have organized the repository with the conforming hierarchical struc
 ]
 \end{forest}
 
-What we have achieved by doing so is a reconcolication of UT99's unrealscript modding environemnt with C++ dev environment yielding a schematic version control framework (Github 
+What we have achieved by doing so is a reconcoliation of UT99's unrealscript modding environemnt with C++ dev environment yielding a schematic version controlled framework (a Github 
 \href{https://github.com/ravimohan1991/ChatDiamond}{repository}).  
 All the C++ code goes to the folders marked with, well, C++ and unrealscript code goes to top level \FolderColor{ChatDiamond \textbackslash Classes} directory.  
 
-
+The \FolderColor{Core} is the directory containing ``header-only'' library elements, meaning .h files and the already compiled binary \FileColor{Core.lib}.  Few remarks are to be worded
+\begin{itemize}
+\item Such libraries, which are prebuilt and whose implementation is hidden with only headers (the API) visible, are known as ``\texttt{Interface}'' libraries in CMake's scope.  \FolderColor{Engine} is another example of directory containing such \texttt{Interface} library.
+\item From research, \FileColor{Core.lib} and \FileColor{Engine.lib}, which are static libraries, seem to be the ``basic necessicities'' for linking with a native mod. 
+\item In the hierarchy, I am only showing the top level \FileColor{CmakeLists.txt}.  If you are familiar with the build utility, you can comprehend the presence of one each inside \FolderColor{ChatDiamond}, \FolderColor{Core}, and \FolderColor{Engine} directories.
+\item Currently, I am developing on and for Windows (should be evident from \FileColor{GenerateProjectFiles.bat}).  It goes against my philosophy of cross-platform development\footnote{For solid enough work please see \href{https://github.com/ravimohan1991/KarmaEngine}{Karma}.} given the 32-bit jugaad for Linux libraries, I may do something in future.  MacOS seems like a workable goal since I own a MacBook Pro.
+\end{itemize}  
 
 Make sure that your machine has \href{https://cmake.org/}{CMake} installed.
 
