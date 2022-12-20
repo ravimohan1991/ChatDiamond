@@ -283,7 +283,7 @@ Chat Diamond is a native mod, meaning, a program invoking C++ functions.  At the
 native final static function string SpitIpFromChatString(string Message, out int ICategory);
 \end{lstlisting}
 
-To see the implementation of the above unrealscript function, please see the \href{https://github.com/ravimohan1991/ChatDiamond/blob/6e3b684403fb75811c1cde6372c9125370bc796a/UTNativeEssentials/ChatDiamond/Src/ChatDiamondNative.cpp#L52}{code} displayed as follows
+To understand the implementation of the above unrealscript function, please see the \href{https://github.com/ravimohan1991/ChatDiamond/blob/6e3b684403fb75811c1cde6372c9125370bc796a/UTNativeEssentials/ChatDiamond/Src/ChatDiamondNative.cpp#L52}{code} displayed as follows
 
 \lstset{language=C++}
 \begin{lstlisting}[frame=single]
@@ -369,7 +369,7 @@ limitation, especially with the new community patches.
 \subsection{Build System}
 I have been using combination of Wot Greal (unrealscript code) and Microsoft Visual Studio 2022 (C++ code) IDEs for developing Chat Diamond.  
 Therefore I have organized the repository with the conforming hierarchical structure.
-
+\begin{figure}
 \begin{forest}
   for tree={
     font=\ttfamily,
@@ -412,6 +412,9 @@ Therefore I have organized the repository with the conforming hierarchical struc
   ]
 ]
 \end{forest}
+\caption{Chat Diamond project hierarchy.}
+\label{forest:project_hierar}
+\end{figure}
 
 What we have achieved by doing so is a reconcoliation of UT99's unrealscript modding environemnt with C++ dev environment yielding a schematic version controlled framework (a Github 
 \href{https://github.com/ravimohan1991/ChatDiamond}{repository}).  
@@ -419,13 +422,40 @@ All the C++ code goes to the folders marked with, well, C++ and unrealscript cod
 
 The \FolderColor{Core} is the directory containing ``header-only'' library elements, meaning .h files and the already compiled binary \FileColor{Core.lib}.  Few remarks are to be worded
 \begin{itemize}
-\item Such libraries, which are prebuilt and whose implementation is hidden with only headers (the API) visible, are known as ``\texttt{Interface}'' libraries in CMake's scope.  \FolderColor{Engine} is another example of directory containing such \texttt{Interface} library.
+\item Such libraries, which are prebuilt and whose implementation is hidden with only headers (the API) visible, are known as ``\texttt{Interface}'' libraries in CMake's scope.  \FolderColor{Engine} is another example of directory containing such \texttt{Interface} library.  
+Also both of the \FolderColor{Engine} and \FolderColor{Core} directories contain the directories \FolderColor{Inc}, \FolderColor{Src}, and \FolderColor{Lib} sub directories. 
 \item From research, \FileColor{Core.lib} and \FileColor{Engine.lib}, which are static libraries, seem to be the ``basic necessicities'' for linking with a native mod. 
 \item In the hierarchy, I am only showing the top level \FileColor{CmakeLists.txt}.  If you are familiar with the build utility, you can comprehend the presence of one each inside \FolderColor{ChatDiamond}, \FolderColor{Core}, and \FolderColor{Engine} directories.
 \item Currently, I am developing on and for Windows (should be evident from \FileColor{GenerateProjectFiles.bat}).  It goes against my philosophy of cross-platform development\footnote{For solid enough work please see \href{https://github.com/ravimohan1991/KarmaEngine}{Karma}.} given the 32-bit jugaad for Linux libraries, I may do something in future.  MacOS seems like a workable goal since I own a MacBook Pro.
 \end{itemize}  
 
-Make sure that your machine has \href{https://cmake.org/}{CMake} installed.
+Make sure that your machine has \href{https://cmake.org/}{CMake} installed.  For uninitiated programmers (in my POV read premakers), let me
+supply a crash course on CMake, for our purposes here.
+
+\subsubsection{UT and CMake}
+In a C++, or any good programming language, there is a proper toolchain which pipes the human written code to turing machine understantable arrangement of bits 
+(zeroes and ones).  This usually involves lot of garbage intermediatory files which most of the part are useless, unless you suddenly, out of the blue, decide to do 
+scavanging some day.
+
+The responsibility of a good build system is to understand such redundancies and provide a manageable way of dealing with chunks of huge memory files.
+Let me demonstrate by simple logistics.  
+
+At the time, the ChatDiamond C++ component has about three to four MB worth of code files (.h and .cpp).  
+Visual Studio 2022 generates a solution build of about 144 MB worth of memory and the output is \FileColor{ChatDiamond.dll} which is about two MB.  The intermediatory files are 
+for IDE's (Visual Studio for instance) and compiler (MSVC or Clang) use only and therefore c an and should be ignored by a decent version control system\footnote{Actually this is the
+reinforcement of the concept of Universal Turing Machine.  That a good compiler should be able to generate same set of instructions, i.e. a program, 
+which should bahave that same way, no matter a laptop or desktop or smart phone.  Please see \href{https://en.wikipedia.org/wiki/Von_Neumann_architecture}{von-Neumann architecture} for a lucid connection 
+between Universal Turing Machine conept and PCs or Macbooks.}.
+
+Given the variety of compilers, with even more variety of platforms, CMake is the most suitable build system and friend that a programmer can, well, make and use.  Along with the clear 
+distinct folder generation for intermediate files, CMake comes with high degree of configurability, required for build, and compatibility with known compilers\footnote{For a comprehensive list, please visit .\href{https://cmake.org/cmake/help/latest/manual/cmake-compile-features.7.html}{here}}.  
+CMake supports the Windows, Unix, and Linux based platforms.
+
+UT99 was officially released and supported on multiple platforms.  The community clearly intendes on keeping that flame intact.  Therefore a rocket scientis isn't really needed to gauge the obvious link 
+between UT and CMake.
+
+With enough convincing we are now in a position to understand the organization (or some UT project organization) of this project.  This may serve as a template.  
+Consider the hierarcy \ref{forest:project_hierar}.
 
 \appendix
 
