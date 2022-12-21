@@ -40,9 +40,10 @@ class CDDiscordActor extends Actor
  *
  *******************************************************************************
  */
+
  native final function bool TestFunction(string S, int I); //This function returns true, and prints the parameters.
 
-/*******************************************************************************
+ /*******************************************************************************
  * A native routine to detect the first instance of IP in chat message.
  * The format is as follows:
  * 1. Game Server IP 139.162.235.XXX:4554 (note the port)
@@ -58,7 +59,10 @@ class CDDiscordActor extends Actor
  *
  *******************************************************************************
 */
+
  native final static function string SpitIpFromChatString(string Message, out int ICategory); // For now, the routine shall fish for first instance only
+
+ native final function Texture LoadTextureFromFileOnTheRun(string FileName);
 
  function PostBeginPlay()
  {
