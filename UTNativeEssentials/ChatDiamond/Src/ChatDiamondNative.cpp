@@ -26,6 +26,11 @@
 #include "ChatDiamondNative.h"
 #include <regex>
 
+#include "shellapi.h"
+#include "commdlg.h"
+#include "CommCtrl.h"
+#include "Window.h"
+
 IMPLEMENT_PACKAGE(ChatDiamond);
 
 IMPLEMENT_CLASS(ACDDiscordActor);
@@ -48,6 +53,74 @@ void ACDDiscordActor::execTestFunction(FFrame& Stack, RESULT_DECL)
 	unguard;
 }
 IMPLEMENT_FUNCTION(ACDDiscordActor, -1, execTestFunction);
+
+void ACDDiscordActor::execLoadTextureFromFileOnTheRun(FFrame& Stack, RESULT_DECL)
+{
+	guard(ACDDiscordActor::execLoadTextureFromFileOnTheRun);
+	P_GET_STR(FileName);
+	P_FINISH;
+
+	UTexture* SomeTexture = NULL;
+	//ULinkerLoad* Linker;
+	//Linker->Summary.Guid;
+
+	//BeginLoad();
+
+	FString FilePath = appBaseDir();
+	FilePath += TEXT("welcome.bmp");
+
+	GLog->Logf(TEXT("Hmm so the file path is %s"), FilePath);
+
+	FWindowsBitmap TestBitmap;
+	UBOOL bResult = TestBitmap.LoadFile(*FilePath);
+
+	if (!bResult)
+	{
+		GLog->Logf(TEXT("Failed to load the file!"));
+		(void*)Result = NULL;
+		return;
+	}
+
+	HBITMAP BitHandle = TestBitmap.GetBitmapHandle();
+	TestBitmap.SizeX;
+
+	//ULinkerLoad* Linker = GetPackageLinker(NULL, *FilePath, LOAD_None, NULL, NULL);
+
+	UTexture TestBitMap;
+
+	//TestBitMap.Load
+
+	// No linker => file not present or access denied?
+	/*if (1)//!Linker)
+	{
+		*(BYTE*)Result = NULL;
+		GLog->Logf(TEXT("File is %s"));
+		EndLoad();
+		return;
+	}*/
+
+	//SomeTexture = LoadObject<UTexture>(NULL, NULL, *Linker->Filename, LOAD_NoFail, NULL);
+
+	/*
+	if (SomeTexture)
+	{
+		GLog->Logf(TEXT("ChatDiamond: Successfully loaded welldone.bmp"));
+		*(UTexture*)Result = *SomeTexture;
+		EndLoad();
+		return;
+	}
+	else
+	{
+		GLog->Logf(TEXT("ChatDiamond: couldn't load welldone.bmp, well!"));
+		(void*)Result = NULL;
+		EndLoad();
+		return;
+	}*/
+
+	//EndLoad();
+	unguard;
+}
+IMPLEMENT_FUNCTION(ACDDiscordActor, -1, execLoadTextureFromFileOnTheRun);
 
 void ACDDiscordActor::execSpitIpFromChatString(FFrame& Stack, RESULT_DECL)
 {

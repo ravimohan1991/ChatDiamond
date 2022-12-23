@@ -100,7 +100,7 @@ endif()
 # Build options
 ################################################################################
 
-
+#add_compile_definitions(WINDOW_API __declspec(dllexport))
 
 ################################################################################
 # Set the output directory
@@ -127,7 +127,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${REPOSITORYROOT}/ChatDiamondBin/${PLATFORM_
 
 #add_compile_definitions(UTGLR_UT_BUILD)
 #add_compile_definitions(UTGLR_USES_ALPHABLEND=1)
-add_compile_definitions(ENGINE_ARCHITECTURE="${OLDUNREAL_CPU}")
+#add_compile_definitions(ENGINE_ARCHITECTURE="${OLDUNREAL_CPU}")
 
 # use multi-threaded version of C runtime lib and link it statically
 add_compile_definitions(_CRT_SECURE_NO_WARNINGS=1)
@@ -187,7 +187,7 @@ endif()
 ################################################################################
 # Including External and (or) non Epic libraries
 ################################################################################
-#add_subdirectory(External/AkelEdit)
+add_subdirectory(External/AkelEdit)
 
 ################################################################################
 # Epic Essentials
@@ -195,10 +195,12 @@ endif()
 add_subdirectory(Core)
 add_subdirectory(Engine)
 
+add_subdirectory(Window)
+
 ################################################################################
 # Link Directories
 ################################################################################
-link_directories(ChatDiamond Core/Lib Engine/Lib)
+link_directories(ChatDiamond Core/Lib Engine/Lib Window/Lib)
 
 ################################################################################
 # Target Definitions / Custom Modding Stuff
@@ -213,6 +215,6 @@ target_include_directories(ChatDiamond
 ################################################################################
 # Target Linking Rules
 ################################################################################
-target_link_libraries(ChatDiamond PUBLIC Core Engine)
+target_link_libraries(ChatDiamond PUBLIC Core Engine AkelEdit Window)
 
 # end of CMakeLists.txt ...

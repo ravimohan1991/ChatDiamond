@@ -47,6 +47,7 @@ class ACDDiscordActor : public AActor
 public:
 	DECLARE_FUNCTION(execTestFunction)
 		DECLARE_FUNCTION(execSpitIpFromChatString)
+		DECLARE_FUNCTION(execLoadTextureFromFileOnTheRun)
 		DECLARE_CLASS(ACDDiscordActor, AActor, 0, ChatDiamond);
 	ACDDiscordActor();
 };

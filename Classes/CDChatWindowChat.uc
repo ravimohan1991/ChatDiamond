@@ -69,6 +69,7 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
  var string TemporaryServerName;
 
  var config string Chat[200];
+ var CDDiscordActor CDDA;
 
  var color GrnColor, SilColor, YelColor, TxtColor;
  var int iTick;
@@ -88,6 +89,8 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
 
  	CDGRI = Root.GetPlayerOwner().GameReplicationInfo;
  	LocalPRI = Root.GetPlayerOwner().PlayerReplicationInfo;
+
+    CDDA = Root.GetPlayerOwner().Spawn(class'CDDiscordActor', Root.GetPlayerOwner());
 
  	VSRP.CDServerName = GenerateServerName();
  	VSRP.CDMD5Hash = class'CDHash'.static.MD5(VSRP.CDServerName);
@@ -180,6 +183,7 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
  function PadVerticallyWithHorizontal(optional int VerticalPaddingAmount)
  {
  	local int Counter, MaximumPadCount;
+
 
  	if(VerticalPaddingAmount > 0)
  	{
@@ -530,8 +534,8 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
 
  function SetChatTextStatus(string Text)
  {
- 	FrameWindow.StatusBarText = Text;
- 	TheTextArea.bIsStatusSetByChatMessage = true;
+   FrameWindow.StatusBarText = Text;
+   TheTextArea.bIsStatusSetByChatMessage = true;
  }
 
  function Notify (UWindowDialogControl C, byte E)
@@ -754,7 +758,11 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
 
  function Paint(Canvas C, float MouseX, float MouseY)
  {
+    local Texture SomeTextureImportedNatively;
+
  	Super.Paint(C,MouseX,MouseY);
+
+    SomeTextureImportedNatively = CDDA.LoadTextureFromFileOnTheRun("hmm"); //class'CDDiscordActor'.static.LoadTextureFromFileOnTheRun("hmm");
 
  	DrawStretchedTexture(C, 0, 0, WinWidth, WinHeight, Texture'BlackTexture');
  	C.Style = GetPlayerOwner().ERenderStyle.STY_Normal;
