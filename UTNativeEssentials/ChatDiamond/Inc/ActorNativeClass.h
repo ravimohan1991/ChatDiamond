@@ -36,9 +36,10 @@
 #pragma pack (push,4)
 #endif
 
-#ifndef NAMES_ONLY
-#define AUTOGENERATE_FUNCTION(cls,idx,name)
-#endif
+ /*
+ #ifndef NAMES_ONLY
+ #define AUTOGENERATE_FUNCTION(cls,idx,name)
+ #endif*/
 
 #ifndef NAMES_ONLY
 
@@ -48,10 +49,24 @@ public:
 	DECLARE_FUNCTION(execTestFunction)
 		DECLARE_FUNCTION(execSpitIpFromChatString)
 		DECLARE_FUNCTION(execLoadTextureFromFileOnTheRun)
+		DECLARE_FUNCTION(execOpenNativeTestWindow)
+		DECLARE_FUNCTION(execCacheListOfFiles)
+		DECLARE_FUNCTION(execGetIthFileFromCacheList)
+		DECLARE_FUNCTION(execGetGameSystemPath)
 		DECLARE_CLASS(ACDDiscordActor, AActor, 0, ChatDiamond);
 	ACDDiscordActor();
 };
 
+/*
+#define WINDOW_API DLL_EXPORT
+class WCDMesa : UObject
+{
+public:
+	//DECLARE_FUNCTION(execSpawnCDMesa)
+	DECLARE_CLASS(WCDMesa, UObject, 0, ChatDiamond);
+	WCDMesa();
+};
+*/
 #endif
 
 #ifndef NAMES_ONLY

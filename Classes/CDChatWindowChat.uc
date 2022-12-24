@@ -627,7 +627,10 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
  					break;
 
  					case ButSend:
+ 						//class'CDDiscordActor'.static.CacheListOfFiles(EditMesg.GetValue(), class'CDDiscordActor'.static.GetGameSystemPath());
  						SendMessage();
+
+ 						//class'CDDiscordActor'.static.OpenNativeTestWindow(true, FrameWindow);
  					break;
 
  					case ButtonDisconnectAndQuit:
@@ -758,11 +761,11 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
 
  function Paint(Canvas C, float MouseX, float MouseY)
  {
-    local Texture SomeTextureImportedNatively;
+   // local Texture SomeTextureImportedNatively;
 
  	Super.Paint(C,MouseX,MouseY);
 
-    SomeTextureImportedNatively = CDDA.LoadTextureFromFileOnTheRun("hmm"); //class'CDDiscordActor'.static.LoadTextureFromFileOnTheRun("hmm");
+   // SomeTextureImportedNatively = CDDA.LoadTextureFromFileOnTheRun("hmm"); //class'CDDiscordActor'.static.LoadTextureFromFileOnTheRun("hmm");
 
  	DrawStretchedTexture(C, 0, 0, WinWidth, WinHeight, Texture'BlackTexture');
  	C.Style = GetPlayerOwner().ERenderStyle.STY_Normal;

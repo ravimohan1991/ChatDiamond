@@ -530,6 +530,10 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  			CDChatWindow.SetCursor(Root.HandCursor);
  			Log("Setting the cursor to Handcursor");
  		}
+ 		else
+ 		{
+            CDChatWindow.SetCursor(Root.NormalCursor);
+        }
  	}
 
  	DrawChatMessageWithEmoji(C, DrawX, DrawY, Message);
@@ -1014,7 +1018,7 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  * @PARAM TextHeight        Relevant adjustments to be done while placing chat
  *                          face with respect to text
  * @PARAM XOccupied         Width of total chat face area
- * @PARAM YOccupied         Height of total chat face area
+ * @PARAM YOccupied         Height of total c hat face area
  * @PARAM bTopText          If the text is to be place at top with respect to
  *                          chat face. Not so by default
  *

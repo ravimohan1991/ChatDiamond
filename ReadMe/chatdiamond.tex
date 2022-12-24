@@ -4,6 +4,8 @@
 \usepackage{graphicx}
 \usepackage{hyperref}
 \usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
 \usepackage{csquotes}
 \usepackage{changelog}
 \usepackage{tabularx}
@@ -16,6 +18,17 @@
 \usepackage{makecell}
 \usepackage{makeidx}
 \usepackage{forest}
+
+% Useful definitions for Math environments 
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{corollary}{Corollary}[theorem]
+\newtheorem{lemma}[theorem]{Lemma}
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+\newenvironment{remark}[1][Remark]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}]}{\end{trivlist}}
+
+\newenvironment{dummy}{}{}
 
 \definecolor{mygreen}{rgb}{0,0.6,0}
 \definecolor{mygray}{rgb}{0.5,0.5,0.5}
@@ -472,6 +485,7 @@ With enough convincing we are now in a position to understand the organization o
 Consider the hierarcy \ref{forest:project_hierar}.  Then the \href{https://github.com/ravimohan1991/ChatDiamond/blob/f7950b2591b93a54600459ec58d7ddf57fe9218d/UTNativeEssentials/CMakeLists.txt#L201-L216}{code} becomes relevant as follows
 
 \lstset{language=[5.0]Lua}
+\begin{dummy}
 \begin{lstlisting}[frame=single]
 ###################
 # Link Directories
@@ -493,6 +507,7 @@ target_include_directories(ChatDiamond
 ######################
 target_link_libraries(ChatDiamond PUBLIC Core Engine)
 \end{lstlisting}
+\end{dummy}
 
 In line 4, we are telling CMake to generate relevant project files (for MSVC or QTCreator) such that the linking be done with the libraries stored in the \FolderColor{Core\textbackslash Lib} and \FolderColor{Engine\textbackslash Lib} directories\footnote{Note that directories are relative to the current CMake operation direcotry which is basically the location of the \FileColor{CMakeLists.txt} with above code.}.
 
@@ -536,11 +551,222 @@ Now we come back to the topmost \FileColor{CMakeLists.txt}, line 10, which can b
 We are basically in the territory of interface between unrealsccript and C++ for the game UT99.  Remember the C++ standard that the UT99 was written in could have been C98 (or SO/IEC 14882:1998) and unrealscript could have had influences.
 
 In 2022, we can be using any standard ranging from C++11 to C++20.  In CMake above, we defined the standard like \href{https://github.com/ravimohan1991/ChatDiamond/blob/f7950b2591b93a54600459ec58d7ddf57fe9218d/UTNativeEssentials/CMakeLists.txt#L11}{so}
+
 \lstset{language=[5.0]Lua}
 \begin{lstlisting}[frame=single]
 set(CMAKE_CXX_STANDARD 11)
 \end{lstlisting}
-This is what we mean by ``modern'', the ability to take good parts from the standards in history of C++ evolution.  Whith this modern approach, we can leverage the latest  XCode or Microsoft's Visual Studio features (including smarter intellisense) and produce the code that can and will work in future.
+
+This is what we mean by ``modern'', the ability to take good parts from the standards in history of C++ evolution.  Whith this modern approach, we can leverage the latest  XCode or Microsoft's Visual Studio features (including smarter intellisense) and produce the code that can and will work in future. 
+
+First a shout out to fellas at OldUnreal (and the \href{https://www.oldunreal.com/phpBB3/viewtopic.php?f=37&t=3938}{thread}) for the native ``Hello World'' tutorial and Anthrax for \href{https://github.com/stijn-volckaert/udemo}{UDemo} for a working mod with useful information.
+
+With credits out of the way, let me focus upon the juice.  The aim is to write a C++ function which can be called from unrealscript  and which can print
+
+\lstset{language=[5.0]Lua}
+\begin{lstlisting}[frame=single]
+Log: Hello World! S=Test,I=888
+\end{lstlisting}
+
+in the logs.  The idea is to compile a uscript\footnote{I am using unrealscript and uscript interchangeably in this docuemnt.} code (.u package) which makes the call to native function 
+declared within uscript like \href{https://github.com/ravimohan1991/ChatDiamond/blob/f7950b2591b93a54600459ec58d7ddf57fe9218d/Classes/CDDiscordActor.uc#L43}{so}
+
+\lstset{language=Java}
+\begin{lstlisting}[frame=single]
+native final function bool TestFunction(string S, int I);
+\end{lstlisting}
+
+written in \FileColor{CDDiscordActor.uc}.  We need to define this routine in C++, the language the Eninge is written in.  That requires punctuation of .h/.cpp files with lot of macros dedicated towards
+making Engine understand and adapt to uscript capabilites (modularity and swift iteration, and prototyping, functionality\footnote{You can literally use notepad for uscripts if you know what you are doing.}).
+
+We start with the following \href{https://github.com/ravimohan1991/ChatDiamond/blob/f7950b2591b93a54600459ec58d7ddf57fe9218d/UTNativeEssentials/ChatDiamond/Inc/ActorNativeClass.h}{code} analysis
+\lstset{language=C++}
+\begin{lstlisting}[frame=single]
+#if ((_MSC_VER) || (HAVE_PRAGMA_PACK))
+#pragma pack (push,4)
+#endif
+
+#ifndef NAMES_ONLY
+#define AUTOGENERATE_FUNCTION(cls,idx,name)
+#endif
+\end{lstlisting}
+
+Line 1 is preprocessor instruction which says that if I am using MSVC compiler and if \texttt{HAVE\_PRAGMA\_PACK} is set then the alignment of the aggregate members\footnote{For revisiting the notion of 
+members, please see APPENDIX \ref{sec:aggregation}} is defined like \href{https://www.ibm.com/docs/en/zos/2.1.0?topic=descriptions-pragma-pack}{so}
+
+\begin{definition}
+Align structure or class members on 4-byte boundaries, or on their natural alignment (see APPENDIX \ref{append:pragma_pack}) boundary\footnote{}, whichever is less.
+\end{definition}
+
+\texttt{push} is used to make the alignment contextual.  Therefore you shall find the closing counterpart like \href{https://github.com/ravimohan1991/ChatDiamond/blob/f7950b2591b93a54600459ec58d7ddf57fe9218d/UTNativeEssentials/ChatDiamond/Inc/ActorNativeClass.h#L62}{so}
+
+\lstset{language=C++}
+\begin{lstlisting}[frame=single]
+#if ((_MSC_VER) || (HAVE_PRAGMA_PACK))
+#pragma pack (pop)
+#endif
+\end{lstlisting}
+
+Thanks to stackoverflow \href{https://stackoverflow.com/questions/3318410/pragma-pack-effect}{discussion}.  I don't quite yet know the relevance to uscript, all I can think is maybe this is UT99's convention 
+of dealing with the electronics of 1999 or something.  Also anth (2022) has justification like \href{https://github.com/ravimohan1991/ChatDiamond/blob/f7950b2591b93a54600459ec58d7ddf57fe9218d/UTNativeEssentials/Core/Inc/UnBuild.h#L154-L155}{so}.
+
+Lines 5 to 7 are the instructions that seem redundant for our purposes because we haven't used or don't need the macro for printin the log in my forseeable way.
+
+Now we come to the actual definition of the class.  As per UT's naming convention all actor names start with `A'.  Hence we have
+
+\lstset{language=C++}
+\begin{lstlisting}[frame=single]
+class ACDDiscordActor : public AActor
+{
+public:
+	DECLARE_FUNCTION(execTestFunction)
+	DECLARE_CLASS(ACDDiscordActor, AActor, 0, ChatDiamond);
+	ACDDiscordActor();
+};
+\end{lstlisting}
+
+Here we need to first understand the \texttt{DECLARE\_FUNCTION} and \texttt{DECLARE\_CLASS} macros.  For the former the definition is like \href{https://github.com/ravimohan1991/ChatDiamond/blob/5592fef2b13305e441c1dd2b09dde7dd52ff2d83/UTNativeEssentials/Core/Inc/UnObjBas.h#L829}{so}
+
+\lstset{language=C++}
+\begin{lstlisting}[frame=single]
+#define DECLARE_FUNCTION(func) void func( FFrame& TheStack, RESULT_DECL );
+\end{lstlisting}
+
+where \texttt{FFrame} is the data structure defined like \href{https://github.com/ravimohan1991/ChatDiamond/blob/5592fef2b13305e441c1dd2b09dde7dd52ff2d83/UTNativeEssentials/Core/Inc/UnStack.h#L273}{so}.  Anth already has full fledged explaination about the inner working and this is how
+the train of C++ logic runs
+
+\begin{itemize}
+\item The \texttt{UObject::ProcessEvent} is the entry point for unrealscript code, see the \texttt{UFUnction} \href{https://github.com/ravimohan1991/ChatDiamond/blob/5592fef2b13305e441c1dd2b09dde7dd52ff2d83/UTNativeEssentials/Core/Inc/UnClass.h#L379}{code} for instance, where the C++ routine sets a top-level 
+\texttt{FFrame}.  Of course, the implementation of \texttt{ProcessEvent} is hidden as of now.
+\item The \texttt{ProcessEvent} then sets up stack for uscript function parameters and local variables.
+\item The function parameters are then initialized by copying values from \texttt{void* Params} buffer to the top level
+ \texttt{FFrame}.
+\item  We then execute opcodes one by one using this top-level FFrame as our UScript execution stack until we reach an \texttt{EX\_Return}
+opcode or until we hit the end of the function.
+\end{itemize}
+
+Note: I don't know what opcode is.
+
+\texttt{DECLARE\_CLASS} is defined like \href{https://github.com/ravimohan1991/ChatDiamond/blob/5592fef2b13305e441c1dd2b09dde7dd52ff2d83/UTNativeEssentials/Core/Inc/UnObjBas.h#L421}{so}
+
+\lstset{language=C++}
+\begin{lstlisting}[frame=single]
+// Declare a concrete class.
+#define DECLARE_CLASS( TClass, TSuperClass, TStaticFlags, ... ) \
+	DECLARE_BASE_CLASS( TClass, TSuperClass, TStaticFlags, __VA_ARGS__ ) \
+	friend FArchive &operator<<( FArchive& Ar, TClass*& Res ) \
+		{ return Ar << *(UObject**)&Res; } \
+	virtual ~TClass() noexcept(false)   \
+		{ ConditionalDestroy(); } \
+	static void InternalConstructor( void* X ) \
+		{ new( (EInternal*)X )TClass; } \
+\end{lstlisting}
+
+where \texttt{DECLARE\_BASE\_CLASS} is defined like \href{https://github.com/ravimohan1991/ChatDiamond/blob/5592fef2b13305e441c1dd2b09dde7dd52ff2d83/UTNativeEssentials/Core/Inc/UnObjBas.h#L380}{so}
+
+\lstset{language=C++}
+\begin{lstlisting}[frame=single]
+#define DECLARE_BASE_CLASS( TClass, TSuperClass, TStaticFlags, ... ) \
+public: \
+	/* Identification */ \
+	enum {StaticClassFlags=TStaticFlags}; \
+	private: static UClass PrivateStaticClass; public: \
+	typedef TSuperClass Super;\
+	typedef TClass ThisClass;\
+	static UClass* StaticClass() \
+		{ return &PrivateStaticClass; } \
+	void* operator new( size_t Size, UObject* Outer=(UObject*)GetTransientPackage(), FName Name=NAME_None, DWORD SetFlags=0 ) \
+		{ return StaticAllocateObject( StaticClass(), Outer, Name, SetFlags ); } \
+	void* operator new( size_t Size, EInternal* Mem ) \
+		{ return (void*)Mem; }
+\end{lstlisting}
+
+So, on macro expansion, the code takes the following nice lucid form
+
+\lstset{language=C++}
+\begin{lstlisting}[frame=single]
+class ACDDiscordActor : public AActor
+{
+public:
+	ACDDiscordActor();
+
+public:
+	void execTestFunction(FFrame& TheStack, void* const Result);
+
+public:
+public: 
+	/* Identification */
+	enum { StaticClassFlags = 0 };
+	private: static UClass PrivateStaticClass; 
+
+public:
+	typedef AActor Super;
+	typedef ACDDiscordActor ThisClass;
+	static UClass* StaticClass()
+	{
+		return &PrivateStaticClass; 
+	}
+	void* operator new(size_t Size, UObject* Outer = (UObject*)GetTransientPackage(), FName Name = NAME_None, DWORD SetFlags = 0)
+	{
+		return StaticAllocateObject(StaticClass(), Outer, Name, SetFlags); 
+	}
+	void* operator new(size_t Size, EInternal* Mem)
+	{
+		return (void*)Mem;
+	}
+
+	friend FArchive& operator<<(FArchive& Ar, ACDDiscordActor*& Res)
+	{ 
+		return Ar << *(UObject**)&Res; 
+	}
+	virtual ~ACDDiscordActor() noexcept(false)
+	{
+		ConditionalDestroy(); 
+	}
+	static void InternalConstructor(void* X)
+	{
+		new((EInternal*)X)ACDDiscordActor;
+	}
+};
+\end{lstlisting}
+
+Now we come to the definition of the function done like \href{https://github.com/ravimohan1991/ChatDiamond/blob/5592fef2b13305e441c1dd2b09dde7dd52ff2d83/UTNativeEssentials/ChatDiamond/Src/ChatDiamondNative.cpp#L43}{so}
+
+\lstset{language=C++}
+\begin{lstlisting}[frame=single]
+void ACDDiscordActor::execTestFunction(FFrame& Stack, RESULT_DECL)
+{
+	guard(ACDDiscordActor::execTestFunction);
+	P_GET_STR(S);//Get the first parameter
+	P_GET_INT(I);//and the second
+	P_FINISH;//you MUST call this or it will crash.
+
+	GLog->Logf(TEXT("Hello World! S=%s,I=%i"), *S, I);//Log output and use printf format.
+	//You may also use debugf(TEXT("Hello world!")) since it may be easier to remember.
+	*(UBOOL*)Result = true;// Return true to UScript, this is how you return a result. You cast your result into "Result" -- whatever it may be.
+	unguard;
+}
+IMPLEMENT_FUNCTION(ACDDiscordActor, -1, execTestFunction);
+\end{lstlisting}
+
+Most parts have been explained in comments.  I shall focus on the following
+
+\begin{itemize}
+\item \texttt{P\_GET\_STR} is defined like \href{https://github.com/ravimohan1991/ChatDiamond/blob/5592fef2b13305e441c1dd2b09dde7dd52ff2d83/UTNativeEssentials/Core/Inc/UnScript.h#L63}{so}
+\lstset{language=C++}
+\begin{lstlisting}[frame=single]
+#define P_GET_STR(var)                FString var;                         Stack.Step( Stack.Object, &var    );
+#define P_GET_INT(var)                INT   var=0;                         Stack.Step( Stack.Object, &var    );
+\end{lstlisting}
+is used for collecting the arguments of our uscript function \texttt{TestFunction(string S, int I)} and order is indespensible.
+\item \texttt{P\_FINISH} is defined like so
+
+\lstset{language=C++}
+\begin{lstlisting}[frame=single]
+#define P_FINISH                      Stack.Code++;
+\end{lstlisting}
+
+\end{itemize}
 
 \appendix
 
@@ -575,5 +801,69 @@ This is what we mean by ``modern'', the ability to take good parts from the stan
   \caption{Table of argument types.}
   \label{tab:messageform}
 \end{tabcontainer}
+
+\section{Aggregation}
+\label{sec:aggregation}
+In C++, aggregation is a process in which one class defines another class as any entity reference. It is another way to reuse the class. It is a form of association that represents HAS-A relationship.
+
+\lstset{language=C++, framexleftmargin=5mm, frame=shadowbox, rulesepcolor=\color{blue}}
+\begin{dummy}
+\begin{lstlisting}[frame=single]
+class Address
+{  
+    public:
+    string addressLine;
+    Address(string addressLine)
+    {    
+        this->addressLine = addressLine;
+    }
+};
+class Employee
+{
+    private:
+    Address* address;  //Employee HAS-A Address
+
+    public:
+    int id;
+    Employee(int id, Address* address)
+    {
+        this->id = id;
+        this->address = address;
+    }
+    void display()
+    {
+        cout<<id <<"\n";
+        address->addressLine;
+    }
+};
+\end{lstlisting}
+\end{dummy}
+In the code above, line 13 is the example of aggregate member \texttt{address}.
+
+\section{\#pragma pack}
+\label{append:pragma_pack}
+First a definition
+
+\begin{definition}
+Natural alignment roughly means data's memory address is multiple of data size.
+\end{definition}
+
+For instance, in a 32-bit architecture, the data may be aligned if the data is stored in four consecutive bytes and the first byte lies on a 4-byte boundary.  
+Thus if there is a class like so
+
+\lstset{language=C++, framexleftmargin=5mm, frame=shadowbox, rulesepcolor=\color{blue}}
+\begin{lstlisting}[frame=single]
+class Test
+{
+    char a;
+    int b;
+};
+\end{lstlisting}
+
+then, if natural alignment is done (say 32 bit, or x86, architecture), the size of \texttt{Test} would be 8 bytes with the following breakdown
+\begin{itemize}
+\item 1 char byte + 3 bytes of padding
+\item 4 bytes for int
+\end{itemize}
 
 \end{document}
