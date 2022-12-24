@@ -71,6 +71,10 @@ morestring=[b]", }
 
 \lstset{language=Java}          % Set your language (you can change the language for each code-block optionally)
 
+\bigskip
+
+\textcolor{pink}{BIG FAT NOTE: ChatDiamond is in very early stages of development.  Please embrace yourselves for unexpected features and bugs here and there punctuated by tons of client logs.  If possible please raise an issue at \href{https://github.com/ravimohan1991/ChatDiamond/issues}{GitHub}!}
+
 \section{Introduction}
 
 \lstset{ %
@@ -183,6 +187,7 @@ With that being written, feel free to send pull requests to \href{https://github
 Chat Diamond is essentially a console (and not for the server).  So for installation do the following
 \begin{itemize}
 \item Place the \FileColor{ChatDiamond.dll} and \FileColor{ChatDiamond.u} files in \FolderColor{System} directory.
+\item \FileColor{AkelEditd.lib} is optional file and I'd copy that too in \FolderColor{System} directory just to be safe.
 \item Open \FileColor{UnrealTournament.ini} and find the section \\
 
 \fbox{%
@@ -212,8 +217,11 @@ Chat Diamond is essentially a console (and not for the server).  So for installa
 
 \subsection{Configuration}
 I am not providing {\color{purple}ChatDiamond.ini}, which should be generated after first successful run of the mod.  
+Once that is done make sure to configure the file.  I am in the process of writing the configuration description in full details.
 
-Once that is done make sure to configure the file.
+Also embrace for tons of logs about some  ``CDUTChatTextTextureAnimEmoteArea0'' class.  At the moment it skips me on how to suppress the specific logs, if you know you may want to do that and let me know the tirck.
+
+I am in the process of resolving the accessed non warnings.
 
 \end{itemize}
 
