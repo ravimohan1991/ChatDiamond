@@ -36,8 +36,9 @@ class CDConfigurationWindow expands UWindowPageWindow;
 
  var UWindowHSliderControl BackGroundRedSlider;
  var UWindowHSliderControl BackGroundGreenSlider;
-
  var UWindowHSliderControl BackGroundBlueSlider;
+ var UWindowCheckbox ApplyBGToChatWindow, ApplyBGToConsole;
+
  var float  PrevWinWidth, PrevWinHeight;
 
  function Created()
@@ -61,6 +62,16 @@ class CDConfigurationWindow expands UWindowPageWindow;
  	BackGroundBlueSlider.SetText("Blue Color");
  	BackGroundBlueSlider.SetRange(0, 255, 2);
  	BackGroundBlueSlider.SetValue(FrameWindow.BackGroundColor.B);
+
+ 	ApplyBGToChatWindow = UWindowCheckbox(CreateControl(class'UWindowCheckbox', 310, 45, 100, 50));
+ 	ApplyBGToChatWindow.SetTextColor(class'CDChatWindowEmojis'.default.WhiteColor);
+ 	ApplyBGToChatWindow.SetText("Apply To Chat");
+ 	ApplyBGToChatWindow.bChecked = FrameWindow.bApplyBGToChatWindow;
+
+ 	ApplyBGToConsole = UWindowCheckbox(CreateControl(class'UWindowCheckbox', 310, 65, 100, 50));
+ 	ApplyBGToConsole.SetTextColor(class'CDChatWindowEmojis'.default.WhiteColor);
+ 	ApplyBGToConsole.SetText("Apply To Console");
+ 	ApplyBGToConsole.bChecked = FrameWindow.bApplyBGToConsole;
 
  	SetAcceptsFocus();
 
@@ -92,6 +103,14 @@ class CDConfigurationWindow expands UWindowPageWindow;
  					FrameWindow.BackGroundColor.B = BAckGroundBlueSlider.GetValue();
  					FrameWindow.SaveConfig();
  				break;
+ 				case ApplyBGToChatWindow:
+ 					FrameWindow.bApplyBGToChatWindow = ApplyBGToChatWindow.bChecked;
+ 					FrameWindow.SaveConfig();
+ 				break;
+ 				case ApplyBGToConsole:
+ 					FrameWindow.bApplyBGToConsole = ApplyBGToConsole.bChecked;
+ 					FrameWindow.SaveConfig();
+ 				break;
  			}
  		break;
  	}
@@ -105,6 +124,8 @@ class CDConfigurationWindow expands UWindowPageWindow;
  	BackGroundRedSlider.SetValue(FrameWindow.BackGroundColor.R);
  	BackGroundGreenSlider.SetValue(FrameWindow.BackGroundColor.G);
  	BackGroundBlueSlider.SetValue(FrameWindow.BackGroundColor.B);
+ 	ApplyBGToChatWindow.bChecked = FrameWindow.bApplyBGToChatWindow;
+ 	ApplyBGToConsole.bChecked = FrameWindow.bApplyBGToConsole;
  }
 
  function Resize()

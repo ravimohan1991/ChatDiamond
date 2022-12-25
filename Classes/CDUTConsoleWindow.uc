@@ -236,8 +236,15 @@ class CDUTConsoleWindow extends UWindowPageWindow config (ChatDiamond);
 
  	EffectiveHeight = WinHeight - BottomGapForConfiguration;
 
- 	C.DrawColor = FrameWindow.BackGroundColor;
- 	DrawStretchedTexture(C, 0, 0, WinWidth, EffectiveHeight, Texture'BackgroundGradation');
+ 	if(FrameWindow.bApplyBGToConsole)
+ 	{
+ 		C.DrawColor = FrameWindow.BackGroundColor;
+ 		DrawStretchedTexture(C, 0, 0, WinWidth, EffectiveHeight, Texture'BackgroundGradation');
+ 	}
+ 	else
+ 	{
+ 		DrawStretchedTexture(C, 0, 0, WinWidth, EffectiveHeight, Texture'BlackTexture');
+ 	}
  }
 
  function Close(optional bool bByParent)
