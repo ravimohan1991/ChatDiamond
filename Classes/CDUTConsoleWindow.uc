@@ -142,62 +142,62 @@ class CDUTConsoleWindow extends UWindowPageWindow config (ChatDiamond);
 
  	switch(E)
  	{
- 	case DE_EnterPressed:
- 		switch(C)
- 		{
- 		case EditControl:
- 			if(EditControl.GetValue() != "")
+ 		case DE_EnterPressed:
+ 			switch(C)
  			{
- 				CurrentHistory = EditControl.EditBox.HistoryList;
- 				for (i = 0; i < ArrayCount(History); i++)
- 				{
- 					if (CurrentHistory.Next == None)
- 						History[i] = "";
- 					else
+ 				case EditControl:
+ 					if(EditControl.GetValue() != "")
  					{
- 						CurrentHistory = UWindowEditBoxHistory(CurrentHistory.Next);
- 						History[i] = CurrentHistory.HistoryText;
+ 						CurrentHistory = EditControl.EditBox.HistoryList;
+ 						for (i = 0; i < ArrayCount(History); i++)
+ 						{
+ 							if (CurrentHistory.Next == None)
+ 								History[i] = "";
+ 							else
+ 							{
+ 								CurrentHistory = UWindowEditBoxHistory(CurrentHistory.Next);
+ 								History[i] = CurrentHistory.HistoryText;
+ 							}
+ 						}
+ 						SaveConfig();
+ 						s = EditControl.GetValue();
+ 						Root.Console.Message( None, "> "$s, 'Console' );
+ 						EditControl.Clear();
+ 						if( !Root.Console.ConsoleCommand( s ) )
+ 							Root.Console.Message( None, Localize("Errors","Exec","Core"), 'Console' );
  					}
- 				}
- 				SaveConfig();
-
- 				s = EditControl.GetValue();
- 				Root.Console.Message( None, "> "$s, 'Console' );
- 				EditControl.Clear();
- 				if( !Root.Console.ConsoleCommand( s ) )
- 					Root.Console.Message( None, Localize("Errors","Exec","Core"), 'Console' );
+ 				break;
  			}
- 			break;
- 		}
  		break;
  		case DE_WheelUpPressed:
  			switch(C)
  			{
- 			case EditControl:
- 				TextArea.VertSB.Scroll(-1);
+ 				case EditControl:
+ 					TextArea.VertSB.Scroll(-1);
  				break;
  			}
  			break;
  		case DE_WheelDownPressed:
  			switch(C)
  			{
- 			case EditControl:
- 				TextArea.VertSB.Scroll(1);
+ 				case EditControl:
+ 					TextArea.VertSB.Scroll(1);
+ 					break;
+ 			}
+ 		break;
+ 		case DE_Change:
+ 			switch(C)
+ 			{
+ 				case EventsFilter:
+ 					CDUTConsole(Root.Console).bFilterEvents = !CDUTConsole(Root.Console).bFilterEvents;
+ 					EventsFilter.bChecked = CDUTConsole(Root.Console).bFilterEvents;
+ 				break;
+ 				case NonChatMessageFilter:
+ 					CDUTConsole(Root.Console).bFilterNonChatMessages = !CDUTConsole(Root.Console).bFilterNonChatMessages;
+ 					NonChatMessageFilter.bChecked = CDUTConsole(Root.Console).bFilterNonChatMessages;
  				break;
  			}
- 			break;
- 		case DE_Change:
- 		switch(C)
- 		{
- 			case EventsFilter:
- 				CDUTConsole(Root.Console).bFilterEvents = !CDUTConsole(Root.Console).bFilterEvents;
- 				EventsFilter.bChecked = CDUTConsole(Root.Console).bFilterEvents;
- 			break;
- 			case NonChatMessageFilter:
- 				CDUTConsole(Root.Console).bFilterNonChatMessages = !CDUTConsole(Root.Console).bFilterNonChatMessages;
- 				NonChatMessageFilter.bChecked = CDUTConsole(Root.Console).bFilterNonChatMessages;
- 			break;
- 		}
+ 		break;
 
  		case DE_Click:
  			switch(C)
@@ -206,9 +206,9 @@ class CDUTConsoleWindow extends UWindowPageWindow config (ChatDiamond);
  						TextArea.Clear();
  					break;
 				}
-
+ 		break;
  		default:
- 			break;
+ 		break;
  	}
  }
 
@@ -236,7 +236,8 @@ class CDUTConsoleWindow extends UWindowPageWindow config (ChatDiamond);
 
  	EffectiveHeight = WinHeight - BottomGapForConfiguration;
 
- 	DrawStretchedTexture(C, 0, 0, WinWidth, EffectiveHeight, Texture'BlackTexture');
+ 	C.DrawColor = FrameWindow.BackGroundColor;
+ 	DrawStretchedTexture(C, 0, 0, WinWidth, EffectiveHeight, Texture'BackgroundGradation');
  }
 
  function Close(optional bool bByParent)

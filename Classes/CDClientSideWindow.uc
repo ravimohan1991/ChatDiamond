@@ -37,9 +37,10 @@ class CDClientSideWindow expands UWindowConsoleClientWindow config(ChatDiamond);
  var CDChatWindowChat    ChatWindow;
  //var UTChatWindowAdmin   AdminWindow;
  //var UTChatWindowConfig  ConfigWindow;
- var CDChatWindowEmojis  EmojiWindow;
- var CDAboutWindow       AboutWindow;
- var CDUTConsoleWindow   ConsoleWindow;
+ var CDChatWindowEmojis    EmojiWindow;
+ var CDAboutWindow         AboutWindow;
+ var CDUTConsoleWindow     ConsoleWindow;
+ var CDConfigurationWindow ConfigureWindow;
 
  var() config int ActivePageNumber;
 
@@ -71,6 +72,11 @@ class CDClientSideWindow expands UWindowConsoleClientWindow config(ChatDiamond);
  	CDUTConsole(Root.Console).ChatWindow = ChatWindow;
  	ConsoleWindow.FrameWindow = CDModMenuWindowFrame(ParentWindow);
 
+ 	PageControl = Pages.AddPage("Configure", class'CDConfigurationWindow');
+ 	ConfigureWindow = CDConfigurationWindow(PageControl.Page);
+ 	ConfigureWindow.FrameWindow = CDModMenuWindowFrame(ParentWindow);
+ 	CDModMenuWindowFrame(ParentWindow).ConfigurationWindow = ConfigureWindow;
+
  	PageControl = Pages.AddPage("About", class'CDAboutWindow');
  	AboutWindow = CDAboutWindow(PageControl.Page);
 
@@ -90,12 +96,13 @@ class CDClientSideWindow expands UWindowConsoleClientWindow config(ChatDiamond);
  	{
  		Pages.GotoTab(Pages.GetTab("About"));
  	}
+ 	else if(ActivePageNumber == 4)
+ 	{
+ 		Pages.GotoTab(Pages.GetTab("Configure"));
+ 	}
 
  	//PageControl = Pages.AddPage("Admin", class'UTChatWindowAdmin');
  	//AdminWindow = UTChatWindowAdmin(PageControl.Page);
-
- 	//PageControl = Pages.AddPage("Configs", class'UTChatWindowConfig');
- 	//ConfigWindow = UTChatWindowConfig(PageControl.Page);
  }
 
  function AddChatMessage(string sMesg)
@@ -131,6 +138,10 @@ class CDClientSideWindow expands UWindowConsoleClientWindow config(ChatDiamond);
  	else if(Pages.SelectedTab.Caption == "About")
  	{
  		ActivePageNumber = 3;
+ 	}
+ 	else if(Pages.SelectedTab.Caption == "Configure")
+ 	{
+ 		ActivePageNumber = 4;
  	}
 
  	SaveConfig();

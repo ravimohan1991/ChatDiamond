@@ -38,6 +38,7 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
  var() config string IgnorableStrings[40];
 
  var() config bool bIgnoreMessageFilter;
+ var() config bool bUserWantsMessageSound;
 
  var UMenuLabelControl  lblHeading;
  var CDUTChatTextTextureAnimEmoteArea TheTextArea;
@@ -90,7 +91,7 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
  	CDGRI = Root.GetPlayerOwner().GameReplicationInfo;
  	LocalPRI = Root.GetPlayerOwner().PlayerReplicationInfo;
 
-    CDDA = Root.GetPlayerOwner().Spawn(class'CDDiscordActor', Root.GetPlayerOwner());
+ 	CDDA = Root.GetPlayerOwner().Spawn(class'CDDiscordActor', Root.GetPlayerOwner());
 
  	VSRP.CDServerName = GenerateServerName();
  	VSRP.CDMD5Hash = class'CDHash'.static.MD5(VSRP.CDServerName);
@@ -160,7 +161,7 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
  		TheTextArea.AddText(sMesg);
  		CacheMessage(sMesg);
  		ButSave.bDisabled = false;
- 		if(bTalkMessage)
+ 		if(bTalkMessage && bUserWantsMessageSound)
  		{
  			Root.GetPlayerOwner().ClientPlaySound(sound'MessageKernel');
  		}
@@ -534,8 +535,8 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
 
  function SetChatTextStatus(string Text)
  {
-   FrameWindow.StatusBarText = Text;
-   TheTextArea.bIsStatusSetByChatMessage = true;
+ 	FrameWindow.StatusBarText = Text;
+ 	TheTextArea.bIsStatusSetByChatMessage = true;
  }
 
  function Notify (UWindowDialogControl C, byte E)
@@ -761,24 +762,27 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
 
  function Paint(Canvas C, float MouseX, float MouseY)
  {
-   // local Texture SomeTextureImportedNatively;
+ 	// local Texture SomeTextureImportedNatively;
 
  	Super.Paint(C,MouseX,MouseY);
 
-   // SomeTextureImportedNatively = CDDA.LoadTextureFromFileOnTheRun("hmm"); //class'CDDiscordActor'.static.LoadTextureFromFileOnTheRun("hmm");
+ 	// SomeTextureImportedNatively = CDDA.LoadTextureFromFileOnTheRun("hmm"); //class'CDDiscordActor'.static.LoadTextureFromFileOnTheRun("hmm");
 
- 	DrawStretchedTexture(C, 0, 0, WinWidth, WinHeight, Texture'BlackTexture');
+ 	C.DrawColor = FrameWindow.BackGroundColor;
+ 	DrawStretchedTexture(C, 0, 0, WinWidth, WinHeight, Texture'BackgroundGradation');
  	C.Style = GetPlayerOwner().ERenderStyle.STY_Normal;
  }
 
  function Close(optional bool bByParent)
  {
  	Super.Close(bByParent);
+ 	SaveConfig();
  }
 
  // How about all the talk messages on ignore list?
  defaultproperties
  {
+ 	bUserWantsMessageSound=true
  	SilColor=(R=180,G=180,B=180)
  	GrnColor=(R=0,G=255,B=32)
  	TxtColor=(R=255,G=255,B=255,A=0)

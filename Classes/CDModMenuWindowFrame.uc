@@ -36,6 +36,9 @@ class CDModMenuWindowFrame expands UWindowConsoleWindow Config (ChatDiamond);
  var() config int Wpos;
  var() config int Hpos;
  var() config float FrameWidth, FrameHeight;
+ var() config color BackGroundColor;
+
+ var CDConfigurationWindow ConfigurationWindow;
 
  function created()
  {
