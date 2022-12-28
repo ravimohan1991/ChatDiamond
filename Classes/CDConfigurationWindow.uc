@@ -33,11 +33,21 @@ class CDConfigurationWindow expands UWindowPageWindow;
 #exec Texture Import File=Textures\BackgroundTexture.bmp    Name=BackgroundGradation    Mips=off
 
  var CDModMenuWindowFrame FrameWindow;
+ var CDUTConsole UTConsole;
 
  var UWindowHSliderControl BackGroundRedSlider;
  var UWindowHSliderControl BackGroundGreenSlider;
  var UWindowHSliderControl BackGroundBlueSlider;
  var UWindowCheckbox ApplyBGToChatWindow, ApplyBGToConsole;
+ var bool bSecondKeyEvent;
+
+ var UMenuRaisedButton ChatBindButton;
+ var UMenuLabelControl ChatBindLabel;
+
+ // heh, the hack
+// var UWindowEditControl ConfigPoller;
+
+ var() config int ChatWindowKeyForBind;  //EInputKey
 
  var float  PrevWinWidth, PrevWinHeight;
 
@@ -49,29 +59,53 @@ class CDConfigurationWindow expands UWindowPageWindow;
  	BackGroundRedSlider.SetTextColor(class'CDChatWindowEmojis'.default.WhiteColor);
  	BackGroundRedSlider.SetText("Red Color");
  	BackGroundRedSlider.SetRange(0, 255, 2);
- 	BackGroundRedSlider.SetValue(FrameWindow.BackGroundColor.R);
+ 	//BackGroundRedSlider.SetValue(FrameWindow.BackGroundColor.R);
 
  	BackGroundGreenSlider = UWindowHSliderControl(CreateControl(class'UWindowHSliderControl', 20, 60, 250, 50));
  	BackGroundGreenSlider.SetTextColor(class'CDChatWindowEmojis'.default.WhiteColor);
  	BackGroundGreenSlider.SetText("Green Color");
  	BackGroundGreenSlider.SetRange(0, 255, 2);
- 	BackGroundGreenSlider.SetValue(FrameWindow.BackGroundColor.G);
+ 	//BackGroundGreenSlider.SetValue(FrameWindow.BackGroundColor.G);
 
  	BackGroundBlueSlider = UWindowHSliderControl(CreateControl(class'UWindowHSliderControl', 20, 80, 250, 50));
  	BackGroundBlueSlider.SetTextColor(class'CDChatWindowEmojis'.default.WhiteColor);
  	BackGroundBlueSlider.SetText("Blue Color");
  	BackGroundBlueSlider.SetRange(0, 255, 2);
- 	BackGroundBlueSlider.SetValue(FrameWindow.BackGroundColor.B);
+ 	//BackGroundBlueSlider.SetValue(FrameWindow.BackGroundColor.B);
 
  	ApplyBGToChatWindow = UWindowCheckbox(CreateControl(class'UWindowCheckbox', 310, 45, 100, 50));
  	ApplyBGToChatWindow.SetTextColor(class'CDChatWindowEmojis'.default.WhiteColor);
  	ApplyBGToChatWindow.SetText("Apply To Chat");
- 	ApplyBGToChatWindow.bChecked = FrameWindow.bApplyBGToChatWindow;
+ 	//ApplyBGToChatWindow.bChecked = FrameWindow.bApplyBGToChatWindow;
 
  	ApplyBGToConsole = UWindowCheckbox(CreateControl(class'UWindowCheckbox', 310, 65, 100, 50));
  	ApplyBGToConsole.SetTextColor(class'CDChatWindowEmojis'.default.WhiteColor);
  	ApplyBGToConsole.SetText("Apply To Console");
- 	ApplyBGToConsole.bChecked = FrameWindow.bApplyBGToConsole;
+ 	//ApplyBGToConsole.bChecked = FrameWindow.bApplyBGToConsole;
+
+ 	ChatBindButton = UMenuRaisedButton(CreateControl(class'UMenuRaisedButton', 140, 120, 60, 1));
+ 	ChatBindButton.SetTextColor(class'CDChatWindowEmojis'.default.WhiteColor);
+
+ 	ChatBindButton.SetText(class'UMenuCustomizeClientWindow'.default.LocalizedKeyName[ChatWindowKeyForBind]);
+
+ 	ChatBindLabel = UMenuLabelControl(CreateControl(class'UMenuLabelControl', 20, 125, 55, 1));
+ 	ChatBindLabel.SetTextColor(class'CDChatWindowEmojis'.default.WhiteColor);
+ 	ChatBindLabel.SetText("Chat Binding");
+ 	ChatBindLabel.bAcceptsFocus = False;
+ 	ChatBindLabel.bIgnoreLDoubleClick = True;
+ 	ChatBindLabel.bIgnoreMDoubleClick = True;
+ 	ChatBindLabel.bIgnoreRDoubleClick = True;
+
+ 	CDUTConsole(Root.Console).ConfigureWindow = self;
+
+
+ 	// For key polling
+ 	/*ConfigPoller = UWindowEditControl(CreateControl(Class'UWindowEditControl', 56, 230, 45, 45));
+ 	ConfigPoller.SetNumericOnly(False);
+ 	ConfigPoller.SetFont(0);
+ 	ConfigPoller.SetHistory(True);
+ 	ConfigPoller.SetValue("");
+ 	ConfigPoller.Align = TA_Left;*/
 
  	SetAcceptsFocus();
 
@@ -110,9 +144,54 @@ class CDConfigurationWindow expands UWindowPageWindow;
  				case ApplyBGToConsole:
  					FrameWindow.bApplyBGToConsole = ApplyBGToConsole.bChecked;
  					FrameWindow.SaveConfig();
+ 				break;/*
+ 				case ConfigPoller:
+ 					if(ChatBindButton.bDisabled && ConfigPoller.GetValue() != "")
+ 					{
+ 						Log("Typing " $ UWindowEditControl(C).GetValue());
+ 						ChatBindButton.bDisabled = false;
+
+ 					}
+ 				break;  */
+ 			}
+ 		break;
+ 		case DE_Click:
+ 			switch(C)
+ 			{
+ 				case ChatBindButton:
+ 					ChatBindButton.bDisabled = true;
+ 					bSecondKeyEvent = true;
  				break;
  			}
  		break;
+ 	}
+ }
+
+ function ConsoleKeyEvent(int Key, int Action, float Delta)
+ {
+ 	local UMenuPageControl LPages;
+ 	local UWindowWindow UWindow;
+
+ 	if(ChatBindButton.bDisabled)
+ 	{
+ 		ChatWindowKeyForBind = Key;
+ 		ChatBindButton.SetText(class'UMenuCustomizeClientWindow'.default.LocalizedKeyName[Key]);
+ 		ChatBindButton.bDisabled = false;
+ 		SaveConfig();
+ 	}
+ 	else if(bSecondKeyEvent)
+ 	{
+ 		bSecondKeyEvent = false;
+ 	}
+ 	else if(Key == ChatWindowKeyForBind)
+ 	{
+ 		Root.Console.bQuickKeyEnable = !Root.Console.bUWindowActive;
+ 		Root.Console.LaunchUWindow();
+ 		Root.Console.ShowConsole();
+ 		UWindow =  Root.Console.ConsoleWindow.ClientArea;
+ 		LPages = CDClientSideWindow(UWindow).Pages;
+ 		LPages.GotoTab(LPages.GetTab("Public Chats"));
+ 		// CDChatWindowChat(LPages.GetPage("Public Chats").Page).EditMesg.SetValue("");
  	}
  }
 
@@ -126,6 +205,7 @@ class CDConfigurationWindow expands UWindowPageWindow;
  	BackGroundBlueSlider.SetValue(FrameWindow.BackGroundColor.B);
  	ApplyBGToChatWindow.bChecked = FrameWindow.bApplyBGToChatWindow;
  	ApplyBGToConsole.bChecked = FrameWindow.bApplyBGToConsole;
+ 	ChatBindButton.SetText(class'UMenuCustomizeClientWindow'.default.LocalizedKeyName[ChatWindowKeyForBind]);
  }
 
  function Resize()
@@ -160,6 +240,7 @@ class CDConfigurationWindow expands UWindowPageWindow;
  function Close (optional bool bByParent)
  {
  	Super.Close(bByParent);
+ 	SaveConfig();
  }
 
  defaultproperties

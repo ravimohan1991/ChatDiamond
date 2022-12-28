@@ -28,7 +28,7 @@
 //- All the client relative tabs are responsibility of this class
 //==============================================================================
 
-class CDClientSideWindow expands UWindowConsoleClientWindow config(ChatDiamond);
+class CDClientSideWindow extends UWindowConsoleClientWindow config(ChatDiamond);
 
  #exec texture IMPORT NAME=Emojis1 File=Textures\emojis1.pcx GROUP=Commands Mips=on
  #exec texture IMPORT NAME=Emojis2 File=Textures\emojis2.pcx GROUP=Commands Mips=off
@@ -55,6 +55,8 @@ class CDClientSideWindow expands UWindowConsoleClientWindow config(ChatDiamond);
 
  	Pages = UMenuPageControl(CreateWindow(class'UMenuPageControl', 0, 0, WinWidth, WinHeight));
  	Pages.SetMultiLine(false);
+ 	Pages.bAcceptsFocus = true;
+ 	Pages.SetAcceptsFocus();
 
  	PageControl = Pages.AddPage("Public Chats", class'CDChatWindowChat');
  	ChatWindow = CDChatWindowChat(PageControl.Page);
@@ -72,10 +74,12 @@ class CDClientSideWindow expands UWindowConsoleClientWindow config(ChatDiamond);
  	CDUTConsole(Root.Console).ChatWindow = ChatWindow;
  	ConsoleWindow.FrameWindow = CDModMenuWindowFrame(ParentWindow);
 
+ 	// Order matters here, ConsoleWindow needs be initialized before for
+ 	// CDUTConsole(Root.Console).ChatWindowKeyForBind in CDUTConsole and CDClientSideWindow
  	PageControl = Pages.AddPage("Configure", class'CDConfigurationWindow');
  	ConfigureWindow = CDConfigurationWindow(PageControl.Page);
  	ConfigureWindow.FrameWindow = CDModMenuWindowFrame(ParentWindow);
- 	CDModMenuWindowFrame(ParentWindow).ConfigurationWindow = ConfigureWindow;
+ 	CDModMenuWindowFrame(ParentWindow).ConfigurationWindow = ConfigureWindow;// For global stuff
 
  	PageControl = Pages.AddPage("About", class'CDAboutWindow');
  	AboutWindow = CDAboutWindow(PageControl.Page);
@@ -103,6 +107,9 @@ class CDClientSideWindow expands UWindowConsoleClientWindow config(ChatDiamond);
 
  	//PageControl = Pages.AddPage("Admin", class'UTChatWindowAdmin');
  	//AdminWindow = UTChatWindowAdmin(PageControl.Page);
+
+ 	bAcceptsFocus = true;
+ 	SetAcceptsFocus();
  }
 
  function AddChatMessage(string sMesg)

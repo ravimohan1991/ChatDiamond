@@ -32,7 +32,9 @@
 class CDUTConsole extends UTConsole config (ChatDiamond);
 
  var CDChatWindowChat ChatWindow;
+ var CDConfigurationWindow ConfigureWindow;
  var string Version;
+ var bool bNotifiedConfigurationWindow;
 
  var() config bool bFilterEvents;
  var() config bool bFilterNonChatMessages;
@@ -132,10 +134,38 @@ function CloseUWindow()
 	SaveConfig();
 }
 
-event Tick( float Delta )
+event Tick(float DeltaTime)
 {
-	Super.Tick( Delta );
+ 	bNotifiedConfigurationWindow = false;
 }
+
+state UWindow
+{
+
+event bool KeyEvent(EInputKey Key, EInputAction Action, FLOAT Delta)
+{
+
+ 	if(Action == EInputAction.IST_Press && !bNotifiedConfigurationWindow)
+ 	{
+ 		ConfigureWindow.ConsoleKeyEvent(Key, Action, Delta);
+ 		bNotifiedConfigurationWindow = true;
+ 	}
+
+	return Super.KeyEvent(Key, Action, Delta );
+}
+}
+
+event bool KeyEvent(EInputKey Key, EInputAction Action, FLOAT Delta)
+{
+ 	if(Action == EInputAction.IST_Press && !bNotifiedConfigurationWindow)
+ 	{
+ 		ConfigureWindow.ConsoleKeyEvent(Key, Action, Delta);
+ 		bNotifiedConfigurationWindow = true;
+ 	}
+
+ 	return Super.KeyEvent(Key, Action, Delta);
+}
+
 
  defaultproperties
  {

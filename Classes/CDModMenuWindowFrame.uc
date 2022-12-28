@@ -49,6 +49,9 @@ class CDModMenuWindowFrame expands UWindowConsoleWindow Config (ChatDiamond);
  {
  	SetDimensions();
 
+ 	bAcceptsFocus = true;
+ 	SetAcceptsFocus();
+
  	super.created();
 
  	// The outer constraint for all the pages and window of ChatDiamond
