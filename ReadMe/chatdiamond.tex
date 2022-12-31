@@ -73,7 +73,7 @@ morestring=[b]", }
 
 \bigskip
 
-\textcolor{pink}{BIG FAT NOTE: ChatDiamond is in very early stages of development.  Please embrace yourselves for unexpected features and bugs here and there punctuated by tons of client logs.  If possible please raise an issue at \href{https://github.com/ravimohan1991/ChatDiamond/issues}{GitHub}!}
+\textcolor{pink}{BIG FAT NOTE: Chat Diamond is in very early stages of development.  Please embrace yourselves for unexpected features and bugs here and there punctuated by tons of client logs.  If possible please raise an issue at \href{https://github.com/ravimohan1991/ChatDiamond/issues}{GitHub}!}
 
 \section{Introduction}
 
@@ -107,7 +107,7 @@ morestring=[b]", }
 
 Chat Diamond (version \ChatDiamondVersion) is a purely client-side mod for Unreal Tournament G.O.T.Y (UT99) which replaces the default UT console with a more appropriate one.  This functionality allows the achievement of the following
 \begin{itemize}
-\item Gathering of raw messages delivered to the console and relevant categorization, along with chat message seperation, of them.
+\item Gathering of raw messages delivered to the console and relevant categorization, along with chat message separation, of them.
 \item Introduction of appropriate web-query for translation to local or demand of the language.
 \end{itemize}
 
@@ -133,7 +133,7 @@ Figure \ref{fig:chatdiamond} shows the current form of the chat window. The foll
 \item Ability to display hyperlinks with clickable feature for relevant navigation and mouse cursor distinction.
 \begin{itemize}
 \item On clicking web or game server IP, the player can reach the relevant website (http:// only) or UT99 game server.
-\item On clicking http://something.com or https://something.com, the player can reach the desired site, if valid url is posted.
+\item On clicking http://something.com or https://something.com, the player can reach the desired site, if valid URL is posted.
 \end{itemize}
 \end{itemize}
 
@@ -146,8 +146,8 @@ Figure \ref{fig:chatdiamond} shows the current form of the chat window. The foll
 \label{fig:chatdiamond_emos}
 \end{figure}
 
-In order to display complete list of supported emojis (and emotes), collectively called \emph{Emos}, the Emoji window \ref{fig:chatdiamond_emos} (which was texture based for UTChat) has been 
-written almost completely in unrealscript (save the textures).  This allows the support for the following 
+In order to display complete list of supported emojis (and emotes), collectively called \emph{Emos}, the Emoji window \ref{fig:chatdiamond_emos} (which was texture based for UT Chat) has been 
+written almost completely in unreal script (save the textures).  This allows the support for the following 
 \begin{itemize}
 \item A curation of selection page for framed Emos.
 \item An interactive way of display, which depresses the frame being hovered with a sound and generates a distinct clicking
@@ -182,7 +182,7 @@ and date format shall be made available as we progress with the development cycl
 \section{Installation}
 Chat Diamond is developed and tested with UT99, 469c client.  Although the mod should work on previous versions, I take no pains for maintaining that code simply because I feel that we all should work towards pushing forward the community effort in driving the game (and UE 1) towards modern experience.  So by not supporting the code for earlier versions I am supporting the later versions.
 
-With that being written, feel free to send pull requests to \href{https://github.com/ravimohan1991/ChatDiamond/}{Chat Diamond} repository, even for ealier game versions.
+With that being written, feel free to send pull requests to \href{https://github.com/ravimohan1991/ChatDiamond/}{Chat Diamond} repository, even for earlier game versions.
 
 Chat Diamond is essentially a console (and not for the server).  So for installation do the following
 \begin{itemize}
@@ -219,16 +219,16 @@ Chat Diamond is essentially a console (and not for the server).  So for installa
 I am not providing {\color{purple}ChatDiamond.ini}, which should be generated after first successful run of the mod.  
 Once that is done make sure to configure the file.  I am in the process of writing the configuration description in full details.
 
-Also embrace for tons of logs about some  ``CDUTChatTextTextureAnimEmoteArea0'' class.  At the moment it skips me on how to suppress the specific logs, if you know you may want to do that and let me know the tirck.
+Also embrace for tons of logs about some  ``CDUTChatTextTextureAnimEmoteArea0'' class.  At the moment it skips me on how to suppress the specific logs, if you know you may want to do that and let me know the trick.
 
 I am in the process of resolving the accessed non warnings.
 
 \end{itemize}
 
 \section{A note on UT Messaging}
-Chat Diamond's functionality is based upon the tenet ``A complete clientside user interface with no dependencies with the server''.  This would imply conforming to the UT standards and any server not conforming to the standards, if so, is not worth visiting.
+Chat Diamond's functionality is based upon the tenet ``A complete client side user interface with no dependencies with the server''.  This would imply conforming to the UT standards and any server not conforming to the standards, if so, is not worth visiting.
 
-Based upon the above motivation we have a choice to make between replacing the client HUD or UT console, in order to gather the UT messages clientside.  My first instinct was to replace the HUD because that would give more precise classification of the messages, in the sense Epic wrote the code, like \href{http://uncodex.ut-files.com/UT/v436/Source_botpack/challengehud.html}{so} (line 1499)
+Based upon the above motivation we have a choice to make between replacing the client HUD or UT console, in order to gather the UT messages client side.  My first instinct was to replace the HUD because that would give more precise classification of the messages, in the sense Epic wrote the code, like \href{http://uncodex.ut-files.com/UT/v436/Source_botpack/challengehud.html}{so} (line 1499)
 
 \begin{lstlisting}[frame=single]
 // Entry point for string messages.
@@ -259,11 +259,11 @@ simulated function Message( PlayerReplicationInfo PRI, coerce string Msg, name M
    %* \ldots *)           
 \end{lstlisting}
 
-The basic premise of many cheats providing aim assist is to modify the HUD clientside and display the adversary's position behind the wall or a radar.  This is the reason why modern anticheats are not receptive of clients modifying HUD, and thus, work with the concept of ``whitelisting''.
+The basic premise of many cheats providing aim assist is to modify the HUD client side and display the adversary's position behind the wall or a radar.  This is the reason why modern anti-cheats are not receptive of clients modifying HUD, and thus, work with the concept of ``whitelisting''.
 
 If the notion of ``cheat-anticheat'' interplay exists in the UT standards, then that simply doesn't fit with the tenant we began with.  We don't want to be sending request to server administrators for specifically whitelisting Chat Diamond which will be reverted by cold silent treatment to say the most and some naggy jibber jabber about the unknown-ness of Chat Diamond, especially when the mod is not that popular.
 
-So with this thiking in mind, the better option would be to replace the client console, which I haven't seen any anticheat scanning. This not only gets the client out of hook for sending whitelisting requests but also provides a powerful mechanism to mould the console, specificifically for generic needs (see the concept of \emph{filters}).
+So with this thinking in mind, the better option would be to replace the client console, which I haven't seen any anti-cheat scanning. This not only gets the client out of hook for sending whitelisting requests but also provides a powerful mechanism to mould the console, specifically for generic needs (see the concept of \emph{filters}).
 
 \subsection{A minor PhD on console messages}
 
@@ -294,7 +294,7 @@ event TeamMessage( PlayerReplicationInfo PRI, coerce string S, name Type, option
 }     
 \end{lstlisting}
 
-It is clear that both the console and HUD should receieve same messages with no discrimination (unless if coder specifically demands, as mentioned in \ref{foot:hudconsolediff}).  The console would display them, in what I would like to think, \emph{raw} form.  The \emph{diff}, between console and HUD, is shown in the figure \ref{fig:chatdiamond_console_hud}
+It is clear that both the console and HUD should receive same messages with no discrimination (unless if coder specifically demands, as mentioned in \ref{foot:hudconsolediff}).  The console would display them, in what I would like to think, \emph{raw} form.  The \emph{diff}, between console and HUD, is shown in the figure \ref{fig:chatdiamond_console_hud}
 
 \begin{figure}
 \centering
@@ -303,7 +303,7 @@ It is clear that both the console and HUD should receieve same messages with no 
 \label{fig:chatdiamond_console_hud}
 \end{figure}
 
-Please note that Chat Diamond's console is not much different from default UT99, visually.  The changes are how Chat Diamond interprets the raw messages thrown and utilize them in a constructive way. So this is where magic \href{https://github.com/ravimohan1991/ChatDiamond/blob/859323fbd80266b21c9dab163b067cacfa318463/Classes/CDUTConsole.uc#L52-L71}{code} comes in.  In order to understand that let me first demonstrate UT messaging by a table\footnote{\label{foot:hudconsolediff} The ``messages'' for instance: `plushie was smaked down by Mental\_Instituitions's Rocket Launcher', are actually strings which can be seen in the line 117 of the \href{http://uncodex.ut-files.com/UT/v436/Source_botpack/deathmessageplus.html}{code}.  This also shows how some deathmessages can be suppressed in the console thus differing from HUD.}.
+Please note that Chat Diamond's console is not much different from default UT99, visually.  The changes are how Chat Diamond interprets the raw messages thrown and utilize them in a constructive way. So this is where magic \href{https://github.com/ravimohan1991/ChatDiamond/blob/859323fbd80266b21c9dab163b067cacfa318463/Classes/CDUTConsole.uc#L52-L71}{code} comes in.  In order to understand that let me first demonstrate UT messaging by a table\footnote{\label{foot:hudconsolediff} The ``messages'' for instance: `plushie was smacked down by Mental\_Instituitions's Rocket Launcher', are actually strings which can be seen in the line 117 of the \href{http://uncodex.ut-files.com/UT/v436/Source_botpack/deathmessageplus.html}{code}.  This also shows how some death messages can be suppressed in the console thus differing from HUD.}.
 
 The mapping to relevant arguments is like so in Table \ref{tab:messageform}.
 
@@ -318,7 +318,7 @@ Chat Diamond is a native mod, meaning, a program invoking C++ functions.  At the
 native final static function string SpitIpFromChatString(string Message, out int ICategory);
 \end{lstlisting}
 
-To understand the implementation of the above unrealscript function, please see the \href{https://github.com/ravimohan1991/ChatDiamond/blob/6e3b684403fb75811c1cde6372c9125370bc796a/UTNativeEssentials/ChatDiamond/Src/ChatDiamondNative.cpp#L52}{code} displayed as follows
+To understand the implementation of the above unreal script function, please see the \href{https://github.com/ravimohan1991/ChatDiamond/blob/6e3b684403fb75811c1cde6372c9125370bc796a/UTNativeEssentials/ChatDiamond/Src/ChatDiamondNative.cpp#L52}{code} displayed as follows
 
 \lstset{language=C++}
 \begin{lstlisting}[frame=single]
@@ -396,7 +396,7 @@ and practices.
 \end{itemize}
 
 \subsection{Why Native Code?}
-Unrealscript is a highly managed language which comes with limitations, which is characteristic of any managed language actually, such as slow(er) 
+Unreal script is a highly managed language which comes with limitations, which is characteristic of any managed language actually, such as slow(er) 
 runtime (when compared with C++), ability to fuse with well defined C++ applications (like Discord), and lack of programmers' choice or taste.  Don't get
 me wrong, the language is best for what it does, scripting mods for the game.  Since this is 2020 decade, along with native support, there should be no 2000's environment 
 limitation, especially with the new community patches.
@@ -451,15 +451,15 @@ Therefore I have organized the repository with the conforming hierarchical struc
 \label{forest:project_hierar}
 \end{figure}
 
-What we have achieved by doing so is a reconciliation of UT99's unrealscript modding environemnt with C++ dev environment yielding a version controlled  (a Github 
+What we have achieved by doing so is a reconciliation of UT99's unreal script modding environment with C++ dev environment yielding a version controlled  (a Github 
 \href{https://github.com/ravimohan1991/ChatDiamond}{repository}) avidity with UT's root folder.  
-All the C++ code goes to the folders marked with, well, C++ and unrealscript code goes to top level \FolderColor{ChatDiamond \textbackslash Classes} directory.  
+All the C++ code goes to the folders marked with, well, C++ and unreal script code goes to top level \FolderColor{ChatDiamond \textbackslash Classes} directory.  
 
 The \FolderColor{Core} is the directory containing ``header-only'' library elements, meaning .h files and the already compiled binary \FileColor{Core.lib}.  Few remarks are to be worded
 \begin{itemize}
 \item Such libraries, which are prebuilt and whose implementation is hidden with only headers (the API) visible, are known as ``\texttt{Interface}'' libraries in CMake's scope.  \FolderColor{Engine} is another example of directory containing such \texttt{Interface} library.  
 Also both of the \FolderColor{Engine} and \FolderColor{Core} directories contain the directories \FolderColor{Inc}, \FolderColor{Src}, and \FolderColor{Lib} sub directories. 
-\item From research, \FileColor{Core.lib} and \FileColor{Engine.lib}, which are static libraries, seem to be the ``basic necessicities'' for linking with a native mod. 
+\item From research, \FileColor{Core.lib} and \FileColor{Engine.lib}, which are static libraries, seem to be the ``basic necessities'' for linking with a native mod. 
 \item In the hierarchy, I am only showing the top level \FileColor{CmakeLists.txt}.  If you are familiar with the build utility, you can comprehend the presence of one each inside \FolderColor{ChatDiamond}, \FolderColor{Core}, and \FolderColor{Engine} directories.
 \item Currently, I am developing on and for Windows (should be evident from \FileColor{GenerateProjectFiles.bat}).  It goes against my philosophy of cross-platform development\footnote{For solid enough work please see \href{https://github.com/ravimohan1991/KarmaEngine}{Karma}.} given the 32-bit jugaad for Linux libraries, I may do something in future.  MacOS seems like a workable goal since I own a MacBook Pro.
 \end{itemize}  
@@ -468,29 +468,29 @@ Make sure that your machine has \href{https://cmake.org/}{CMake} installed.  For
 supply a crash course on CMake, for our purposes here.
 
 \subsubsection{UT and CMake}
-In a C++, or any good programming language, there is a proper toolchain which pipes the human written code to turing machine understantable arrangement of bits 
-(zeroes and ones).  This usually involves lot of garbage intermediatory files which most of the part are useless, unless you suddenly, out of the blue, decide to do 
-scavanging some day.
+In a C++, or any good programming language, there is a proper tool-chain which pipes the human written code to Turing machine understandable arrangement of bits 
+(zeroes and ones).  This usually involves lot of garbage intermediary files which most of the part are useless, unless you suddenly, out of the blue, decide to do 
+scavenging some day.
 
 The responsibility of a good build system is to understand such redundancies and provide a manageable way of dealing with chunks of huge memory files.
 Let me demonstrate by simple logistics.  
 
-At the time, the ChatDiamond C++ component has about three to four MB worth of code files (.h and .cpp).  
-Visual Studio 2022 generates a solution build of about 144 MB worth of memory and the output is \FileColor{ChatDiamond.dll} which is about two MB.  The intermediatory files are 
+At the time, the Chat Diamond C++ component has about three to four MB worth of code files (.h and .cpp).  
+Visual Studio 2022 generates a solution build of about 144 MB worth of memory and the output is \FileColor{ChatDiamond.dll} which is about two MB.  The intermediary files are 
 for IDE's (Visual Studio for instance) and compiler (MSVC or Clang) use only and therefore should be dealt separately by a decent build system\footnote{Actually this is the
 reinforcement of the concept of Universal Turing Machine.  That a good compiler should be able to generate same set of instructions, i.e. a program, 
 which should behave that same way, no matter a laptop or desktop or smart phone.  Please see \href{https://en.wikipedia.org/wiki/Von_Neumann_architecture}{von-Neumann architecture} for a lucid connection 
-between Universal Turing Machine conept and PCs or Macbooks.}.
+between Universal Turing Machine concept and PCs or Macbooks.}.
 
 Given the variety of compilers, with even more variety of platforms, CMake is the most suitable build system and friend that a programmer can, well, make and use.  Along with the clear 
 distinct folder generation for intermediate files, CMake comes with high degree of configurability, required for build, and compatibility with known compilers\footnote{For a comprehensive list, please visit \href{https://cmake.org/cmake/help/latest/manual/cmake-compile-features.7.html}{here}.}.  
 CMake supports the Windows, Unix, and Linux based platforms.
 
-UT99 was officially released and supported on multiple platforms.  The community clearly intendes on keeping that flame intact.  Therefore a rocket scientist isn't really needed to gauge the obvious link 
+UT99 was officially released and supported on multiple platforms.  The community clearly intends on keeping that flame intact.  Therefore a rocket scientist isn't really needed to gauge the obvious link 
 between UT and CMake.
 
 With enough convincing we are now in a position to understand the organization of this project (or some UT project organization, in general).  This may serve as a template.  
-Consider the hierarcy \ref{forest:project_hierar}.  Then the \href{https://github.com/ravimohan1991/ChatDiamond/blob/f7950b2591b93a54600459ec58d7ddf57fe9218d/UTNativeEssentials/CMakeLists.txt#L201-L216}{code}
+Consider the hierarchy \ref{forest:project_hierar}.  Then the \href{https://github.com/ravimohan1991/ChatDiamond/blob/f7950b2591b93a54600459ec58d7ddf57fe9218d/UTNativeEssentials/CMakeLists.txt#L201-L216}{code}
 
 \lstset{language=[5.0]Lua}
 \begin{dummy}
@@ -518,9 +518,9 @@ target_link_libraries(ChatDiamond PUBLIC Core Engine)
 \end{dummy}
 becomes relevant as follows.
 
-In line 4, we are telling CMake to generate relevant project files (for MSVC or QTCreator) such that the linking can be done with the libraries stored in the \FolderColor{Core\textbackslash Lib} and \FolderColor{Engine\textbackslash Lib} directories\footnote{Note that directories are relative to the current CMake operation direcotry which is basically the location of the \FileColor{CMakeLists.txt} with above code.}.
+In line 4, we are telling CMake to generate relevant project files (for MSVC or QTCreator) such that the linking can be done with the libraries stored in the \FolderColor{Core\textbackslash Lib} and \FolderColor{Engine\textbackslash Lib} directories\footnote{Note that directories are relative to the current CMake operation directory which is basically the location of the \FileColor{CMakeLists.txt} with above code.}.
 
-Next from line 9 to 13, we intend to tell CMake to add the native mod project, specified by \FileColor{CMakeLists.txt} present in subdirectory \FolderColor{ChatDiamond}.
+Next from line 9 to 13, we intend to tell CMake to add the native mod project, specified by \FileColor{CMakeLists.txt} present in sub-directory \FolderColor{ChatDiamond}.
 
 Next we proceed towards the file mentioned in previous paragraph (taking a level deep plunge in the folder hierarchy).  The \href{https://github.com/ravimohan1991/ChatDiamond/blob/f7950b2591b93a54600459ec58d7ddf57fe9218d/UTNativeEssentials/ChatDiamond/CMakeLists.txt}{code} is
 \lstset{language=[5.0]Lua}
@@ -544,20 +544,20 @@ target_include_directories(ChatDiamond
 target_compile_definitions(ChatDiamond PUBLIC ChatDiamond)
 \end{lstlisting}
 
-Line 3 declares the mod project name.  Then we specify all the .h files by collectively assembling them with the command \texttt{file} and labelling them \emph{CD\_HEADERS}.  Then we specify the library name via \texttt{add\_library} command in the first field, followed by the type (\texttt{SHARED} means dynamic library) followed by all the source (.cpp) files.  Then we mention headers so that they may appear nicely in the project.  For instance, in XCode the project ChatDiamond looks like
+Line 3 declares the mod project name.  Then we specify all the .h files by collectively assembling them with the command \texttt{file} and labeling them \emph{CD\_HEADERS}.  Then we specify the library name via \texttt{add\_library} command in the first field, followed by the type (\texttt{SHARED} means dynamic library) followed by all the source (.cpp) files.  Then we mention headers so that they may appear nicely in the project.  For instance, in XCode the project ChatDiamond looks like
 \begin{figure}
 \centering
 \includegraphics[width=0.9\textwidth]{chatdiamond_xcode}
-\caption{A ChatDiamond XCode project.}
+\caption{A Chat Diamond XCode project.}
 \label{fig:chatdiamond_xcode}
 \end{figure}
 
-Furthermore we apprise the CMake that the target, ChatDiamond library, needs the includes of \FolderColor{Inc} and provides the same folder as API for various libraries to untilize the functionality.  Finally we set the public usable name, which is same, of the library.
+Furthermore we apprise the CMake that the target, ChatDiamond library, needs the includes of \FolderColor{Inc} and provides the same folder as API for various libraries to utilize the functionality.  Finally we set the public usable name, which is same, of the library.
 
 Now we come back to the topmost \FileColor{CMakeLists.txt}, line 10, which can be regarded the continuation of \texttt{target\_include\_directories} of the previous one.  Here we want to tell CMake to include the library directories (the basic essentials) \FolderColor{Core\textbackslash Inc} and \FolderColor{Engine\textbackslash Inc} in our ChatDiamond project and in line 19 we apprise CMake to link those libraries thus generating the wholesome \FileColor{ChatDiamond.dll}, if we are on Windows\footnote{On Linux based OS, the dynamic library has the extension of ``.so'', which stands for ``shared object''.}.
 
 \subsection{C++ for UT}
-We are basically in the territory of interface between unrealscript and C++ for the game UT99.  Remember the C++ standard that the UT99 was written in could have been C98 (or SO/IEC 14882:1998) and unrealscript could have had influences.
+We are basically in the territory of interface between unreal script and C++ for the game UT99.  Remember the C++ standard that the UT99 was written in could have been C98 (or SO/IEC 14882:1998) and unreal script could have had influences.
 
 In 2022, we can be using any standard ranging from C++11 to C++20.  In CMake above, we defined the standard like \href{https://github.com/ravimohan1991/ChatDiamond/blob/f7950b2591b93a54600459ec58d7ddf57fe9218d/UTNativeEssentials/CMakeLists.txt#L11}{so}
 
@@ -570,14 +570,14 @@ This is what we mean by ``modern'', the ability to take good parts from the stan
 
 First a shout out to fellas at OldUnreal (and the \href{https://www.oldunreal.com/phpBB3/viewtopic.php?f=37&t=3938}{thread}) for the native ``Hello World'' tutorial and Anthrax for \href{https://github.com/stijn-volckaert/udemo}{UDemo}, a working native mod with useful UT oriented C++ information.
 
-With credits out of the way, let me focus upon the juice.  The aim is to write a C++ function which can be called from unrealscript  and which can print
+With credits out of the way, let me focus upon the juice.  The aim is to write a C++ function which can be called from unreal script  and which can print
 
 \lstset{language=[5.0]Lua}
 \begin{lstlisting}[frame=single]
 Log: Hello World! S=Test,I=888
 \end{lstlisting}
 
-in the logs.  The idea is to compile a uscript\footnote{I am using unrealscript and uscript interchangeably in this docuemnt.} code (.u package) which makes the call to native function 
+in the logs.  The idea is to compile a uscript\footnote{I am using unreal script and uscript interchangeably in this document.} code (.u package) which makes the call to native function 
 declared within uscript like \href{https://github.com/ravimohan1991/ChatDiamond/blob/f7950b2591b93a54600459ec58d7ddf57fe9218d/Classes/CDDiscordActor.uc#L43}{so}
 
 \lstset{language=Java}
@@ -586,7 +586,7 @@ native final function bool TestFunction(string S, int I);
 \end{lstlisting}
 
 written in \FileColor{CDDiscordActor.uc}.  We need to define this routine in C++, the language the Engine is written in.  That requires punctuation of .h/.cpp files with lot of macros dedicated towards
-making Engine understand and adapt to uscript capabilites (modularity, swift iteration, and prototyping functionality\footnote{You can literally use notepad for uscripts if you know what you are doing.}).
+making Engine understand and adapt to uscript capabilities (modularity, swift iteration, and prototyping functionality\footnote{You can literally use notepad for uscripts if you know what you are doing.}).
 
 We start with the following \href{https://github.com/ravimohan1991/ChatDiamond/blob/f7950b2591b93a54600459ec58d7ddf57fe9218d/UTNativeEssentials/ChatDiamond/Inc/ActorNativeClass.h}{code} analysis
 \lstset{language=C++}
@@ -619,7 +619,7 @@ Align structure or class members on 4-byte boundaries, or on their natural align
 Thanks to stackoverflow \href{https://stackoverflow.com/questions/3318410/pragma-pack-effect}{discussion}.  I don't quite yet know the relevance to uscript, all I can think is maybe this is UT99's convention 
 of dealing with the electronics of 1999 or something.  Also anth (2022) has justification like \href{https://github.com/ravimohan1991/ChatDiamond/blob/f7950b2591b93a54600459ec58d7ddf57fe9218d/UTNativeEssentials/Core/Inc/UnBuild.h#L154-L155}{so}.
 
-Lines 5 to 7 are the instructions that seem redundant for our purposes because we haven't used or don't need the macro for printin the log in my forseeable way.
+Lines 5 to 7 are the instructions that seem redundant for our purposes because we haven't used or don't need the macro for printing the log in my foreseeable way.
 
 Now we come to the actual definition of the class.  As per UT's naming convention all actor names start with `A'.  Hence we have
 
@@ -641,7 +641,7 @@ Here we need to first understand the \texttt{DECLARE\_FUNCTION} and \texttt{DECL
 #define DECLARE_FUNCTION(func) void func( FFrame& TheStack, RESULT_DECL );
 \end{lstlisting}
 
-where \texttt{FFrame} is the data structure defined like \href{https://github.com/ravimohan1991/ChatDiamond/blob/5592fef2b13305e441c1dd2b09dde7dd52ff2d83/UTNativeEssentials/Core/Inc/UnStack.h#L273}{so}.  Anth already has full fledged explaination about the inner working and this is how
+where \texttt{FFrame} is the data structure defined like \href{https://github.com/ravimohan1991/ChatDiamond/blob/5592fef2b13305e441c1dd2b09dde7dd52ff2d83/UTNativeEssentials/Core/Inc/UnStack.h#L273}{so}.  Anth already has full fledged explanation about the inner working and this is how
 the train of C++ logic runs
 
 \begin{itemize}
@@ -650,7 +650,7 @@ the train of C++ logic runs
 \item The \texttt{ProcessEvent} then sets up stack for uscript function parameters and local variables.
 \item The function parameters are then initialized by copying values from \texttt{void* Params} buffer to the top level
  \texttt{FFrame}.
-\item  We then execute opcodes one by one using this top-level FFrame as our UScript execution stack until we reach an \texttt{EX\_Return}
+\item  We then execute opcodes one by one using this top-level FFrame as our uscript execution stack until we reach an \texttt{EX\_Return}
 opcode or until we hit the end of the function.
 \end{itemize}
 
@@ -787,7 +787,7 @@ is used for collecting the arguments of our uscript function \texttt{TestFunctio
  \makecell{Console\\ Owner\\ State} & \makecell{Death\\ Messages}\footnote{A string rather.  See \ref{foot:hudconsolediff}}  & \makecell{Server\\ Announcements\footnote{Server adds?}} & \makecell{Talk \\ TeamTalk} \\ [0.5ex] 
  \hline\hline
  
-\makecell{Multiplayer \\Spectator} & \makecell{\color{red}{plushie was}\\ \color{red}{smaked down}\\ \color{red}{by MI's}\\ \color{red}{Rocket Launcher}} & \makecell{Type !cg to\\ visit combogib\\ grapple server}  & \makecell{A: Self Sent- \\RN\footnote{Receiever's (who is spectator) Name}:Hola\\  \\ B. By Player-\\ RN:SN\footnote{Sender's name, who is a player.}:Hola \\ \\ C. By spectator\footnote{A different spectator}\\ SN:Hola}\\
+\makecell{Multiplayer \\Spectator} & \makecell{\color{red}{plushie was}\\ \color{red}{smacked down}\\ \color{red}{by MI's}\\ \color{red}{Rocket Launcher}} & \makecell{Type !cg to\\ visit combogib\\ grapple server}  & \makecell{A: Self Sent- \\RN\footnote{Receiver's (who is spectator) Name}:Hola\\  \\ B. By Player-\\ RN:SN\footnote{Sender's name, who is a player.}:Hola \\ \\ C. By spectator\footnote{A different spectator}\\ SN:Hola}\\
 
 \hline
   \end{tabularx}
