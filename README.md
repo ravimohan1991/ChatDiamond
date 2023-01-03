@@ -13,3 +13,14 @@ At the moment, the Chat GUI takes the form
 The idea is simple yet effective, in the sense, we replace the boring default Epic's Console System with our more bright and, hopefully, animated emotes filling.
 
 Stay tuned!!!
+
+# TODO List
+- Add Configure window
+  - configure background color
+  - configure console hot key
+  - configure message delivery sound off/on
+  - configure open chat window at the end of match
+  - chat window avatar size, date format, and emo sizes
+  - language preferences
+  
+- Add language translator  
