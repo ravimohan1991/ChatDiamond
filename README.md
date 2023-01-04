@@ -22,5 +22,6 @@ Stay tuned!!!
   - configure open chat window at the end of match
   - chat window avatar size, date format, and emo sizes
   - language preferences
+  - show emos in text chat
   
 - Add language translator  
