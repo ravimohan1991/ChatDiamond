@@ -23,5 +23,6 @@ Stay tuned!!!
   - chat window avatar size, date format, and emo sizes
   - language preferences
   - show emos in text chat
+  - configure animation speed (default animation should be about 50% of current)
   
 - Add language translator  
