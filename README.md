@@ -30,3 +30,4 @@ Stay tuned!!!
   - Example "5/1/23~10pm joined 192.168.1.1:7777 ~ DECK 16][ ALL WEAPONS - London - Pho` ~"
 - Add hyper link recognition for http://www. and https://www.
 - Save or memorize chat by default
+- Integration with Discord client using [sleepy-discord](https://github.com/ravimohan1991/sleepy-discord)
