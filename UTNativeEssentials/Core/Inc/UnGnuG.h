@@ -172,7 +172,7 @@ typedef long long		SSIZE_T;
 // !!! FIXME:  done between them.  --ryan.
 #ifdef BUILD_64
 typedef unsigned long PTRINT;
-typedef unsigned long INT_PTR; 
+typedef unsigned long INT_PTR;
 #else
 typedef DWORD PTRINT;
 typedef DWORD INT_PTR;
@@ -184,7 +184,7 @@ typedef int32_t LONG;
 typedef unsigned int		BITFIELD;	// For bitfields.
 
 #define NULL_PTR nullptr
-#ifndef INFINITE 
+#ifndef INFINITE
 #define INFINITE 0xFFFFFFFF
 #endif
 
@@ -263,39 +263,6 @@ inline INT appRound(DOUBLE D)
 }
 #endif
 
-//
-// Test for not-a-number
-//
-#define DEFINED_appIsNan 1
-inline UBOOL appIsNan(FLOAT F)
-{
-	return isnan(F);
-}
-inline UBOOL appIsNan(DOUBLE D)
-{
-	return isnan(D);
-}
-
-//
-// CPU cycles, related to GSecondsPerCycle.
-//
-#define DEFINED_appCycles 1
-inline DWORD appCycles()
-{
-#if __UNREAL_X86__
-	return static_cast<DWORD>(__rdtsc());
-#else
-	return SDL_GetPerformanceCounter();
-#endif
-}
-inline SQWORD appCyclesLong()
-{
-#if __UNREAL_X86__
-	return __rdtsc();
-#else
-	return SDL_GetPerformanceCounter();
-#endif
-}
 
 //
 // Memory zero.

@@ -36,24 +36,20 @@
 #pragma pack (push,4)
 #endif
 
- /*
+
  #ifndef NAMES_ONLY
  #define AUTOGENERATE_FUNCTION(cls,idx,name)
- #endif*/
+ #endif
 
-#ifndef NAMES_ONLY
+//#ifndef NAMES_ONLY
 
 class ACDDiscordActor : public AActor
 {
 public:
 	DECLARE_FUNCTION(execTestFunction)
-		DECLARE_FUNCTION(execSpitIpFromChatString)
-		DECLARE_FUNCTION(execLoadTextureFromFileOnTheRun)
-		DECLARE_FUNCTION(execOpenNativeTestWindow)
-		DECLARE_FUNCTION(execCacheListOfFiles)
-		DECLARE_FUNCTION(execGetIthFileFromCacheList)
-		DECLARE_FUNCTION(execGetGameSystemPath)
-		DECLARE_CLASS(ACDDiscordActor, AActor, 0, ChatDiamond);
+	DECLARE_FUNCTION(execSpitIpFromChatString)
+	DECLARE_FUNCTION(execGetGameSystemPath)
+	DECLARE_CLASS(ACDDiscordActor, AActor, 0, ChatDiamond);
 	ACDDiscordActor();
 };
 
@@ -67,7 +63,7 @@ public:
 	WCDMesa();
 };
 */
-#endif
+//#endif
 
 #ifndef NAMES_ONLY
 #undef AUTOGENERATE_NAME
