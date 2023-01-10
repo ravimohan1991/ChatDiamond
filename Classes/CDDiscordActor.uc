@@ -62,13 +62,13 @@ class CDDiscordActor extends Actor
 
  native final static function string SpitIpFromChatString(string Message, out int ICategory); // For now, the routine shall fish for first instance only
 
+/*
  native final static function OpenNativeTestWindow(bool bVisible, UWindowWindow ParentWindow);
  native final static function int CacheListOfFiles(string Extension, string FolderPath);
  native final static function string GetIthFileFromCacheList(int I);
-
  native final static function string GetGameSystemPath();
-
  native final static function Texture LoadTextureFromFileOnTheRun(string FileName);
+ */
 
  function PostBeginPlay()
  {
