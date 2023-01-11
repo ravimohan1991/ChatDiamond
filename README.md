@@ -24,6 +24,7 @@ Stay tuned!!!
   - language preferences
   - show emos in text chat
   - configure animation speed (default animation should be about 50% of current)
+  - option to open Chat window at the match end
   
 - Add language translator  
 - When joining a server set message to include IP/PORT of server
