@@ -764,14 +764,14 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
  {
  	// local Texture SomeTextureImportedNatively;
 
- 	Super.Paint(C,MouseX,MouseY);
+ 	Super.Paint(C, MouseX, MouseY);
 
  	// SomeTextureImportedNatively = CDDA.LoadTextureFromFileOnTheRun("hmm"); //class'CDDiscordActor'.static.LoadTextureFromFileOnTheRun("hmm");
 
  	if(FrameWindow.bApplyBGToChatWindow)
  	{
  		C.DrawColor = FrameWindow.BackGroundColor;
- 	DrawStretchedTexture(C, 0, 0, WinWidth, WinHeight, Texture'BackgroundGradation');
+ 	 	DrawStretchedTexture(C, 0, 0, WinWidth, WinHeight, Texture'BackgroundGradation');
  	}
  	else
  	{

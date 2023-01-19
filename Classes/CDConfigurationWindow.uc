@@ -38,11 +38,19 @@ class CDConfigurationWindow expands UWindowPageWindow;
  var UWindowHSliderControl BackGroundRedSlider;
  var UWindowHSliderControl BackGroundGreenSlider;
  var UWindowHSliderControl BackGroundBlueSlider;
+ var UWindowHSliderControl EmotesAnimationSpeed;
  var UWindowCheckbox ApplyBGToChatWindow, ApplyBGToConsole;
  var bool bSecondKeyEvent;
 
  var UMenuRaisedButton ChatBindButton;
  var UMenuLabelControl ChatBindLabel;
+
+ struct MiniFrameDimensions
+ {
+ 	var int Width;
+ 	var int Height;
+ };
+ var MiniFrameDimensions MFEmo;
 
  // heh, the hack
 // var UWindowEditControl ConfigPoller;
@@ -83,12 +91,19 @@ class CDConfigurationWindow expands UWindowPageWindow;
  	ApplyBGToConsole.SetText("Apply To Console");
  	//ApplyBGToConsole.bChecked = FrameWindow.bApplyBGToConsole;
 
- 	ChatBindButton = UMenuRaisedButton(CreateControl(class'UMenuRaisedButton', 140, 120, 60, 1));
+ 	ChatBindButton = UMenuRaisedButton(CreateControl(class'UMenuRaisedButton', 144, 120, 60, 1));
  	ChatBindButton.SetTextColor(class'CDChatWindowEmojis'.default.WhiteColor);
 
  	ChatBindButton.SetText(class'UMenuCustomizeClientWindow'.default.LocalizedKeyName[ChatWindowKeyForBind]);
 
- 	ChatBindLabel = UMenuLabelControl(CreateControl(class'UMenuLabelControl', 20, 125, 55, 1));
+ 	//ConsoleBindButton to do
+
+ 	EmotesAnimationSpeed = UWindowHSliderControl(CreateControl(class'UWindowHSliderControl', 20, 160, 250, 50));
+ 	EmotesAnimationSpeed.SetTextColor(class'CDChatWindowEmojis'.default.WhiteColor);
+ 	EmotesAnimationSpeed.SetText("Animation Speed");
+ 	BackGroundBlueSlider.SetRange(0, 60, 1);
+
+ 	ChatBindLabel = UMenuLabelControl(CreateControl(class'UMenuLabelControl', 20, 125, 65, 1));
  	ChatBindLabel.SetTextColor(class'CDChatWindowEmojis'.default.WhiteColor);
  	ChatBindLabel.SetText("Chat Binding");
  	ChatBindLabel.bAcceptsFocus = False;
@@ -233,14 +248,38 @@ class CDConfigurationWindow expands UWindowPageWindow;
  {
  	Super.Paint(C, MouseX, MouseY);
 
+ 	MFEmo.Width = 495 / 8;
+ 	MFEmo.Height = int(MFEmo.Width * 1.1) * 0.75;
+
  	C.DrawColor = FrameWindow.BackGroundColor;
  	DrawStretchedTexture(C, 0, 0, WinWidth, WinHeight, Texture'BackgroundGradation');
+
+ 	// Animation preview window
+ 	DrawMiniframe(C, 310, 160, 2);
  }
 
  function Close (optional bool bByParent)
  {
  	Super.Close(bByParent);
  	SaveConfig();
+ }
+
+ // Drawing functions
+ function DrawMiniFrame(Canvas C, float X, float Y, int BorderWidth)
+ {
+ 	// Top Line
+ 	DrawStretchedTexture(C, X, Y, BorderWidth, BorderWidth, Texture'BlueMenuTL');
+ 	DrawStretchedTexture(C, X + BorderWidth, Y, MFEmo.Width - 2 * BorderWidth, BorderWidth, Texture'BlueMenuT');
+ 	DrawStretchedTexture(C, X + MFEmo.Width - BorderWidth, Y, BorderWidth, BorderWidth, Texture'BlueMenuTR');
+
+ 	// Bottom Line
+ 	DrawStretchedTexture(C, X, Y + MFEmo.Height - BorderWidth, BorderWidth, BorderWidth, Texture'BlueMenuBL');
+ 	DrawStretchedTexture(C, X + BorderWidth, Y + MFEmo.Height - BorderWidth, MFEmo.Width - 2 * BorderWidth, BorderWidth, Texture'BlueMenuB');
+ 	DrawStretchedTexture(C, X + MFEmo.Width - BorderWidth, Y + MFEmo.Height - BorderWidth, BorderWidth, BorderWidth, Texture'BlueMenuBR');
+
+ 	// Left and Right Lines
+ 	DrawStretchedTexture(C, X, Y + BorderWidth, BorderWidth, MFEmo.Height - 2 * BorderWidth, Texture'BlueMenuL');
+ 	DrawStretchedTexture(C, X + MFEmo.Width - BorderWidth, Y + BorderWidth, BorderWidth, MFEmo.Height - 2 * BorderWidth, Texture'BlueMenuR');
  }
 
  defaultproperties
