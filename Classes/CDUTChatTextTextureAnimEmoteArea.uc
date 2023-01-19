@@ -433,6 +433,8 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  			sName = Left(sMesg, i+1); // somasup:.
  			sMesg = Mid(sMesg, i+2);  // hey blaze
 
+            C.Font = Root.Fonts[F_Normal];
+
  			TextSize(C, sDate, X1, Y1);
 
  			C.DrawColor = ChatColor;
