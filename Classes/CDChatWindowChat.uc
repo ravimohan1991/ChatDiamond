@@ -777,7 +777,6 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
  	{
  		DrawStretchedTexture(C, 0, 0, WinWidth, WinHeight, Texture'BlackTexture');
  	}
- 	C.Style = GetPlayerOwner().ERenderStyle.STY_Normal;
  }
 
  function Close(optional bool bByParent)

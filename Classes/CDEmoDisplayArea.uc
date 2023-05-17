@@ -502,6 +502,7 @@ function DrawDepressedMiniFrameCell(Canvas C, float FrameStartX, float FrameStar
  	{
  		DrawMiniFrame(C, FrameStartX, FrameStartY, 2);
  	}
+
  	DrawStretchedTexture(C, FrameStartX + 4 + DepressedOffset, DepressedOffset + FrameStartY + Height / 2  - Height * DisplayFractionV / 2, Width / 2, Height * DisplayFractionV, Tex);
 
  	C.Font = Root.Fonts[F_Bold];
@@ -522,6 +523,7 @@ function DrawDepressedMiniFrameCell(Canvas C, float FrameStartX, float FrameStar
 
  	C.DrawColor = WhiteColor;
  	DrawMiniFrame(C, FrameStartX, FrameStartY, 2);
+
  	DrawStretchedTexture(C, FrameStartX + 4, FrameStartY + Height / 2  - Height * DisplayFractionV / 2, Width / 2, Height * DisplayFractionV, Tex);
 
  	C.Font = Root.Fonts[F_Bold];

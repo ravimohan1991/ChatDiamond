@@ -52,7 +52,7 @@ IMPLEMENT_FUNCTION(ACDDiscordActor, -1, execTestFunction);
 
 void ACDDiscordActor::execGetGameSystemPath(FFrame& Stack, RESULT_DECL)
 {
-	guard(ACDDiscordActor::execGetIthFileFromCacheList);
+	guard(ACDDiscordActor::execGetGameSystemPath);
 
 	P_FINISH;
 

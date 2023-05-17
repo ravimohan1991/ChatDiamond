@@ -627,7 +627,7 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  		DrawX += TextWidth;
 
  		C.DrawColor = WhiteColor;
- 		C.Style = ERenderStyle.STY_Normal;
+ 		C.Style = ERenderStyle.STY_Translucent;
 
  		if(Identifier < 28)
  		{

@@ -220,8 +220,8 @@ class CDChatWindowEmojis extends UWindowPageWindow;
  							Root.QuitGame();
  						break;
 
- 						// Courtsey ProAsm's UTCmds8
- 						case ButtonPlaySpectate:
+ 				// Courtsey ProAsm's UTCmds8
+ 				case ButtonPlaySpectate:
  						if(GetPlayerOwner().PlayerReplicationInfo.bIsSpectator)
  						{
  							GetPlayerOwner().PreClientTravel();
@@ -230,13 +230,12 @@ class CDChatWindowEmojis extends UWindowPageWindow;
  						}
  						else
  						{
- 						GetPlayerOwner().PreClientTravel();
- 						GetPlayerOwner().ClientTravel("?OverrideClass=Botpack.CHSpectator", TRAVEL_Relative, False);
- 						ButtonPlaySpectate.SetText("Play");
+ 							GetPlayerOwner().PreClientTravel();
+ 							GetPlayerOwner().ClientTravel("?OverrideClass=Botpack.CHSpectator", TRAVEL_Relative, False);
+ 							ButtonPlaySpectate.SetText("Play");
  						}
-
  						break;
- 				}
+ 			}
  			break;
  		case 7:
  			ChatWindow.SendMessage(EditMesg);
