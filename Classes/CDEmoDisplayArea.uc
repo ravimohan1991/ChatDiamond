@@ -506,10 +506,10 @@ function DrawDepressedMiniFrameCell(Canvas C, float FrameStartX, float FrameStar
  	DrawStretchedTexture(C, FrameStartX + 4 + DepressedOffset, DepressedOffset + FrameStartY + Height / 2  - Height * DisplayFractionV / 2, Width / 2, Height * DisplayFractionV, Tex);
 
  	C.Font = Root.Fonts[F_Bold];
- 	C.TextSize(TextSymbol, XS, YS);
+ 	C.TextSize(":d", XS, YS);
 
  	C.DrawColor = class'CDChatWindowEmojis'.default.BlackColor;
- 	ClipText(C, FrameStartX + MFEmo.Width / 2 + XS + DepressedOffset, DepressedOffset + FrameStartY + MFEmo.Height / 2 - YS / 2, TextSymbol);
+ 	ClipText(C, FrameStartX + MFEmo.Width / 2 + 0.32 * XS + DepressedOffset, DepressedOffset + FrameStartY + MFEmo.Height / 2 - 0.2 * YS, TextSymbol);
  }
 
  function DrawMiniFrameCell(Canvas C, float FrameStartX, float FrameStartY, float Width, float Height, string TextSymbol, Texture Tex)
@@ -527,10 +527,10 @@ function DrawDepressedMiniFrameCell(Canvas C, float FrameStartX, float FrameStar
  	DrawStretchedTexture(C, FrameStartX + 4, FrameStartY + Height / 2  - Height * DisplayFractionV / 2, Width / 2, Height * DisplayFractionV, Tex);
 
  	C.Font = Root.Fonts[F_Bold];
- 	C.TextSize(TextSymbol, XS, YS);
+ 	C.TextSize(":d", XS, YS);
 
  	C.DrawColor = class'CDChatWindowEmojis'.default.BlackColor;
- 	ClipText(C, FrameStartX + MFEmo.Width / 2 + XS, FrameStartY + MFEmo.Height / 2 - YS / 2, TextSymbol);
+ 	ClipText(C, FrameStartX + MFEmo.Width / 2 + 0.32 * XS, FrameStartY + MFEmo.Height / 2 - 0.2 * YS, TextSymbol);
  }
 
  function DrawMiniFrame(Canvas C, float X, float Y, int BorderWidth)
