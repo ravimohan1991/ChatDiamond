@@ -53,7 +53,6 @@
  var CDMiniFrameList DrawnMiniFrameList;
 
  var float MiniFrameBeingHovered;
- var float VerticalSBPos;
  var float VSBPosDiff;
  var CDMiniFrameList VerticalSBTempo;
  var bool bPlayHoverSound;
@@ -71,9 +70,6 @@
  	MiniFrameBeingHovered = -1;
 
  	bMiniFrameLMousePressed = false;
- 	VerticalSBPos = VertSB.Pos;
-
- 	VerticalSBPos = VertSB.ThumbStart;
 
  	if(DrawnMiniFrameList != None)
  	{
@@ -204,10 +200,14 @@
  {
  	super.Tick(DeltaTime);
 
- 	if(VertSB.ThumbStart != VerticalSBPos)
+ 	if(VertSB.Pos != 0)
  	{
- 		VSBPosDiff = VertSB.ThumbStart - VerticalSBPos;
+ 		VSBPosDiff =  VertSB.Pos * (MFEmo.Height + MFEmo.Height * 0.4 /*BetweenTheMiniFrameSeperationY*/);
  	}
+ 	else
+ 	{
+ 		VSBPosDiff = 0.0;
+    }
  }
 
 /*******************************************************************************
