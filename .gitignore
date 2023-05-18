@@ -4,6 +4,7 @@ chatdiamond.log
 *.out
 chatdiamond.pdf
 chatdiamond.synctex.gz
+chatdiamond.toc
 
 # UTNativeEssentials
 ChatDiamondBin
