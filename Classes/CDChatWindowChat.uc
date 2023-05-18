@@ -724,17 +724,17 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
  	Resize();
 
  	TheTextArea.EmoSizeMultiplier = FrameWindow.EmoSize;
-
+ 	TheTextArea.TickCounterWarpNumber = (int(FrameWindow.EmoteAnimSpeed) / 24);
  	TheTextArea.AnimShockEmote.TexChatSizeFraction = 0.08 * FrameWindow.EmoSize;
  	TheTextArea.AnimTrashTalkEmote.TexChatSizeFraction = 0.08 * FrameWindow.EmoSize;
  }
 
  function ChatConfigurationUpdated()
  {
-  TheTextArea.EmoSizeMultiplier = FrameWindow.EmoSize;
-
-  TheTextArea.AnimShockEmote.TexChatSizeFraction = 0.08 * FrameWindow.EmoSize;
-  TheTextArea.AnimTrashTalkEmote.TexChatSizeFraction = 0.08 * FrameWindow.EmoSize;
+ 	TheTextArea.EmoSizeMultiplier = FrameWindow.EmoSize;
+ 	TheTextArea.TickCounterWarpNumber = (int(FrameWindow.EmoteAnimSpeed) / 24);
+ 	TheTextArea.AnimShockEmote.TexChatSizeFraction = 0.08 * FrameWindow.EmoSize;
+ 	TheTextArea.AnimTrashTalkEmote.TexChatSizeFraction = 0.08 * FrameWindow.EmoSize;
  }
 
  function Resize()

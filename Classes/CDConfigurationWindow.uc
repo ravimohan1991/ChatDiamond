@@ -34,7 +34,7 @@ class CDConfigurationWindow expands UWindowPageWindow;
 
  var CDModMenuWindowFrame FrameWindow;
  var CDClientSideWindow  ClientWindow;
-
+ var CDUTChatTextTextureAnimEmoteArea ChatWindowTextArea;
  var CDUTConsole UTConsole;
 
  var UWindowHSliderControl BackGroundRedSlider;
@@ -49,6 +49,7 @@ class CDConfigurationWindow expands UWindowPageWindow;
  var UMenuLabelControl ChatBindLabel;
 
  var float EmojiPreviewX, EmojiPreviewY;
+ var float AnimWidth, AnimHeight, AnimPreviewX, AnimPreviewY;
 
  struct MiniFrameDimensions
  {
@@ -108,7 +109,7 @@ class CDConfigurationWindow expands UWindowPageWindow;
  	EmotesAnimationSpeed = UWindowHSliderControl(CreateControl(class'UWindowHSliderControl', 20, 160, 250, 50));
  	EmotesAnimationSpeed.SetTextColor(class'CDChatWindowEmojis'.default.WhiteColor);
  	EmotesAnimationSpeed.SetText("Animation Speed");
- 	EmotesAnimationSpeed.SetRange(0, 60, 1);
+ 	EmotesAnimationSpeed.SetRange(0, 100, 1);
 
  	EmoSizeSlider = UWindowHSliderControl(CreateCOntrol(class'UWindowHSliderControl', 20, 220, 250, 50));
  	EmoSizeSlider.SetTextColor(class'CDChatWindowEmojis'.default.WhiteColor);
@@ -170,6 +171,11 @@ class CDConfigurationWindow expands UWindowPageWindow;
  					FrameWindow.SaveConfig();
  					ClientWindow.ChatConfigurationUpdated();
  				break;
+ 				case EmotesAnimationSpeed:
+					FrameWindow.EmoteAnimSpeed = EmotesAnimationSpeed.GetValue();
+					FrameWindow.SaveConfig();
+					ClientWindow.ChatConfigurationUpdated();
+ 				break;
  				/*
  				case ConfigPoller:
  					if(ChatBindButton.bDisabled && ConfigPoller.GetValue() != "")
@@ -230,6 +236,7 @@ class CDConfigurationWindow expands UWindowPageWindow;
  	BackGroundGreenSlider.SetValue(FrameWindow.BackGroundColor.G);
  	BackGroundBlueSlider.SetValue(FrameWindow.BackGroundColor.B);
  	EmoSizeSlider.SetValue(FrameWindow.EmoSize);
+ 	EmotesAnimationSpeed.SetValue(FrameWindow.EmoteAnimSpeed);
  	ApplyBGToChatWindow.bChecked = FrameWindow.bApplyBGToChatWindow;
  	ApplyBGToConsole.bChecked = FrameWindow.bApplyBGToConsole;
  	ChatBindButton.SetText(class'UMenuCustomizeClientWindow'.default.LocalizedKeyName[ChatWindowKeyForBind]);
@@ -265,21 +272,31 @@ class CDConfigurationWindow expands UWindowPageWindow;
  	MFEmo.Width = 495 / 8;
  	MFEmo.Height = int(MFEmo.Width * 1.1) * 0.75;
 
+ 	AnimWidth =  ChatWindowTextArea.AnimShockEmote.Atlas[ChatWindowTextArea.AnimShockEmote.CurrentAnimFrame].USize * ChatWindowTextArea.AnimShockEmote.TexChatSizeFraction;
+ 	AnimHeight = ChatWindowTextArea.AnimShockEmote.Atlas[ChatWindowTextArea.AnimShockEmote.CurrentAnimFrame].VSize * ChatWindowTextArea.AnimShockEmote.TexChatSizeFraction;
  	TextureWidth = Texture'Happy'.USize * 0.05 * EmoSizeSlider.GetValue();
  	TextureHeight = Texture'Happy'.VSize * 0.05 * EmoSizeSlider.GetValue();
 
- 	EmojiPreviewX = 310 + MFEmo.Width / 2 - TextureWidth / 2;
+ 	AnimPreviewX = 340 + MFEmo.Width / 2 - AnimWidth / 2;
+ 	AnimPreviewY = 160 + MFEmo.Height / 2 - AnimHeight / 2;
+ 	EmojiPreviewX = 340 + MFEmo.Width / 2 - TextureWidth / 2;
  	EmojiPreviewY = 220 + MFEmo.Height / 2 - TextureHeight / 2;
 
  	C.DrawColor = FrameWindow.BackGroundColor;
  	DrawStretchedTexture(C, 0, 0, WinWidth, WinHeight, Texture'BackgroundGradation');
 
+
+ 	C.Style = 3;// STY_Translucent
+ 	C.DrawColor = class'CDChatWindowEmojis'.default.WhiteColor;
  	// Animation preview window
- 	DrawMiniframe(C, 310, 160, 2);
+ 	//DrawEmoteMiniFrame(C, 340, 160, 2);
+ 	DrawStretchedTexture(C, AnimPreviewX, AnimPreviewY, AnimWidth,
+ 			AnimHeight, ChatWindowTextArea.AnimShockEmote.Atlas[ChatWindowTextArea.AnimShockEmote.CurrentAnimFrame]);
+ 	C.Style = 1;// STY_Normal
 
  	C.DrawColor = class'CDChatWindowEmojis'.default.WhiteColor;
  	// Emoji preview window
- 	DrawMiniframe(C, 310, 220, 2);
+ 	DrawEmojiMiniFrame(C, 340, 220, 2);
 
  	C.Style = 3;// STY_Translucent
  	C.DrawColor = class'CDChatWindowEmojis'.default.WhiteColor;
@@ -294,8 +311,44 @@ class CDConfigurationWindow expands UWindowPageWindow;
  	SaveConfig();
  }
 
+ function Tick(float DeltaTime)
+ {
+ 	if(ChatWindowTextArea.TickCounter > ChatWindowTextArea.TickCounterWarpNumber)
+ 	{
+ 		ChatWindowTextArea.AnimShockEmote.CurrentAnimFrame++;
+
+ 		if(ChatWindowTextArea.AnimShockEmote.CurrentAnimFrame > 9)
+ 		{
+ 			ChatWindowTextArea.AnimShockEmote.CurrentAnimFrame = 0;
+ 		}
+
+ 		ChatWindowTextArea.TickCounter = 0;
+ 	}
+
+ 	ChatWindowTextArea.TickCounter++;
+
+ 	Super.Tick(DeltaTime);
+ }
+
  // Drawing functions
- function DrawMiniFrame(Canvas C, float X, float Y, int BorderWidth)
+  function DrawEmoteMiniFrame(Canvas C, float X, float Y, int BorderWidth)
+ {
+ 	// Top Line
+ 	DrawStretchedTexture(C, X, Y, BorderWidth, BorderWidth, Texture'BlueMenuTL');
+ 	DrawStretchedTexture(C, X + BorderWidth, Y, AnimWidth - 2 * BorderWidth, BorderWidth, Texture'BlueMenuT');
+ 	DrawStretchedTexture(C, X + AnimWidth - BorderWidth, Y, BorderWidth, BorderWidth, Texture'BlueMenuTR');
+
+ 	// Bottom Line
+ 	DrawStretchedTexture(C, X, Y + AnimHeight - BorderWidth, BorderWidth, BorderWidth, Texture'BlueMenuBL');
+ 	DrawStretchedTexture(C, X + BorderWidth, Y + AnimHeight - BorderWidth, AnimWidth - 2 * BorderWidth, BorderWidth, Texture'BlueMenuB');
+ 	DrawStretchedTexture(C, X + AnimWidth - BorderWidth, Y + AnimHeight - BorderWidth, BorderWidth, BorderWidth, Texture'BlueMenuBR');
+
+ 	// Left and Right Lines
+ 	DrawStretchedTexture(C, X, Y + BorderWidth, BorderWidth, AnimHeight - 2 * BorderWidth, Texture'BlueMenuL');
+ 	DrawStretchedTexture(C, X + AnimWidth - BorderWidth, Y + BorderWidth, BorderWidth, AnimHeight - 2 * BorderWidth, Texture'BlueMenuR');
+ }
+
+ function DrawEmojiMiniFrame(Canvas C, float X, float Y, int BorderWidth)
  {
  	// Top Line
  	DrawStretchedTexture(C, X, Y, BorderWidth, BorderWidth, Texture'BlueMenuTL');

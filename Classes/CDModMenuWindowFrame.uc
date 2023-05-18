@@ -42,6 +42,7 @@ class CDModMenuWindowFrame expands UWindowConsoleWindow Config (ChatDiamond);
  var() config bool bApplyBGToChatWindow;
  var() config bool bApplyBGToConsole;
  var() config float EmoSize;
+ var() config float EmoteAnimSpeed;
 
  var CDConfigurationWindow ConfigurationWindow;
 
@@ -199,6 +200,7 @@ class CDModMenuWindowFrame expands UWindowConsoleWindow Config (ChatDiamond);
  	YPos=50
  	ClientClass=Class'CDClientSideWindow'
  	EmoSize=14
+ 	EmoteAnimSpeed=85
  }
 
 /*

@@ -708,10 +708,10 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  			AnimShockEmote.CurrentAnimFrame = 0;
  		}
 
- 	if(AnimTrashTalkEmote.CurrentAnimFrame > 20)
- 	{
- 		AnimTrashTalkEmote.CurrentAnimFrame = 0;
- 	}
+ 		if(AnimTrashTalkEmote.CurrentAnimFrame > 20)
+ 		{
+ 			AnimTrashTalkEmote.CurrentAnimFrame = 0;
+ 		}
 
  		TickCounter = 0;
  	}

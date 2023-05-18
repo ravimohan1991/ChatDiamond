@@ -79,6 +79,7 @@ class CDClientSideWindow extends UWindowConsoleClientWindow config(ChatDiamond);
  	PageControl = Pages.AddPage("Configure", class'CDConfigurationWindow');
  	ConfigureWindow = CDConfigurationWindow(PageControl.Page);
  	ConfigureWindow.ClientWindow = self;
+ 	ConfigureWindow.ChatWindowTextArea = ChatWindow.TheTextArea;
  	ConfigureWindow.FrameWindow = CDModMenuWindowFrame(ParentWindow);
  	CDModMenuWindowFrame(ParentWindow).ConfigurationWindow = ConfigureWindow;// For global stuff
 
