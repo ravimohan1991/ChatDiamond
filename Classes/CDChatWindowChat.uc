@@ -524,6 +524,9 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
  {
  	local int i;
 
+    // Cache infinitum
+    CDDA.CacheChatLine(sMesg);
+
  	for(i = 0; i < 200; i++)
  	{
  		if(ChatLog[i] == "")

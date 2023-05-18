@@ -25,6 +25,8 @@
 
 #include "ChatDiamondNative.h"
 #include <regex>
+#include <iostream>
+#include <fstream>
 
 IMPLEMENT_PACKAGE(ChatDiamond);
 
@@ -62,6 +64,66 @@ void ACDDiscordActor::execGetGameSystemPath(FFrame& Stack, RESULT_DECL)
 }
 IMPLEMENT_FUNCTION(ACDDiscordActor, -1, execGetGameSystemPath)
 
+void ACDDiscordActor::execCacheChatLine(FFrame& Stack, RESULT_DECL)
+{
+	guard(ACDDiscordActor::execCacheChatLine);
+	P_GET_STR(ChatLine)
+	P_FINISH;
+
+	std::wstring WString(*ChatLine);
+	std::string ChatLineString(WString.begin(), WString.end());
+
+	// Open file
+	std::ofstream ChatCacher;
+
+	// Open a file to perform a write operation using a file object.
+	// https://stackoverflow.com/questions/2393345/how-to-append-text-to-a-text-file-in-c
+	ChatCacher.open("ChatDiamond.txt", std::ios::app);
+
+	// Checking whether the file is open. Append text if open
+	if (ChatCacher.is_open())
+	{
+		ChatCacher << ChatLineString <<  "\n"; // Inserting text.
+		ChatCacher.close(); // Close the file object.
+	}
+
+	unguard;
+}
+IMPLEMENT_FUNCTION(ACDDiscordActor, -1, execCacheChatLine)
+
+void ACDDiscordActor::execGetLineFromCacheBottom(FFrame& Stack, RESULT_DECL)
+{
+	guard(ACDDiscordActor::execGetLineFromCacheBottom);
+	
+	P_GET_INT(LineNumber);
+	P_FINISH;
+
+	uint32_t NumberOfLinesFromBottom = 0;
+	std::string Line;
+
+	// Open file
+	std::ifstream ChatCacher;
+
+	// Open a file to perform a write operation using a file object.
+	// https://stackoverflow.com/questions/2393345/how-to-append-text-to-a-text-file-in-c
+	ChatCacher.open("ChatDiamond.txt", std::ios::ate);
+
+	// Checking whether the file is open. Append text if open
+	if (ChatCacher.is_open())
+	{
+		std::streampos Size = ChatCacher.tellg();
+
+		for (uint32_t i = 1; i <= Size; i++)
+		{
+			ChatCacher.seekg(-i, std::ios::end);
+
+		}
+	}
+
+	unguard;
+}
+IMPLEMENT_FUNCTION(ACDDiscordActor, -1, execGetLineFromCacheBottom)
+
 void ACDDiscordActor::execSpitIpFromChatString(FFrame& Stack, RESULT_DECL)
 {
 	guard(ACDDiscordActor::execSpitIpFromChatString);
@@ -86,7 +148,7 @@ void ACDDiscordActor::execSpitIpFromChatString(FFrame& Stack, RESULT_DECL)
 	// Look for game IP
 	if (std::regex_search(SampleString, Match, GameIPMould))
 	{
-		for (auto Tempo : Match)
+		for (const std::ssub_match& Tempo : Match)
 		{
 			IPString = Tempo.str();
 			break;
@@ -104,7 +166,7 @@ void ACDDiscordActor::execSpitIpFromChatString(FFrame& Stack, RESULT_DECL)
 	// Look for game IP
 	if (std::regex_search(SampleString, Match, WebIPMould))
 	{
-		for (auto Tempo : Match)
+		for (const std::ssub_match& Tempo : Match)
 		{
 			IPString = Tempo.str();
 			break;
@@ -125,7 +187,7 @@ void ACDDiscordActor::execSpitIpFromChatString(FFrame& Stack, RESULT_DECL)
 
 	unguard;
 }
-IMPLEMENT_FUNCTION(ACDDiscordActor, -1, execSpitIpFromChatString);
+IMPLEMENT_FUNCTION(ACDDiscordActor, -1, execSpitIpFromChatString)
 
 
 /*
