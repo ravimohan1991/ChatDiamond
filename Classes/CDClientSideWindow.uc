@@ -61,6 +61,7 @@ class CDClientSideWindow extends UWindowConsoleClientWindow config(ChatDiamond);
  	PageControl = Pages.AddPage("Public Chats", class'CDChatWindowChat');
  	ChatWindow = CDChatWindowChat(PageControl.Page);
  	ChatWindow.FrameWindow = CDModMenuWindowFrame(ParentWindow);
+ 	ChatWindow.bUserWantsMessageSound = CDModMenuWindowFrame(ParentWindow).bPlaySoundOnMessageArrival;
 
  	PageControl = Pages.AddPage("Emojis", class'CDChatWindowEmojis');
  	EmojiWindow = CDChatWindowEmojis(PageControl.Page);
@@ -125,6 +126,7 @@ class CDClientSideWindow extends UWindowConsoleClientWindow config(ChatDiamond);
  function ChatConfigurationUpdated()
  {
  	ChatWindow.ChatConfigurationUpdated();
+ 	ChatWindow.bUserWantsMessageSound = CDModMenuWindowFrame(ParentWindow).bPlaySoundOnMessageArrival;
  }
 
  function Resized()

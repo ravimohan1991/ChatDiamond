@@ -38,7 +38,8 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
  var() config string IgnorableStrings[40];
 
  var() config bool bIgnoreMessageFilter;
- var() config bool bUserWantsMessageSound;
+
+ var config bool bUserWantsMessageSound;
 
  var UMenuLabelControl  lblHeading;
  var CDUTChatTextTextureAnimEmoteArea TheTextArea;
@@ -648,9 +649,9 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
  					}
  					else
  					{
- 					GetPlayerOwner().PreClientTravel();
- 					GetPlayerOwner().ClientTravel("?OverrideClass=Botpack.CHSpectator", TRAVEL_Relative, False);
- 					ButtonPlaySpectate.SetText("Play");
+ 						GetPlayerOwner().PreClientTravel();
+ 						GetPlayerOwner().ClientTravel("?OverrideClass=Botpack.CHSpectator", TRAVEL_Relative, False);
+ 						ButtonPlaySpectate.SetText("Play");
  					}
 
  					break;
@@ -801,7 +802,6 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
  // How about all the talk messages on ignore list?
  defaultproperties
  {
- 	bUserWantsMessageSound=true
  	SilColor=(R=180,G=180,B=180)
  	GrnColor=(R=0,G=255,B=32)
  	TxtColor=(R=255,G=255,B=255,A=0)

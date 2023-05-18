@@ -43,6 +43,7 @@ class CDConfigurationWindow expands UWindowPageWindow;
  var UWindowHSliderControl EmotesAnimationSpeed;
  var UWindowHSliderControl EmoSizeSlider;
  var UWindowCheckbox ApplyBGToChatWindow, ApplyBGToConsole;
+ var UWindowCheckbox PlayMessageArrivedSound;
  var bool bSecondKeyEvent;
 
  var UMenuRaisedButton ChatBindButton;
@@ -116,6 +117,11 @@ class CDConfigurationWindow expands UWindowPageWindow;
  	EmoSizeSlider.SetText("Emo Size");
  	EmoSizeSlider.SetRange(0, 25, 1);
 
+ 	PlayMessageArrivedSound = UWindowCheckbox(CreateControl(class'UWindowCheckbox', 20, 290, 200, 50));
+ 	PlayMessageArrivedSound.SetTextColor(class'CDChatWindowEmojis'.default.WhiteColor);
+
+ 	PlayMessageArrivedSound.SetText("Play sound on message arrival");
+
  	// See Paint() for drawing of preview miniframe
 
  	CDUTConsole(Root.Console).ConfigureWindow = self;
@@ -175,6 +181,11 @@ class CDConfigurationWindow expands UWindowPageWindow;
 					FrameWindow.EmoteAnimSpeed = EmotesAnimationSpeed.GetValue();
 					FrameWindow.SaveConfig();
 					ClientWindow.ChatConfigurationUpdated();
+ 				break;
+ 				case PlayMessageArrivedSound:
+					FrameWindow.bPlaySoundOnMessageArrival = PlayMessageArrivedSound.bChecked;
+                    FrameWindow.SaveConfig();
+                    ClientWindow.ChatConfigurationUpdated();
  				break;
  				/*
  				case ConfigPoller:
@@ -239,6 +250,7 @@ class CDConfigurationWindow expands UWindowPageWindow;
  	EmotesAnimationSpeed.SetValue(FrameWindow.EmoteAnimSpeed);
  	ApplyBGToChatWindow.bChecked = FrameWindow.bApplyBGToChatWindow;
  	ApplyBGToConsole.bChecked = FrameWindow.bApplyBGToConsole;
+ 	PlayMessageArrivedSound.bChecked = FrameWindow.bPlaySoundOnMessageArrival;
  	ChatBindButton.SetText(class'UMenuCustomizeClientWindow'.default.LocalizedKeyName[ChatWindowKeyForBind]);
  }
 

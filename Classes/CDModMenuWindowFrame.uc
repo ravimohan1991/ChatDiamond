@@ -41,6 +41,7 @@ class CDModMenuWindowFrame expands UWindowConsoleWindow Config (ChatDiamond);
  var() config color BackGroundColor;
  var() config bool bApplyBGToChatWindow;
  var() config bool bApplyBGToConsole;
+ var() config bool bPlaySoundOnMessageArrival;
  var() config float EmoSize;
  var() config float EmoteAnimSpeed;
 
@@ -201,6 +202,7 @@ class CDModMenuWindowFrame expands UWindowConsoleWindow Config (ChatDiamond);
  	ClientClass=Class'CDClientSideWindow'
  	EmoSize=14
  	EmoteAnimSpeed=85
+ 	bPlaySoundOnMessageArrival=True
  }
 
 /*
