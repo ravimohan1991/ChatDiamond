@@ -253,6 +253,7 @@ In this section I am presenting the history of Chat Diamond for general awarenes
     \item Chat Window text scaling
     \item Emoji Window emojitext offset (\href{https://github.com/ravimohan1991/ChatDiamond/commit/69b7abbce0617ae1c2de0660379984852df9c76d}{69b7abbc})
     \item Chat Window emo textures translucency (\href{https://github.com/ravimohan1991/ChatDiamond/commit/6e105d2cce5db1380c27df546e604d0f306eccd4}{6e105d2c})
+    \item Emoji Window emo frames mouse hover detection (\href{https://github.com/ravimohan1991/ChatDiamond/commit/501e585250a6553ca95ca9b9d5e0ad25b1e645b5}{501e5852})
 \end{version}
 \shortversion{v=0.1.0-alpha, date=2022-12-25, changes=Initial alpha}
 \end{changelog}
@@ -295,7 +296,7 @@ The basic premise of many cheats providing aim assist is to modify the HUD clien
 
 If the notion of ``cheat-anticheat'' interplay exists in the UT standards, then that simply doesn't fit with the tenant we began with.  We don't want to be sending request to server administrators for specifically whitelisting Chat Diamond which will be reverted by cold silent treatment to say the most and some naggy jibber jabber about the unknown-ness of Chat Diamond, especially when the mod is not that popular.
 
-So with this thinking in mind, the better option would be to replace the client console, which I haven't seen any anti-cheat scanning. This not only gets the client out of hook for sending whitelisting requests but also provides a powerful mechanism to mould the console, specifically for generic needs (see the concept of \emph{filters}).
+So with this thinking in mind, the better option would be to replace the client console, which I haven't seen any decent anti-cheat prohibiting. This not only gets the client out of hook for sending whitelisting requests but also provides a powerful mechanism to mould the console, specifically for generic needs (see the concept of \emph{filters})\footnote{Althought some servers may prohibit the use of custom consoles.  For that you may have to specifically send the whitelist request. You may want to report the relevant console class, which, for Chat Diamond, should be ``ChatDiamond.CDUTConsole''.}.
 
 \subsection{A minor PhD on console messages}
 

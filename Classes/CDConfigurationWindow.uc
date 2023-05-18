@@ -33,17 +33,22 @@ class CDConfigurationWindow expands UWindowPageWindow;
 #exec Texture Import File=Textures\BackgroundTexture.bmp    Name=BackgroundGradation    Mips=off
 
  var CDModMenuWindowFrame FrameWindow;
+ var CDClientSideWindow  ClientWindow;
+
  var CDUTConsole UTConsole;
 
  var UWindowHSliderControl BackGroundRedSlider;
  var UWindowHSliderControl BackGroundGreenSlider;
  var UWindowHSliderControl BackGroundBlueSlider;
  var UWindowHSliderControl EmotesAnimationSpeed;
+ var UWindowHSliderControl EmoSizeSlider;
  var UWindowCheckbox ApplyBGToChatWindow, ApplyBGToConsole;
  var bool bSecondKeyEvent;
 
  var UMenuRaisedButton ChatBindButton;
  var UMenuLabelControl ChatBindLabel;
+
+ var float EmojiPreviewX, EmojiPreviewY;
 
  struct MiniFrameDimensions
  {
@@ -51,9 +56,6 @@ class CDConfigurationWindow expands UWindowPageWindow;
  	var int Height;
  };
  var MiniFrameDimensions MFEmo;
-
- // heh, the hack
-// var UWindowEditControl ConfigPoller;
 
  var() config int ChatWindowKeyForBind;  //EInputKey
 
@@ -67,19 +69,16 @@ class CDConfigurationWindow expands UWindowPageWindow;
  	BackGroundRedSlider.SetTextColor(class'CDChatWindowEmojis'.default.WhiteColor);
  	BackGroundRedSlider.SetText("Red Color");
  	BackGroundRedSlider.SetRange(0, 255, 2);
- 	//BackGroundRedSlider.SetValue(FrameWindow.BackGroundColor.R);
 
  	BackGroundGreenSlider = UWindowHSliderControl(CreateControl(class'UWindowHSliderControl', 20, 60, 250, 50));
  	BackGroundGreenSlider.SetTextColor(class'CDChatWindowEmojis'.default.WhiteColor);
  	BackGroundGreenSlider.SetText("Green Color");
  	BackGroundGreenSlider.SetRange(0, 255, 2);
- 	//BackGroundGreenSlider.SetValue(FrameWindow.BackGroundColor.G);
 
  	BackGroundBlueSlider = UWindowHSliderControl(CreateControl(class'UWindowHSliderControl', 20, 80, 250, 50));
  	BackGroundBlueSlider.SetTextColor(class'CDChatWindowEmojis'.default.WhiteColor);
  	BackGroundBlueSlider.SetText("Blue Color");
  	BackGroundBlueSlider.SetRange(0, 255, 2);
- 	//BackGroundBlueSlider.SetValue(FrameWindow.BackGroundColor.B);
 
  	ApplyBGToChatWindow = UWindowCheckbox(CreateControl(class'UWindowCheckbox', 310, 45, 100, 50));
  	ApplyBGToChatWindow.SetTextColor(class'CDChatWindowEmojis'.default.WhiteColor);
@@ -96,13 +95,6 @@ class CDConfigurationWindow expands UWindowPageWindow;
 
  	ChatBindButton.SetText(class'UMenuCustomizeClientWindow'.default.LocalizedKeyName[ChatWindowKeyForBind]);
 
- 	//ConsoleBindButton to do
-
- 	EmotesAnimationSpeed = UWindowHSliderControl(CreateControl(class'UWindowHSliderControl', 20, 160, 250, 50));
- 	EmotesAnimationSpeed.SetTextColor(class'CDChatWindowEmojis'.default.WhiteColor);
- 	EmotesAnimationSpeed.SetText("Animation Speed");
- 	BackGroundBlueSlider.SetRange(0, 60, 1);
-
  	ChatBindLabel = UMenuLabelControl(CreateControl(class'UMenuLabelControl', 20, 125, 65, 1));
  	ChatBindLabel.SetTextColor(class'CDChatWindowEmojis'.default.WhiteColor);
  	ChatBindLabel.SetText("Chat Binding");
@@ -111,8 +103,21 @@ class CDConfigurationWindow expands UWindowPageWindow;
  	ChatBindLabel.bIgnoreMDoubleClick = True;
  	ChatBindLabel.bIgnoreRDoubleClick = True;
 
- 	CDUTConsole(Root.Console).ConfigureWindow = self;
+ 	//ConsoleBindButton to do
 
+ 	EmotesAnimationSpeed = UWindowHSliderControl(CreateControl(class'UWindowHSliderControl', 20, 160, 250, 50));
+ 	EmotesAnimationSpeed.SetTextColor(class'CDChatWindowEmojis'.default.WhiteColor);
+ 	EmotesAnimationSpeed.SetText("Animation Speed");
+ 	EmotesAnimationSpeed.SetRange(0, 60, 1);
+
+ 	EmoSizeSlider = UWindowHSliderControl(CreateCOntrol(class'UWindowHSliderControl', 20, 220, 250, 50));
+ 	EmoSizeSlider.SetTextColor(class'CDChatWindowEmojis'.default.WhiteColor);
+ 	EmoSizeSlider.SetText("Emo Size");
+ 	EmoSizeSlider.SetRange(0, 25, 1);
+
+ 	// See Paint() for drawing of preview miniframe
+
+ 	CDUTConsole(Root.Console).ConfigureWindow = self;
 
  	// For key polling
  	/*ConfigPoller = UWindowEditControl(CreateControl(Class'UWindowEditControl', 56, 230, 45, 45));
@@ -159,7 +164,13 @@ class CDConfigurationWindow expands UWindowPageWindow;
  				case ApplyBGToConsole:
  					FrameWindow.bApplyBGToConsole = ApplyBGToConsole.bChecked;
  					FrameWindow.SaveConfig();
- 				break;/*
+ 				break;
+ 				case EmoSizeSlider:
+ 					FrameWindow.EmoSize = EmoSizeSlider.GetValue();
+ 					FrameWindow.SaveConfig();
+ 					ClientWindow.ChatConfigurationUpdated();
+ 				break;
+ 				/*
  				case ConfigPoller:
  					if(ChatBindButton.bDisabled && ConfigPoller.GetValue() != "")
  					{
@@ -218,6 +229,7 @@ class CDConfigurationWindow expands UWindowPageWindow;
  	BackGroundRedSlider.SetValue(FrameWindow.BackGroundColor.R);
  	BackGroundGreenSlider.SetValue(FrameWindow.BackGroundColor.G);
  	BackGroundBlueSlider.SetValue(FrameWindow.BackGroundColor.B);
+ 	EmoSizeSlider.SetValue(FrameWindow.EmoSize);
  	ApplyBGToChatWindow.bChecked = FrameWindow.bApplyBGToChatWindow;
  	ApplyBGToConsole.bChecked = FrameWindow.bApplyBGToConsole;
  	ChatBindButton.SetText(class'UMenuCustomizeClientWindow'.default.LocalizedKeyName[ChatWindowKeyForBind]);
@@ -246,16 +258,34 @@ class CDConfigurationWindow expands UWindowPageWindow;
 
  function Paint(Canvas C, float MouseX, float MouseY)
  {
+ 	local float TextureWidth, TextureHeight;
+
  	Super.Paint(C, MouseX, MouseY);
 
  	MFEmo.Width = 495 / 8;
  	MFEmo.Height = int(MFEmo.Width * 1.1) * 0.75;
+
+ 	TextureWidth = Texture'Happy'.USize * 0.05 * EmoSizeSlider.GetValue();
+ 	TextureHeight = Texture'Happy'.VSize * 0.05 * EmoSizeSlider.GetValue();
+
+ 	EmojiPreviewX = 310 + MFEmo.Width / 2 - TextureWidth / 2;
+ 	EmojiPreviewY = 220 + MFEmo.Height / 2 - TextureHeight / 2;
 
  	C.DrawColor = FrameWindow.BackGroundColor;
  	DrawStretchedTexture(C, 0, 0, WinWidth, WinHeight, Texture'BackgroundGradation');
 
  	// Animation preview window
  	DrawMiniframe(C, 310, 160, 2);
+
+ 	C.DrawColor = class'CDChatWindowEmojis'.default.WhiteColor;
+ 	// Emoji preview window
+ 	DrawMiniframe(C, 310, 220, 2);
+
+ 	C.Style = 3;// STY_Translucent
+ 	C.DrawColor = class'CDChatWindowEmojis'.default.WhiteColor;
+ 	DrawStretchedTexture(C, EmojiPreviewX, EmojiPreviewY, TextureWidth,
+ 				TextureHeight, Texture'Happy');
+	C.Style = 1;// STY_Normal
  }
 
  function Close (optional bool bByParent)

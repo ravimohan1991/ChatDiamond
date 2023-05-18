@@ -78,6 +78,7 @@ class CDClientSideWindow extends UWindowConsoleClientWindow config(ChatDiamond);
  	// CDUTConsole(Root.Console).ChatWindowKeyForBind in CDUTConsole and CDClientSideWindow
  	PageControl = Pages.AddPage("Configure", class'CDConfigurationWindow');
  	ConfigureWindow = CDConfigurationWindow(PageControl.Page);
+ 	ConfigureWindow.ClientWindow = self;
  	ConfigureWindow.FrameWindow = CDModMenuWindowFrame(ParentWindow);
  	CDModMenuWindowFrame(ParentWindow).ConfigurationWindow = ConfigureWindow;// For global stuff
 
@@ -118,6 +119,11 @@ class CDClientSideWindow extends UWindowConsoleClientWindow config(ChatDiamond);
  	{
  		ChatWindow.LoadMessages(sMesg);
  	}
+ }
+
+ function ChatConfigurationUpdated()
+ {
+ 	ChatWindow.ChatConfigurationUpdated();
  }
 
  function Resized()

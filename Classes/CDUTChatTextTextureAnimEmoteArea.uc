@@ -180,6 +180,7 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  var texture StaticTransparencyTexture;
 
  var float FrameRate;
+ var float EmoSizeMultiplier;
  var int TickCounter;
  var int TickCounterWarpNumber;
  var int DesiredAnimationFrameRate;
@@ -290,7 +291,7 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  	AnimShockEmote.Atlas[7] = texture'ANEShock7';
  	AnimShockEmote.Atlas[8] = texture'ANEShock8';
  	AnimShockEmote.Atlas[9] = texture'ANEShock9';
- 	AnimShockEmote.TexChatSizeFraction = 0.50;
+ 	AnimShockEmote.TexChatSizeFraction = 0.5;
  	AnimShockEmote.StatusBarText = "Shock Combo!";
 
  	AnimTrashTalkEmote.CurrentAnimFrame = 0;
@@ -315,7 +316,7 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  	AnimTrashTalkEmote.Atlas[18] = texture'ANEArgue18';
  	AnimTrashTalkEmote.Atlas[19] = texture'ANEArgue19';
  	AnimTrashTalkEmote.Atlas[20] = texture'ANEArgue20';
- 	AnimTrashTalkEmote.TexChatSizeFraction = 0.6;
+ 	AnimTrashTalkEmote.TexChatSizeFraction = 0.60;
 
  	RecognizableEmoTextSymbols[0] = ":)";
  	RecognizableEmoTextSymbols[1] = ":(";
@@ -534,8 +535,8 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  		}
  		else
  		{
-            CDChatWindow.SetCursor(Root.NormalCursor);
-        }
+ 			CDChatWindow.SetCursor(Root.NormalCursor);
+ 		}
  	}
 
  	DrawChatMessageWithEmoji(C, DrawX, DrawY, Message);
@@ -603,7 +604,7 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  	local float EmojiMultiplier;
  	local string URLString, BareURLSTring;
 
- 	EmojiMultiplier = 0.5;
+ 	EmojiMultiplier = 0.05 * EmoSizeMultiplier;
 
  	// Could be loation of URL too
  	EmojiLocation = LookForEmojiTextRepresentation(Message, Identifier, URLString, BareURLString);
@@ -1214,7 +1215,7 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
 
  function MouseMove(float X, float Y)
  {
-	Super.MouseMove(X, Y);
+ 	Super.MouseMove(X, Y);
 
  	MouseMoveY = Y;
  }

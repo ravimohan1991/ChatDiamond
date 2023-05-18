@@ -40,8 +40,8 @@ class CDModMenuWindowFrame expands UWindowConsoleWindow Config (ChatDiamond);
  // From ConfigurationWindow
  var() config color BackGroundColor;
  var() config bool bApplyBGToChatWindow;
-
  var() config bool bApplyBGToConsole;
+ var() config float EmoSize;
 
  var CDConfigurationWindow ConfigurationWindow;
 
@@ -193,12 +193,12 @@ class CDModMenuWindowFrame expands UWindowConsoleWindow Config (ChatDiamond);
  	WinHeight = 322;
  }
 
-
  defaultproperties
  {
  	XPos=50
  	YPos=50
  	ClientClass=Class'CDClientSideWindow'
+ 	EmoSize=14
  }
 
 /*
