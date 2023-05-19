@@ -34,7 +34,6 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
 // "the central or most important part of something."
  #exec AUDIO IMPORT FILE="Sounds\telegram.wav" NAME=MessageKernel GROUP="Sound"
 
- var() config string ChatLog[200];
  var() config string IgnorableStrings[40];
 
  var() config bool bIgnoreMessageFilter;
@@ -160,7 +159,7 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
  	if (sMesg != "")
  	{
  		TheTextArea.AddText(sMesg);
- 		CacheMessage(sMesg);
+ 		CDDA.CacheChatLine(sMesg);
  		ButSave.bDisabled = false;
  		if(bTalkMessage && bUserWantsMessageSound)
  		{
@@ -170,9 +169,10 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
  	else
  	{
  		TheTextArea.Clear();
- 		for (i = 0; i < 200; i++)
+ 		for (i = FrameWindow.LastHistoricMessagesNumber; i > 0; i--)
  		{
- 			sTemp = ChatLog[i];
+ 			sTemp = CDDA.GetLineFromCacheBottom(i);
+ 			Log(sTemp);
  			if (i > 0 && sTemp == "")
  			{
  				break;
@@ -520,23 +520,6 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
  	return Day @ PlayerOwner.Level.Day @ Mon @ PlayerOwner.Level.Year @ CategoryDeliminator @ Hour $ ":" $ Min;
  }
 
- function CacheMessage(string sMesg)
- {
- 	local int i;
-
-    // Cache infinitum
-    CDDA.CacheChatLine(sMesg);
-
- 	for(i = 0; i < 200; i++)
- 	{
- 		if(ChatLog[i] == "")
- 		{
- 			ChatLog[i] = sMesg;
- 			break;
- 		}
- 	}
- }
-
  function SetChatTextStatus(string Text)
  {
  	FrameWindow.StatusBarText = Text;
@@ -739,6 +722,7 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
  	TheTextArea.TickCounterWarpNumber = (int(FrameWindow.EmoteAnimSpeed) / 24);
  	TheTextArea.AnimShockEmote.TexChatSizeFraction = 0.08 * FrameWindow.EmoSize;
  	TheTextArea.AnimTrashTalkEmote.TexChatSizeFraction = 0.08 * FrameWindow.EmoSize;
+ 	LoadMessages();
  }
 
  function Resize()

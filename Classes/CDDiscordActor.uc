@@ -43,7 +43,7 @@ class CDDiscordActor extends Actor
 
  native final function bool TestFunction(string S, int I); //This function returns true, and prints the parameters.
 
-/********************************************************************************
+/*******************************************************************************
  * A native routine to detect the first instance of IP in chat message.
  * The format is as follows:
  * 1. Game Server IP 139.162.235.XXX:4554 (note the port)
@@ -62,7 +62,7 @@ class CDDiscordActor extends Actor
 
  native final static function string SpitIpFromChatString(string Message, out int ICategory); // For now, the routine shall fish for first instance only
 
-/********************************************************************************
+/*******************************************************************************
  * A native routine to cache the chat message along with meta data into
  * ChatDiamond.txt file. This basically provides virtually unlimited messages
  * caching.
@@ -72,6 +72,15 @@ class CDDiscordActor extends Actor
  *******************************************************************************
 */
  native final static function CacheChatLine(string ChatLine);
+
+/*******************************************************************************
+ * A native routine to get the nth line from bottom of file
+ *
+ * @PARAM LineNumber           Line from the bottom
+ * @return                     the chat metadata
+ *******************************************************************************
+*/
+ native final static function string GetLineFromCacheBottom(int LineNumber);
 
 /*
  native final static function OpenNativeTestWindow(bool bVisible, UWindowWindow ParentWindow);

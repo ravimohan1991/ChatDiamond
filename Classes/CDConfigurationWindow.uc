@@ -44,6 +44,8 @@ class CDConfigurationWindow expands UWindowPageWindow;
  var UWindowHSliderControl EmoSizeSlider;
  var UWindowCheckbox ApplyBGToChatWindow, ApplyBGToConsole;
  var UWindowCheckbox PlayMessageArrivedSound;
+ var UWindowEditControl LoadLastMessagesNumber;
+ var UWindowSmallButton MessageLoadButton;
  var bool bSecondKeyEvent;
 
  var UMenuRaisedButton ChatBindButton;
@@ -122,6 +124,20 @@ class CDConfigurationWindow expands UWindowPageWindow;
 
  	PlayMessageArrivedSound.SetText("Play sound on message arrival");
 
+ 	LoadLastMessagesNumber = UWindowEditControl(CreateControl(Class'UWindowEditControl', 20, 310, 200, 16));
+ 	LoadLastMessagesNumber.EditBoxWidth = 25;
+ 	LoadLastMessagesNumber.SetTextColor(class'CDChatWindowEmojis'.default.WhiteColor);
+ 	LoadLastMessagesNumber.SetText("Load last x messages");
+ 	LoadLastMessagesNumber.SetNumericOnly(true);
+ 	LoadLastMessagesNumber.SetFont(0);
+ 	LoadLastMessagesNumber.SetHistory(True);
+ 	LoadLastMessagesNumber.SetValue("");
+ 	LoadLastMessagesNumber.Align = TA_Left;
+
+ 	MessageLoadButton = UWindowSmallButton(CreateControl(class'UWindowSmallButton', 230, 310, 50, 25));
+ 	MessageLoadButton.SetText("Load");
+ 	MessageLoadButton.DownSound = sound'UnrealShare.FSHLITE2';
+
  	// See Paint() for drawing of preview miniframe
 
  	CDUTConsole(Root.Console).ConfigureWindow = self;
@@ -143,6 +159,8 @@ class CDConfigurationWindow expands UWindowPageWindow;
 
  function Notify (UWindowDialogControl C, byte E)
  {
+  	local int Temp;
+
  	super.Notify(C, E);
 
  	Switch(E)
@@ -205,6 +223,16 @@ class CDConfigurationWindow expands UWindowPageWindow;
  					ChatBindButton.bDisabled = true;
  					bSecondKeyEvent = true;
  				break;
+ 				case MessageLoadButton:
+  					Temp = int(LoadLastMessagesNumber.GetValue());
+  					if(Temp != FrameWindow.LastHistoricMessagesNumber)
+  					{
+ 						FrameWindow.LastHistoricMessagesNumber = Temp;
+ 						FrameWindow.SaveConfig();
+
+ 						ClientWindow.ChatConfigurationUpdated();
+  					}
+ 				break;
  			}
  		break;
  	}
@@ -248,6 +276,7 @@ class CDConfigurationWindow expands UWindowPageWindow;
  	BackGroundBlueSlider.SetValue(FrameWindow.BackGroundColor.B);
  	EmoSizeSlider.SetValue(FrameWindow.EmoSize);
  	EmotesAnimationSpeed.SetValue(FrameWindow.EmoteAnimSpeed);
+ 	LoadLastMessagesNumber.SetValue(string(FrameWindow.LastHistoricMessagesNumber));
  	ApplyBGToChatWindow.bChecked = FrameWindow.bApplyBGToChatWindow;
  	ApplyBGToConsole.bChecked = FrameWindow.bApplyBGToConsole;
  	PlayMessageArrivedSound.bChecked = FrameWindow.bPlaySoundOnMessageArrival;

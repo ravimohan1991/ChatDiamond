@@ -91,6 +91,10 @@ void ACDDiscordActor::execCacheChatLine(FFrame& Stack, RESULT_DECL)
 }
 IMPLEMENT_FUNCTION(ACDDiscordActor, -1, execCacheChatLine)
 
+/**
+ * Algorithm implementation courtsey https://stackoverflow.com/a/53640374/20867796
+ * Optimization needed
+ */
 void ACDDiscordActor::execGetLineFromCacheBottom(FFrame& Stack, RESULT_DECL)
 {
 	guard(ACDDiscordActor::execGetLineFromCacheBottom);
@@ -98,27 +102,33 @@ void ACDDiscordActor::execGetLineFromCacheBottom(FFrame& Stack, RESULT_DECL)
 	P_GET_INT(LineNumber);
 	P_FINISH;
 
-	uint32_t NumberOfLinesFromBottom = 0;
-	std::string Line;
+	std::ifstream ChatCache("ChatDiamond.txt");
+	int LNumber = LineNumber + 1;
 
-	// Open file
-	std::ifstream ChatCacher;
+	ChatCache.seekg(0, ChatCache.end);
 
-	// Open a file to perform a write operation using a file object.
-	// https://stackoverflow.com/questions/2393345/how-to-append-text-to-a-text-file-in-c
-	ChatCacher.open("ChatDiamond.txt", std::ios::ate);
-
-	// Checking whether the file is open. Append text if open
-	if (ChatCacher.is_open())
+	while (ChatCache.tellg() != 0 && LNumber)
 	{
-		std::streampos Size = ChatCacher.tellg();
+		ChatCache.seekg(-1, ChatCache.cur);
 
-		for (uint32_t i = 1; i <= Size; i++)
+		if (ChatCache.peek() == '\n')
 		{
-			ChatCacher.seekg(-i, std::ios::end);
-
+			LNumber--;
 		}
 	}
+
+	if (ChatCache.peek() == '\n')
+	{
+		ChatCache.seekg(1, ChatCache.cur);
+	}
+
+	std::string ChatMeta;
+
+	std::getline(ChatCache, ChatMeta);// this line is blank IDK
+	std::getline(ChatCache, ChatMeta);
+
+	std::wstring LineWString = std::wstring(ChatMeta.begin(), ChatMeta.end());
+	*(FString*)Result = LineWString.c_str();
 
 	unguard;
 }
