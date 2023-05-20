@@ -9,7 +9,7 @@ cmake_minimum_required(VERSION 3.0.0)
 
 project(ChatDiamond)
 
-file(GLOB CD_HEADERS Inc/*.h)
+file(GLOB CD_HEADERS Inc/*.h Inc/*.hpp)
 
 add_library(ChatDiamond SHARED Src/ChatDiamondNative.cpp ${CD_HEADERS})
 

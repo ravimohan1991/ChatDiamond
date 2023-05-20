@@ -32,6 +32,8 @@ IMPLEMENT_PACKAGE(ChatDiamond);
 
 IMPLEMENT_CLASS(ACDDiscordActor);
 
+json ACDDiscordActor::JsonVariable;
+
 ACDDiscordActor::ACDDiscordActor()
 {
 	//Super::AActor(); // Call super's constructor.
@@ -195,6 +197,103 @@ void ACDDiscordActor::execSpitIpFromChatString(FFrame& Stack, RESULT_DECL)
 }
 IMPLEMENT_FUNCTION(ACDDiscordActor, -1, execSpitIpFromChatString)
 
+void ACDDiscordActor::execAddJsonKeyValue(FFrame& Stack, RESULT_DECL)
+{
+	guard(ACDDiscordActor::execAddJsonKeyValue);
+
+	P_GET_STR(Key);
+	P_GET_STR(Value);
+	P_FINISH;
+
+	std::wstring KWString(*Key);
+	std::string KeyString(KWString.begin(), KWString.end());
+
+	std::wstring VWString(*Value);
+	std::string ValueString(VWString.begin(), VWString.end());
+
+	JsonVariable.emplace(KeyString, ValueString);
+
+	unguard
+}
+IMPLEMENT_FUNCTION(ACDDiscordActor, -1, execAddJsonKeyValue)
+
+void ACDDiscordActor::execResetJsonContainer(FFrame& Stack, RESULT_DECL)
+{
+	guard(ACDDiscordActor::execResetJsonContainer);
+
+	P_FINISH;
+	
+	JsonVariable.clear();
+
+	unguard
+}
+IMPLEMENT_FUNCTION(ACDDiscordActor, -1, execResetJsonContainer)
+
+void ACDDiscordActor::execFetchValue(FFrame& Stack, RESULT_DECL)
+{
+	guard(ACDDiscordActor::execFetchValue);
+
+	P_GET_STR(Key);
+	P_FINISH;
+
+	std::wstring KWString(*Key);
+	std::string KeyString(KWString.begin(), KWString.end());
+
+	std::string ReturnString; 
+	
+	if (JsonVariable.empty() || !JsonVariable.contains(KeyString))
+	{
+		ReturnString = "";
+	}
+	else
+	{
+		ReturnString = JsonVariable[KeyString];
+	}
+
+	*(FString*)Result = ReturnString.c_str();
+
+	unguard
+}
+IMPLEMENT_FUNCTION(ACDDiscordActor, -1, execFetchValue)
+
+void ACDDiscordActor::execSerializeJson(FFrame& Stack, RESULT_DECL)
+{
+	guard(ACDDiscordActor::execSerializeJson);
+
+	P_FINISH;
+
+	std::string SerializedJson;
+
+	if (JsonVariable.empty())
+	{
+		SerializedJson = "";
+	}
+	else
+	{
+		SerializedJson = JsonVariable.dump();
+	}
+
+	*(FString*)Result = SerializedJson.c_str();
+
+	unguard;
+}
+IMPLEMENT_FUNCTION(ACDDiscordActor, -1, execSerializeJson)
+
+void ACDDiscordActor::execDeSerializeJson(FFrame& Stack, RESULT_DECL)
+{
+	guard(ACDDiscordActor::execDeSerializeJson);
+
+	P_GET_STR(JsonString);
+	P_FINISH;
+
+	std::wstring JWString(*JsonString);
+	std::string StringToDeserialize(JWString.begin(), JWString.end());
+
+	JsonVariable = json::parse(StringToDeserialize);
+
+	unguard;
+}
+IMPLEMENT_FUNCTION(ACDDiscordActor, -1, execDeSerializeJson)
 
 /*
  *

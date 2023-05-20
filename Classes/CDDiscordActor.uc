@@ -82,6 +82,13 @@ class CDDiscordActor extends Actor
 */
  native final static function string GetLineFromCacheBottom(int LineNumber);
 
+
+native static function AddJsonKeyValue(string Key, string Value);
+native static function ResetJsonContainer();
+native static function string FetchValue(string Key);
+native static function string SerializeJson();
+native static function DeSerializeJson(string JsonString);
+
 /*
  native final static function OpenNativeTestWindow(bool bVisible, UWindowWindow ParentWindow);
  native final static function int CacheListOfFiles(string Extension, string FolderPath);
