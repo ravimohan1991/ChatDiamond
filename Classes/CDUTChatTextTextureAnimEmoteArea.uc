@@ -393,15 +393,6 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  	Log("ChatDiamond: Text - " $ EncodedText $ " has no identifiable category deliminator");
  }
 
- // The Mid(coerce string S, int i, optional int j) function generates a substring of S by starting at character i and
- // copying j characters. If j is omitted, the rest of the string is copied. i
- // is clamped between 0 and the length of the string. j is clamped between i
- // and the length of the string. If S is not a string, its value will attempt
- // to be converted to a string value.
-
- // Saturday.22.January.2022.<.16:19..somasup:.hey blaze (a dot represents single space padding)
- // SoldierSkins.hkil4vector:SoldierSkins.hkil3::Friday 19 May 2023 > 20:47  -=PoW=-: bye  Juo ! lol
-
  function float DrawTextTextureLine(Canvas C, UWindowDynamicTextRow L, float Y)
  {
  	local float X, X1, X2, Y1;
@@ -409,85 +400,87 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  	local string FaceName, SkinName;
  	local string FaceSkinNoText;
  	local float TextureXOccupied, TextureYOccupied;
-    Log("######################" $ L.Text);
+ 	local string TempServerString;
+
  	if(L.Text == "")
  	{
  		return 0;
  	}
 
-    //class'CDDiscordActor'.static.DeSerializeJson(L.Text);
+ 	class'CDDiscordActor'.static.DeSerializeJson(L.Text);
+
+ 	TempServerString = class'CDDiscordActor'.static.FetchValue("ServerName");
+
+ 	if(TempServerString != "")
+ 	{
+ 		C.Font = Root.Fonts[F_Normal];
+ 		TextSize(C, TempServerString, X1, Y1);
+ 		TextAreaClipText(C, X + WinWidth / 2 - X1 / 2, Y, TempServerString);
+ 		return DefaultTextTextureLineHeight;
+ 	}
 
  	X = 2;
 
- 	//FaceSkinNoText = StripFaceNameAndSkinName(L.Text, FaceName, SkinName);
  	FaceName = class'CDDiscordActor'.static.FetchValue("FaceName");
  	SkinName = class'CDDiscordActor'.static.FetchValue("SkinName");
 
  	if (bChat)
  	{
- 		//FindCategoryDeliminator(FaceSkinNoText, CategoryDeliminatorPosition, CategoryDeliminator);
+ 		sTm = class'CDDiscordActor'.static.FetchValue("Team");
+ 		sDate = class'CDDiscordActor'.static.FetchValue("LocalTime");
+ 		sMesg = class'CDDiscordActor'.static.FetchValue("ChatMessage");
+ 		sName = class'CDDiscordActor'.static.FetchValue("PlayerName");
 
- 		sTm = class'CDDiscordActor'.static.FetchValue("Team");           // <
- 		sDate = class'CDDiscordActor'.static.FetchValue("LocalTime");// Saturday 22.January.2022.-.16:19..
- 		sMesg = class'CDDiscordActor'.static.FetchValue("ChatMessage"); // hey blaze
+ 		C.Font = Root.Fonts[F_Normal];
 
- 		//i = InStr(sMesg, ": ");
+ 		TextSize(C, sDate, X1, Y1);
 
- 	//	if (i > 0)
- 	//	{
- 			sName = class'CDDiscordActor'.static.FetchValue("PlayerName"); // somasup:.
- 			//sMesg = Mid(sMesg, i+2);  // hey blaze
+ 		C.DrawColor = ChatColor;
+ 		C.SetPos(X, Y);
 
- 			C.Font = Root.Fonts[F_Normal];
+ 		TextAreaClipText(C, X, Y, sDate);
 
- 			TextSize(C, sDate, X1, Y1);
+ 		X = X1 + 2 + ChatFaceVerticalPadding;
 
- 			C.DrawColor = ChatColor;
+ 		DrawChatFace(C, X, Y, LocateChatFaceTexture(FaceName, SkinName), Y1, TextureXOccupied, TextureYOccupied);
+
+ 		if (bChat)
+ 		{
+ 			if (sTm == "Red")
+ 			{
+ 				C.DrawColor = RedColor;
+ 			}
+ 			else if (sTm == "Blue")
+ 			{
+ 				C.DrawColor = BluColor;
+ 			}
+ 			else if (sTm == "Green")
+ 			{
+ 				C.DrawColor = GrnColor;
+ 			}
+ 			else if (sTm == "Yellow")
+ 			{
+ 				C.DrawColor = YelColor;
+ 			}
+ 			else
+ 			{
+ 				C.DrawColor = WhiteColor;
+ 			}
+
+ 			X = X1 + 2 + ChatFaceVerticalPadding + TextureXOccupied + 2;
  			C.SetPos(X, Y);
 
- 			TextAreaClipText(C, X, Y, sDate);
+ 			TextAreaClipText(C, X, Y, sName);
 
- 			X = X1 + 2 + ChatFaceVerticalPadding;
+ 			C.DrawColor = TxtColor;
+ 			TextSize(C, sName $ "  ", X2, Y1);
+ 			X = X1 + 2 + ChatFaceVerticalPadding + TextureXOccupied + 2 + X2;
 
- 			DrawChatFace(C, X, Y, LocateChatFaceTexture(FaceName, SkinName), Y1, TextureXOccupied, TextureYOccupied);
+ 			MessagePass(C, X, Y, sMesg);
+ 		}
 
- 			if (bChat)
- 			{
- 				if (sTm == "Red")
- 				{
- 					C.DrawColor = RedColor;
- 				}
- 				else if (sTm == "Blue")
- 				{
- 					C.DrawColor = BluColor;
- 				}
- 				else if (sTm == "Green")
- 				{
- 					C.DrawColor = GrnColor;
- 				}
- 				else if (sTm == "Yellow")
- 				{
- 					C.DrawColor = YelColor;
- 				}
- 				else
- 				{
- 					C.DrawColor = WhiteColor;
- 				}
+ 		return DefaultTextTextureLineHeight;
 
- 				X = X1 + 2 + ChatFaceVerticalPadding + TextureXOccupied + 2;
- 				C.SetPos(X, Y);
-
- 				TextAreaClipText(C, X, Y, sName);
-
- 				C.DrawColor = TxtColor;
- 				TextSize(C, sName $ "  ", X2, Y1);
- 				X = X1 + 2 + ChatFaceVerticalPadding + TextureXOccupied + 2 + X2;
-
- 				MessagePass(C, X, Y, sMesg);
- 				//DrawChatMessageWithEmoji(C, X, Y, sMesg);
- 			}
- 			return DefaultTextTextureLineHeight;
- 	//	}
 
  		if (Mid(FaceSkinNoText, 2, 1) != "/")
  		{

@@ -241,7 +241,7 @@ void ACDDiscordActor::execFetchValue(FFrame& Stack, RESULT_DECL)
 
 	std::string ReturnString; 
 	
-	if (JsonVariable.empty())
+	if (JsonVariable.empty() || !JsonVariable.contains(KeyString))
 	{
 		ReturnString = "";
 	}

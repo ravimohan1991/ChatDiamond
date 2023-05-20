@@ -171,7 +171,6 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
  		for (i = FrameWindow.LastHistoricMessagesNumber; i > 0; i--)
  		{
  			sTemp = CDDA.GetLineFromCacheBottom(i);
- 			Log(sTemp);
  			if (i > 0 && sTemp == "")
  			{
  				break;
@@ -405,7 +404,7 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
  		}
  	}
 
- 	return SpectatorName $ ": " $ TempoString;
+ 	return TempoString;
  }
 
  function string FilterSenderName(coerce string Message)
@@ -700,7 +699,10 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
  			{
  				VSRP.CDServerName = TemporaryServerName;
  				VSRP.CDMD5Hash = TemporaryServerHash;
- 				LoadMessages(VSRP.CDServerName);
+ 				class'CDDiscordActor'.static.ResetJsonContainer();
+ 				class'CDDiscordActor'.static.AddJsonKeyValue("ServerName", VSRP.CDServerName);
+ 				LoadMessages(class'CDDiscordActor'.static.SerializeJson());
+ 				class'CDDiscordActor'.static.ResetJsonContainer();
  			}
  		}
  	}

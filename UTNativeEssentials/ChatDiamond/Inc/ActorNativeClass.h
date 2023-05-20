@@ -67,18 +67,6 @@ static json JsonVariable;
 };
 
 /*
-class ACDJsonHelper : public AActor
-{
-public:
-	DECLARE_CLASS(ACDJsonHelper, AActor, 0, ChatDiamond);
-	ACDJsonHelper();
-
-public:
-	static json JsonVariable;
-};
-*/
-
-/*
 #define WINDOW_API DLL_EXPORT
 class WCDMesa : UObject
 {
