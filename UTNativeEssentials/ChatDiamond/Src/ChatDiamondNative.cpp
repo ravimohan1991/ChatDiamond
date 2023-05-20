@@ -103,7 +103,7 @@ void ACDDiscordActor::execGetLineFromCacheBottom(FFrame& Stack, RESULT_DECL)
 	P_FINISH;
 
 	std::ifstream ChatCache("ChatDiamond.txt");
-	int LNumber = LineNumber + 1;
+	int LNumber = LineNumber;
 
 	ChatCache.seekg(0, ChatCache.end);
 
@@ -127,8 +127,7 @@ void ACDDiscordActor::execGetLineFromCacheBottom(FFrame& Stack, RESULT_DECL)
 	std::getline(ChatCache, ChatMeta);// this line is blank IDK
 	std::getline(ChatCache, ChatMeta);
 
-	std::wstring LineWString = std::wstring(ChatMeta.begin(), ChatMeta.end());
-	*(FString*)Result = LineWString.c_str();
+	*(FString*)Result = ChatMeta.c_str();
 
 	unguard;
 }
@@ -167,9 +166,8 @@ void ACDDiscordActor::execSpitIpFromChatString(FFrame& Stack, RESULT_DECL)
 
 	if (!IPString.empty())
 	{
-		std::wstring WideIPString = std::wstring(IPString.begin(), IPString.end());
 		*IPCategory = 0;
-		*(FString*)Result = WideIPString.c_str();
+		*(FString*)Result = IPString.c_str();
 		return;
 	}
 
@@ -185,15 +183,13 @@ void ACDDiscordActor::execSpitIpFromChatString(FFrame& Stack, RESULT_DECL)
 
 	if (!IPString.empty())
 	{
-		std::wstring WideIPString = std::wstring(IPString.begin(), IPString.end());
 		*IPCategory = 1;
-		*(FString*)Result = WideIPString.c_str();
+		*(FString*)Result = IPString.c_str();
 		return;
 	}
 
-	std::wstring WideIPString = std::wstring(IPString.begin(), IPString.end());
 	*IPCategory = 2;
-	*(FString*)Result = WideIPString.c_str();
+	*(FString*)Result = IPString.c_str();
 
 	unguard;
 }
