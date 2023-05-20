@@ -43,6 +43,10 @@
 
 //#ifndef NAMES_ONLY
 
+#include "json.hpp"
+
+using json = nlohmann::json;
+
 class ACDDiscordActor : public AActor
 {
 public:
@@ -51,9 +55,27 @@ public:
 	DECLARE_FUNCTION(execGetGameSystemPath)
 	DECLARE_FUNCTION(execCacheChatLine)
 	DECLARE_FUNCTION(execGetLineFromCacheBottom)
+	DECLARE_FUNCTION(execAddJsonKeyValue)
+	DECLARE_FUNCTION(execResetJsonContainer)
+	DECLARE_FUNCTION(execFetchValue)
+	DECLARE_FUNCTION(execSerializeJson)
 	DECLARE_CLASS(ACDDiscordActor, AActor, 0, ChatDiamond);
 	ACDDiscordActor();
+
+static json JsonVariable;
 };
+
+/*
+class ACDJsonHelper : public AActor
+{
+public:
+	DECLARE_CLASS(ACDJsonHelper, AActor, 0, ChatDiamond);
+	ACDJsonHelper();
+
+public:
+	static json JsonVariable;
+};
+*/
 
 /*
 #define WINDOW_API DLL_EXPORT

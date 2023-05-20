@@ -149,6 +149,25 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
  	iTick = 50;               // LoadMessages();
  	PrevWinWidth  = WinWidth;
  	PrevWinHeight = WinHeight;
+
+ 	Log("#######################");
+    class'CDDiscordActor'.Static.AddJsonKeyValue("gamepad", "ps5_gamepad");
+ 	class'CDDiscordActor'.static.AddJsonKeyValue("cpu", "intel_cpu");
+
+ 	Log("gamepad is: " $ class'CDDiscordActor'.static.FetchValue("gamepad"));
+ 	Log("cpu is: " $ class'CDDiscordActor'.static.FetchValue("cpu"));
+
+ 	Log("On serialization, we get: " $ class'CDDiscordActor'.static.SerializeJson());
+
+ 	Log("Clearing Json array");
+ 	class'CDDiscordActor'.Static.ResetJsonContainer();
+
+ 	Log("cpu is: " $ class'CDDiscordActor'.static.FetchValue("cpu"));
+ 	Log("gamepad is: " $ class'CDDiscordActor'.static.FetchValue("gamepad"));
+
+ 	Log("On serialization, after clearence, we get: " $ class'CDDiscordActor'.static.SerializeJson());
+
+ 	Log("#######################");
  }
 
  function LoadMessages(optional string sMesg, optional bool bTalkMessage)
