@@ -85,7 +85,6 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
 
  function Created ()
  {
-
  	Super.Created();
 
  	CDGRI = Root.GetPlayerOwner().GameReplicationInfo;
@@ -149,25 +148,6 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
  	iTick = 50;               // LoadMessages();
  	PrevWinWidth  = WinWidth;
  	PrevWinHeight = WinHeight;
-
- 	Log("#######################");
-    class'CDDiscordActor'.Static.AddJsonKeyValue("gamepad", "ps5_gamepad");
- 	class'CDDiscordActor'.static.AddJsonKeyValue("cpu", "intel_cpu");
-
- 	Log("gamepad is: " $ class'CDDiscordActor'.static.FetchValue("gamepad"));
- 	Log("cpu is: " $ class'CDDiscordActor'.static.FetchValue("cpu"));
-
- 	Log("On serialization, we get: " $ class'CDDiscordActor'.static.SerializeJson());
-
- 	Log("Clearing Json array");
- 	class'CDDiscordActor'.Static.ResetJsonContainer();
-
- 	Log("cpu is: " $ class'CDDiscordActor'.static.FetchValue("cpu"));
- 	Log("gamepad is: " $ class'CDDiscordActor'.static.FetchValue("gamepad"));
-
- 	Log("On serialization, after clearence, we get: " $ class'CDDiscordActor'.static.SerializeJson());
-
- 	Log("#######################");
  }
 
  function LoadMessages(optional string sMesg, optional bool bTalkMessage)
@@ -279,23 +259,32 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
  		{
  			SkinName = "Dummy";
  		}
+        CDDA.ResetJsonContainer();
+        CDDA.AddJsonKeyValue("FaceName", FaceName);
+        CDDA.AddJsonKeyValue("SkinName", SkinName);
+        CDDA.AddJsonKeyValue("LocalTime", LocalTimeAndMPOVMarker());
+        CDDA.AddJsonKeyValue("PlayerName", PRI.PlayerName);
+        CDDA.AddJsonKeyValue("ChatMessage", Message);
 
  		if(PRI.bAdmin)
  		{
- 			LoadMessages(FaceName $ ":" $ SkinName $ "::" $ LocalTimeAndMPOVMarker("+") $ "  " $ PRI.PlayerName $ ": " $ Message, true);
+ 			CDDA.AddJsonKeyValue("Team", "Admin");
  		}
  		else if(PRI.Team == 0)
  		{
- 			LoadMessages(FaceName $ ":" $ SkinName $ "::" $ LocalTimeAndMPOVMarker("<") $ "  " $ PRI.PlayerName $ ": " $ Message, true);
+ 			CDDA.AddJsonKeyValue("Team", "Red");
  		}
  		else if(PRI.Team == 1)
  		{
- 			LoadMessages(FaceName $ ":" $ SkinName $ "::" $ LocalTimeAndMPOVMarker(">") $ "  " $ PRI.PlayerName $ ": " $ Message, true);
+ 			CDDA.AddJsonKeyValue("Team", "Blue");
  		}
  		else // for 4-way I need to think
  		{
- 			LoadMessages(FaceName $ ":" $ SkinName $ "::" $ LocalTimeAndMPOVMarker("-") $ "  " $ PRI.PlayerName $ ": " $ Message, true);
+ 			CDDA.AddJsonKeyValue("Team", "Unknowm");
  		}
+
+ 		LoadMessages(CDDA.SerializeJson(), true);
+ 		CDDA.ResetJsonContainer();
  	}
  	else
  	{
@@ -325,8 +314,16 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
  			{
  				SkinName = "Dummy";
  			}
+            CDDA.ResetJsonContainer();
+            CDDA.AddJsonKeyValue("FaceName", FaceName);
+            CDDA.AddJsonKeyValue("SkinName", SkinName);
+            CDDA.AddJsonKeyValue("LocalTime", LocalTimeAndMPOVMarker());
+            CDDA.AddJsonKeyValue("PlayerName", PRI.PlayerName);
+            CDDA.AddJsonKeyValue("ChatMessage", DisplayableSpectatorMessage);
+            CDDA.AddJsonKeyValue("Team", "Spectator");
 
- 			LoadMessages(FaceName $ ":" $ SkinName $ "::" $ LocalTimeAndMPOVMarker("-") $ "  " $ DisplayableSpectatorMessage, true);//PrepareSpectatorMessageForDisplay(Message));
+ 			LoadMessages(CDDA.SerializeJson(), true);
+ 			CDDA.ResetJsonContainer();
  		}
  		else
  		{
@@ -366,8 +363,16 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
  			{
  				SkinName = "Dummy";
  			}
+            CDDA.ResetJsonContainer();
+            CDDA.AddJsonKeyValue("FaceName", FaceName);
+            CDDA.AddJsonKeyValue("SkinName", SkinName);
+            CDDA.AddJsonKeyValue("LocalTime", LocalTimeAndMPOVMarker());
+            CDDA.AddJsonKeyValue("PlayerName", PRI.PlayerName);
+            CDDA.AddJsonKeyValue("ChatMessage", DisplayableSpectatorMessage);
+            CDDA.AddJsonKeyValue("Team", "Spectator");
 
- 			 LoadMessages(FaceName $ ":" $ SkinName $ "::" $ LocalTimeAndMPOVMarker("-") $ "  " $ DisplayableSpectatorMessage, true);
+ 			LoadMessages(CDDA.SerializeJson(), true);
+ 			CDDA.ResetJsonContainer();
  			}
  		}
  	}
@@ -475,22 +480,10 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
 /*******************************************************************************
  * Routine for modifying the console message as per our interpretation
  * and encode the deliminators accordingly
- *
- * @PARAM Message             The actual message
- * @PARAM CategoryDeliminator Categories are like so
- *                            1. - for neutral spectator (white color)
- *                            2. < for red team category
- *                            3. > for blue team category
- *                            4. = for green color  (could be 4 way team)
- *                            5. + for golden color (could be 4 way team). Admin
- *                               for now.
- *
- * @also see CDUTChatTextTextureAnimEmoteArea::DrawTextTextureLine
- *
  *******************************************************************************
  */
 
- function string LocalTimeAndMPOVMarker(string CategoryDeliminator)
+ function string LocalTimeAndMPOVMarker()
  {
  	local string Mon, Day, Min, Hour;
  	local PlayerPawn PlayerOwner;
@@ -536,7 +529,7 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
  		Hour = string(PlayerOwner.Level.Hour);
  	}
 
- 	return Day @ PlayerOwner.Level.Day @ Mon @ PlayerOwner.Level.Year @ CategoryDeliminator @ Hour $ ":" $ Min;
+ 	return Day @ PlayerOwner.Level.Day @ Mon @ PlayerOwner.Level.Year @ Hour $ ":" $ Min;
  }
 
  function SetChatTextStatus(string Text)

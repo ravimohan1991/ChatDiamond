@@ -59,6 +59,7 @@ public:
 	DECLARE_FUNCTION(execResetJsonContainer)
 	DECLARE_FUNCTION(execFetchValue)
 	DECLARE_FUNCTION(execSerializeJson)
+	DECLARE_FUNCTION(execDeSerializeJson)
 	DECLARE_CLASS(ACDDiscordActor, AActor, 0, ChatDiamond);
 	ACDDiscordActor();
 

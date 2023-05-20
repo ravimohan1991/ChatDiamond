@@ -405,35 +405,38 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  function float DrawTextTextureLine(Canvas C, UWindowDynamicTextRow L, float Y)
  {
  	local float X, X1, X2, Y1;
- 	local string sDate, sName, sMesg, sTm, CategoryDeliminator;
+ 	local string sDate, sName, sMesg, sTm;
  	local string FaceName, SkinName;
  	local string FaceSkinNoText;
- 	local int i, CategoryDeliminatorPosition;
  	local float TextureXOccupied, TextureYOccupied;
-
+    Log("######################" $ L.Text);
  	if(L.Text == "")
  	{
  		return 0;
  	}
 
+    //class'CDDiscordActor'.static.DeSerializeJson(L.Text);
+
  	X = 2;
- 	sTm = "-";// The date time delimiter
- 	FaceSkinNoText = StripFaceNameAndSkinName(L.Text, FaceName, SkinName);
+
+ 	//FaceSkinNoText = StripFaceNameAndSkinName(L.Text, FaceName, SkinName);
+ 	FaceName = class'CDDiscordActor'.static.FetchValue("FaceName");
+ 	SkinName = class'CDDiscordActor'.static.FetchValue("SkinName");
 
  	if (bChat)
  	{
- 		FindCategoryDeliminator(FaceSkinNoText, CategoryDeliminatorPosition, CategoryDeliminator);
+ 		//FindCategoryDeliminator(FaceSkinNoText, CategoryDeliminatorPosition, CategoryDeliminator);
 
- 		sTm = CategoryDeliminator;             // <
- 		sDate = Left(FaceSkinNoText, CategoryDeliminatorPosition) $ "-" $ Mid(FaceSkinNoText, CategoryDeliminatorPosition + 1, 8);// Saturday 22.January.2022.-.16:19..
- 		sMesg = Mid(FaceSkinNoText, CategoryDeliminatorPosition + 8); // somasup:.hey blaze
+ 		sTm = class'CDDiscordActor'.static.FetchValue("Team");           // <
+ 		sDate = class'CDDiscordActor'.static.FetchValue("LocalTime");// Saturday 22.January.2022.-.16:19..
+ 		sMesg = class'CDDiscordActor'.static.FetchValue("ChatMessage"); // hey blaze
 
- 		i = InStr(sMesg, ": ");
+ 		//i = InStr(sMesg, ": ");
 
- 		if (i > 0)
- 		{
- 			sName = Left(sMesg, i+1); // somasup:.
- 			sMesg = Mid(sMesg, i+2);  // hey blaze
+ 	//	if (i > 0)
+ 	//	{
+ 			sName = class'CDDiscordActor'.static.FetchValue("PlayerName"); // somasup:.
+ 			//sMesg = Mid(sMesg, i+2);  // hey blaze
 
  			C.Font = Root.Fonts[F_Normal];
 
@@ -450,19 +453,19 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
 
  			if (bChat)
  			{
- 				if (sTm == "<")
+ 				if (sTm == "Red")
  				{
  					C.DrawColor = RedColor;
  				}
- 				else if (sTm == ">")
+ 				else if (sTm == "Blue")
  				{
  					C.DrawColor = BluColor;
  				}
- 				else if (sTm == "=")
+ 				else if (sTm == "Green")
  				{
  					C.DrawColor = GrnColor;
  				}
- 				else if (sTm == "+")
+ 				else if (sTm == "Yellow")
  				{
  					C.DrawColor = YelColor;
  				}
@@ -484,7 +487,7 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  				//DrawChatMessageWithEmoji(C, X, Y, sMesg);
  			}
  			return DefaultTextTextureLineHeight;
- 		}
+ 	//	}
 
  		if (Mid(FaceSkinNoText, 2, 1) != "/")
  		{

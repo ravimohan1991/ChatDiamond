@@ -279,6 +279,22 @@ void ACDDiscordActor::execSerializeJson(FFrame& Stack, RESULT_DECL)
 }
 IMPLEMENT_FUNCTION(ACDDiscordActor, -1, execSerializeJson)
 
+void ACDDiscordActor::execDeSerializeJson(FFrame& Stack, RESULT_DECL)
+{
+	guard(ACDDiscordActor::execDeSerializeJson);
+
+	P_GET_STR(JsonString);
+	P_FINISH;
+
+	std::wstring JWString(*JsonString);
+	std::string StringToDeserialize(JWString.begin(), JWString.end());
+
+	JsonVariable = json::parse(StringToDeserialize);
+
+	unguard;
+}
+IMPLEMENT_FUNCTION(ACDDiscordActor, -1, execDeSerializeJson)
+
 /*
  *
  *		                                  /\
