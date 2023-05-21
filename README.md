@@ -14,6 +14,11 @@ The idea is simple yet effective, in the sense, we replace the boring default Ep
 
 Stay tuned!!!
 
+# Companion Libraries
+ChatDiamond's native component makes use of variety of companion libraries which are not authored by me. They are like so
+- [Json](https://github.com/nlohmann/json) (C++)
+- [Regular Expressions](https://en.cppreference.com/w/cpp/regex)
+
 # TODO List
 - Add Configure window
   - configure background color
