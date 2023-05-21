@@ -8,7 +8,7 @@ And let the sound text shine bright!!
 
 At the moment, the Chat GUI takes the form
 
-![image](https://user-images.githubusercontent.com/2173654/206125470-67450460-ad79-45f7-9c77-2ac16739c8bf.png)
+![image](https://github.com/ravimohan1991/ChatDiamond/assets/2173654/6b3aa98a-c105-4a84-8833-ac947431e00e)
 
 The idea is simple yet effective, in the sense, we replace the boring default Epic's Console System with our more bright and, hopefully, animated emotes filling.
 
@@ -21,19 +21,10 @@ ChatDiamond's native component makes use of variety of companion libraries which
 
 # TODO List
 - Add Configure window
-  - configure background color
   - configure console hot key
-  - configure message delivery sound off/on
   - configure open chat window at the end of match
-  - chat window avatar size, date format, and emo sizes
   - language preferences
-  - show emos in text chat
-  - configure animation speed (default animation should be about 50% of current)
-  - option to open Chat window at the match end
   
 - Add language translator  
-- When joining a server set message to include IP/PORT of server
-  - Example "5/1/23~10pm joined 192.168.1.1:7777 ~ DECK 16][ ALL WEAPONS - London - Pho` ~"
 - Add hyper link recognition for http://www. and https://www.
-- Save or memorize chat by default
 - Integration with Discord client using [sleepy-discord](https://github.com/ravimohan1991/sleepy-discord)
