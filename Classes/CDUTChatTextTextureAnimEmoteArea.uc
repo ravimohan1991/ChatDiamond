@@ -920,7 +920,7 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  	FaceItem = Root.GetPlayerOwner().GetItemName(FaceNameString);
  	FacePackage = Left(FaceNameString, Len(FaceNameString) - Len(FaceItem));
 
- 	if(SkinItem == "None")
+ 	if(SkinItem == "None" || FaceItem == "Dummy" || SkinItem == "Dummy" || FaceItem == "None")
  	{
       return texture'faceless';
     }
@@ -942,7 +942,6 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
 
  	if(ChatFaceTexture == none)
  	{
- 		Log("ChatDiamond: Couldn't find ChatFace: " $ FaceNameString @ FaceItem @ SkinItem @ FacePackage @ FacePackage $ SkinItem $ "5" $ FaceItem);
  		ChatFaceTexture = texture'faceless';
  	}
  	/*
