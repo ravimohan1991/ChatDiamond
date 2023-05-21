@@ -21,6 +21,7 @@
  *   November, 2022: Transitioning from UTChat to ChatDiamond
  *                 (https://ut99.org/viewtopic.php?f=7&t=14356&start=30#p139510)
  *   December, 2022: Native experiments
+ *   April, 2023: Native - scripting hybrid progress
  */
 
 //==============================================================================
@@ -82,12 +83,15 @@ class CDDiscordActor extends Actor
 */
  native final static function string GetLineFromCacheBottom(int LineNumber);
 
-
-native static function AddJsonKeyValue(string Key, string Value);
-native static function ResetJsonContainer();
-native static function string FetchValue(string Key);
-native static function string SerializeJson();
-native static function DeSerializeJson(string JsonString);
+/*******************************************************************************
+ * A collection of native routines for managing json formatting of chat metadata
+ *******************************************************************************
+*/
+ native static function AddJsonKeyValue(string Key, string Value);
+ native static function string FetchValue(string Key);
+ native static function string SerializeJson();
+ native static function DeSerializeJson(string JsonString);
+ native static function ResetJsonContainer();
 
 /*
  native final static function OpenNativeTestWindow(bool bVisible, UWindowWindow ParentWindow);

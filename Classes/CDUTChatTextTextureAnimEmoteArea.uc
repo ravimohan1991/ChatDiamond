@@ -20,6 +20,8 @@
  *                         (https://ut99.org/viewtopic.php?f=7&t=14356)
  *   November, 2022: Transitioning from UTChat to ChatDiamond
  *                 (https://ut99.org/viewtopic.php?f=7&t=14356&start=30#p139510)
+ *   December, 2022: Native experiments
+ *   April, 2023: Native - scripting hybrid progress
  */
 
 class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
@@ -194,6 +196,8 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
 
  var string ChatTextCache;
  var string TextUrlCurrent;
+
+ var CDLoadedTextureList TextureList;
 
  struct SkinStore
  {
@@ -414,6 +418,10 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  	if(TempServerString != "")
  	{
  		C.Font = Root.Fonts[F_Normal];
+
+ 		TempServerString = class'CDDiscordActor'.static.FetchValue("LocalTime") $": joined" @
+         class'CDDiscordActor'.static.FetchValue("ServerAddress") @ TempServerString;
+
  		TextSize(C, TempServerString, X1, Y1);
  		TextAreaClipText(C, X + WinWidth / 2 - X1 / 2, Y, TempServerString);
  		return DefaultTextTextureLineHeight;
@@ -902,9 +910,20 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  		}
  	}
  	*/
+
+ 	if(Root.GetPlayerOwner() == none)
+ 	{
+       return texture'faceless';
+    }
+
  	SkinItem = Root.GetPlayerOwner().GetItemName(SkinNameString);
  	FaceItem = Root.GetPlayerOwner().GetItemName(FaceNameString);
  	FacePackage = Left(FaceNameString, Len(FaceNameString) - Len(FaceItem));
+
+ 	if(SkinItem == "None")
+ 	{
+      return texture'faceless';
+    }
 
  	if(FacePackage == "")
  	{
@@ -923,7 +942,7 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
 
  	if(ChatFaceTexture == none)
  	{
- 		Log("ChatDiamond: Couldn't find ChatFace: " $ FaceNameString);
+ 		Log("ChatDiamond: Couldn't find ChatFace: " $ FaceNameString @ FaceItem @ SkinItem @ FacePackage @ FacePackage $ SkinItem $ "5" $ FaceItem);
  		ChatFaceTexture = texture'faceless';
  	}
  	/*
