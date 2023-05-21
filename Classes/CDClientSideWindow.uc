@@ -20,6 +20,8 @@
  *                         (https://ut99.org/viewtopic.php?f=7&t=14356)
  *   November, 2022: Transitioning from UTChat to ChatDiamond
  *                 (https://ut99.org/viewtopic.php?f=7&t=14356&start=30#p139510)
+ *   December, 2022: Native experiments
+ *   April, 2023: Native - scripting hybrid progress
  */
 
 //==============================================================================
@@ -61,6 +63,7 @@ class CDClientSideWindow extends UWindowConsoleClientWindow config(ChatDiamond);
  	PageControl = Pages.AddPage("Public Chats", class'CDChatWindowChat');
  	ChatWindow = CDChatWindowChat(PageControl.Page);
  	ChatWindow.FrameWindow = CDModMenuWindowFrame(ParentWindow);
+ 	ChatWindow.bUserWantsMessageSound = CDModMenuWindowFrame(ParentWindow).bPlaySoundOnMessageArrival;
 
  	PageControl = Pages.AddPage("Emojis", class'CDChatWindowEmojis');
  	EmojiWindow = CDChatWindowEmojis(PageControl.Page);
@@ -78,6 +81,8 @@ class CDClientSideWindow extends UWindowConsoleClientWindow config(ChatDiamond);
  	// CDUTConsole(Root.Console).ChatWindowKeyForBind in CDUTConsole and CDClientSideWindow
  	PageControl = Pages.AddPage("Configure", class'CDConfigurationWindow');
  	ConfigureWindow = CDConfigurationWindow(PageControl.Page);
+ 	ConfigureWindow.ClientWindow = self;
+ 	ConfigureWindow.ChatWindowTextArea = ChatWindow.TheTextArea;
  	ConfigureWindow.FrameWindow = CDModMenuWindowFrame(ParentWindow);
  	CDModMenuWindowFrame(ParentWindow).ConfigurationWindow = ConfigureWindow;// For global stuff
 
@@ -118,6 +123,12 @@ class CDClientSideWindow extends UWindowConsoleClientWindow config(ChatDiamond);
  	{
  		ChatWindow.LoadMessages(sMesg);
  	}
+ }
+
+ function ChatConfigurationUpdated()
+ {
+ 	ChatWindow.ChatConfigurationUpdated();
+ 	ChatWindow.bUserWantsMessageSound = CDModMenuWindowFrame(ParentWindow).bPlaySoundOnMessageArrival;
  }
 
  function Resized()

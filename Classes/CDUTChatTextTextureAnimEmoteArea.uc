@@ -20,6 +20,8 @@
  *                         (https://ut99.org/viewtopic.php?f=7&t=14356)
  *   November, 2022: Transitioning from UTChat to ChatDiamond
  *                 (https://ut99.org/viewtopic.php?f=7&t=14356&start=30#p139510)
+ *   December, 2022: Native experiments
+ *   April, 2023: Native - scripting hybrid progress
  */
 
 class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
@@ -180,6 +182,7 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  var texture StaticTransparencyTexture;
 
  var float FrameRate;
+ var float EmoSizeMultiplier;
  var int TickCounter;
  var int TickCounterWarpNumber;
  var int DesiredAnimationFrameRate;
@@ -193,6 +196,8 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
 
  var string ChatTextCache;
  var string TextUrlCurrent;
+
+ var CDLoadedTextureList TextureList;
 
  struct SkinStore
  {
@@ -290,7 +295,7 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  	AnimShockEmote.Atlas[7] = texture'ANEShock7';
  	AnimShockEmote.Atlas[8] = texture'ANEShock8';
  	AnimShockEmote.Atlas[9] = texture'ANEShock9';
- 	AnimShockEmote.TexChatSizeFraction = 0.50;
+ 	AnimShockEmote.TexChatSizeFraction = 0.5;
  	AnimShockEmote.StatusBarText = "Shock Combo!";
 
  	AnimTrashTalkEmote.CurrentAnimFrame = 0;
@@ -315,7 +320,7 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  	AnimTrashTalkEmote.Atlas[18] = texture'ANEArgue18';
  	AnimTrashTalkEmote.Atlas[19] = texture'ANEArgue19';
  	AnimTrashTalkEmote.Atlas[20] = texture'ANEArgue20';
- 	AnimTrashTalkEmote.TexChatSizeFraction = 0.6;
+ 	AnimTrashTalkEmote.TexChatSizeFraction = 0.60;
 
  	RecognizableEmoTextSymbols[0] = ":)";
  	RecognizableEmoTextSymbols[1] = ":(";
@@ -392,95 +397,98 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  	Log("ChatDiamond: Text - " $ EncodedText $ " has no identifiable category deliminator");
  }
 
- // The Mid(coerce string S, int i, optional int j) function generates a substring of S by starting at character i and
- // copying j characters. If j is omitted, the rest of the string is copied. i
- // is clamped between 0 and the length of the string. j is clamped between i
- // and the length of the string. If S is not a string, its value will attempt
- // to be converted to a string value.
-
- // Saturday.22.January.2022.<.16:19..somasup:.hey blaze (a dot represents single space padding)
-
  function float DrawTextTextureLine(Canvas C, UWindowDynamicTextRow L, float Y)
  {
  	local float X, X1, X2, Y1;
- 	local string sDate, sName, sMesg, sTm, CategoryDeliminator;
+ 	local string sDate, sName, sMesg, sTm;
  	local string FaceName, SkinName;
  	local string FaceSkinNoText;
- 	local int i, CategoryDeliminatorPosition;
  	local float TextureXOccupied, TextureYOccupied;
+ 	local string TempServerString;
 
  	if(L.Text == "")
  	{
  		return 0;
  	}
 
+ 	class'CDDiscordActor'.static.DeSerializeJson(L.Text);
+
+ 	TempServerString = class'CDDiscordActor'.static.FetchValue("ServerName");
+
+ 	if(TempServerString != "")
+ 	{
+ 		C.Font = Root.Fonts[F_Normal];
+
+ 		TempServerString = class'CDDiscordActor'.static.FetchValue("LocalTime") $": joined" @
+         class'CDDiscordActor'.static.FetchValue("ServerAddress") @ TempServerString;
+
+ 		TextSize(C, TempServerString, X1, Y1);
+ 		TextAreaClipText(C, X + WinWidth / 2 - X1 / 2, Y, TempServerString);
+ 		return DefaultTextTextureLineHeight;
+ 	}
+
  	X = 2;
- 	sTm = "-";// The date time delimiter
- 	FaceSkinNoText = StripFaceNameAndSkinName(L.Text, FaceName, SkinName);
+
+ 	FaceName = class'CDDiscordActor'.static.FetchValue("FaceName");
+ 	SkinName = class'CDDiscordActor'.static.FetchValue("SkinName");
 
  	if (bChat)
  	{
- 		FindCategoryDeliminator(FaceSkinNoText, CategoryDeliminatorPosition, CategoryDeliminator);
+ 		sTm = class'CDDiscordActor'.static.FetchValue("Team");
+ 		sDate = class'CDDiscordActor'.static.FetchValue("LocalTime");
+ 		sMesg = class'CDDiscordActor'.static.FetchValue("ChatMessage");
+ 		sName = class'CDDiscordActor'.static.FetchValue("PlayerName");
 
- 		sTm = CategoryDeliminator;             // <
- 		sDate = Left(FaceSkinNoText, CategoryDeliminatorPosition) $ "-" $ Mid(FaceSkinNoText, CategoryDeliminatorPosition + 1, 8);// Saturday 22.January.2022.-.16:19..
- 		sMesg = Mid(FaceSkinNoText, CategoryDeliminatorPosition + 8); // somasup:.hey blaze
+ 		C.Font = Root.Fonts[F_Normal];
 
- 		i = InStr(sMesg, ": ");
+ 		TextSize(C, sDate, X1, Y1);
 
- 		if (i > 0)
+ 		C.DrawColor = ChatColor;
+ 		C.SetPos(X, Y);
+
+ 		TextAreaClipText(C, X, Y, sDate);
+
+ 		X = X1 + 2 + ChatFaceVerticalPadding;
+
+ 		DrawChatFace(C, X, Y, LocateChatFaceTexture(FaceName, SkinName), Y1, TextureXOccupied, TextureYOccupied);
+
+ 		if (bChat)
  		{
- 			sName = Left(sMesg, i+1); // somasup:.
- 			sMesg = Mid(sMesg, i+2);  // hey blaze
+ 			if (sTm == "Red")
+ 			{
+ 				C.DrawColor = RedColor;
+ 			}
+ 			else if (sTm == "Blue")
+ 			{
+ 				C.DrawColor = BluColor;
+ 			}
+ 			else if (sTm == "Green")
+ 			{
+ 				C.DrawColor = GrnColor;
+ 			}
+ 			else if (sTm == "Yellow")
+ 			{
+ 				C.DrawColor = YelColor;
+ 			}
+ 			else
+ 			{
+ 				C.DrawColor = WhiteColor;
+ 			}
 
- 			TextSize(C, sDate, X1, Y1);
-
- 			C.DrawColor = ChatColor;
+ 			X = X1 + 2 + ChatFaceVerticalPadding + TextureXOccupied + 2;
  			C.SetPos(X, Y);
 
- 			TextAreaClipText(C, X, Y, sDate);
+ 			TextAreaClipText(C, X, Y, sName);
 
- 			X = X1 + 2 + ChatFaceVerticalPadding;
+ 			C.DrawColor = TxtColor;
+ 			TextSize(C, sName $ "  ", X2, Y1);
+ 			X = X1 + 2 + ChatFaceVerticalPadding + TextureXOccupied + 2 + X2;
 
- 			DrawChatFace(C, X, Y, LocateChatFaceTexture(FaceName, SkinName), Y1, TextureXOccupied, TextureYOccupied);
-
- 			if (bChat)
- 			{
- 				if (sTm == "<")
- 				{
- 					C.DrawColor = RedColor;
- 				}
- 				else if (sTm == ">")
- 				{
- 					C.DrawColor = BluColor;
- 				}
- 				else if (sTm == "=")
- 				{
- 					C.DrawColor = GrnColor;
- 				}
- 				else if (sTm == "+")
- 				{
- 					C.DrawColor = YelColor;
- 				}
- 				else
- 				{
- 					C.DrawColor = WhiteColor;
- 				}
-
- 				X = X1 + 2 + ChatFaceVerticalPadding + TextureXOccupied + 2;
- 				C.SetPos(X, Y);
-
- 				TextAreaClipText(C, X, Y, sName);
-
- 				C.DrawColor = TxtColor;
- 				TextSize(C, sName $ "  ", X2, Y1);
- 				X = X1 + 2 + ChatFaceVerticalPadding + TextureXOccupied + 2 + X2;
-
- 				MessagePass(C, X, Y, sMesg);
- 				//DrawChatMessageWithEmoji(C, X, Y, sMesg);
- 			}
- 			return DefaultTextTextureLineHeight;
+ 			MessagePass(C, X, Y, sMesg);
  		}
+
+ 		return DefaultTextTextureLineHeight;
+
 
  		if (Mid(FaceSkinNoText, 2, 1) != "/")
  		{
@@ -532,8 +540,8 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  		}
  		else
  		{
-            CDChatWindow.SetCursor(Root.NormalCursor);
-        }
+ 			CDChatWindow.SetCursor(Root.NormalCursor);
+ 		}
  	}
 
  	DrawChatMessageWithEmoji(C, DrawX, DrawY, Message);
@@ -601,7 +609,7 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  	local float EmojiMultiplier;
  	local string URLString, BareURLSTring;
 
- 	EmojiMultiplier = 0.5;
+ 	EmojiMultiplier = 0.05 * EmoSizeMultiplier;
 
  	// Could be loation of URL too
  	EmojiLocation = LookForEmojiTextRepresentation(Message, Identifier, URLString, BareURLString);
@@ -625,7 +633,7 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  		DrawX += TextWidth;
 
  		C.DrawColor = WhiteColor;
- 		C.Style = ERenderStyle.STY_Normal;
+ 		C.Style = ERenderStyle.STY_Translucent;
 
  		if(Identifier < 28)
  		{
@@ -705,10 +713,10 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  			AnimShockEmote.CurrentAnimFrame = 0;
  		}
 
- 	if(AnimTrashTalkEmote.CurrentAnimFrame > 20)
- 	{
- 		AnimTrashTalkEmote.CurrentAnimFrame = 0;
- 	}
+ 		if(AnimTrashTalkEmote.CurrentAnimFrame > 20)
+ 		{
+ 			AnimTrashTalkEmote.CurrentAnimFrame = 0;
+ 		}
 
  		TickCounter = 0;
  	}
@@ -902,9 +910,20 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  		}
  	}
  	*/
+
+ 	if(Root.GetPlayerOwner() == none)
+ 	{
+       return texture'faceless';
+    }
+
  	SkinItem = Root.GetPlayerOwner().GetItemName(SkinNameString);
  	FaceItem = Root.GetPlayerOwner().GetItemName(FaceNameString);
  	FacePackage = Left(FaceNameString, Len(FaceNameString) - Len(FaceItem));
+
+ 	if(SkinItem == "None" || FaceItem == "Dummy" || SkinItem == "Dummy" || FaceItem == "None")
+ 	{
+      return texture'faceless';
+    }
 
  	if(FacePackage == "")
  	{
@@ -923,7 +942,6 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
 
  	if(ChatFaceTexture == none)
  	{
- 		Log("ChatDiamond: Couldn't find ChatFace: " $ FaceNameString);
  		ChatFaceTexture = texture'faceless';
  	}
  	/*
@@ -1212,7 +1230,7 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
 
  function MouseMove(float X, float Y)
  {
-	Super.MouseMove(X, Y);
+ 	Super.MouseMove(X, Y);
 
  	MouseMoveY = Y;
  }

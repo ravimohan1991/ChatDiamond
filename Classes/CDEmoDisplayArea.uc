@@ -20,6 +20,8 @@
  *                         (https://ut99.org/viewtopic.php?f=7&t=14356)
  *   November, 2022: Transitioning from UTChat to ChatDiamond
  *                 (https://ut99.org/viewtopic.php?f=7&t=14356&start=30#p139510)
+ *   December, 2022: Native experiments
+ *   April, 2023: Native - scripting hybrid progress
  */
 
 //==============================================================================
@@ -53,7 +55,6 @@
  var CDMiniFrameList DrawnMiniFrameList;
 
  var float MiniFrameBeingHovered;
- var float VerticalSBPos;
  var float VSBPosDiff;
  var CDMiniFrameList VerticalSBTempo;
  var bool bPlayHoverSound;
@@ -71,9 +72,6 @@
  	MiniFrameBeingHovered = -1;
 
  	bMiniFrameLMousePressed = false;
- 	VerticalSBPos = VertSB.Pos;
-
- 	VerticalSBPos = VertSB.ThumbStart;
 
  	if(DrawnMiniFrameList != None)
  	{
@@ -204,10 +202,14 @@
  {
  	super.Tick(DeltaTime);
 
- 	if(VertSB.ThumbStart != VerticalSBPos)
+ 	if(VertSB.Pos != 0)
  	{
- 		VSBPosDiff = VertSB.ThumbStart - VerticalSBPos;
+ 		VSBPosDiff =  VertSB.Pos * (MFEmo.Height + MFEmo.Height * 0.4 /*BetweenTheMiniFrameSeperationY*/);
  	}
+ 	else
+ 	{
+ 		VSBPosDiff = 0.0;
+    }
  }
 
 /*******************************************************************************
@@ -502,13 +504,14 @@ function DrawDepressedMiniFrameCell(Canvas C, float FrameStartX, float FrameStar
  	{
  		DrawMiniFrame(C, FrameStartX, FrameStartY, 2);
  	}
+
  	DrawStretchedTexture(C, FrameStartX + 4 + DepressedOffset, DepressedOffset + FrameStartY + Height / 2  - Height * DisplayFractionV / 2, Width / 2, Height * DisplayFractionV, Tex);
 
  	C.Font = Root.Fonts[F_Bold];
- 	C.TextSize(TextSymbol, XS, YS);
+ 	C.TextSize(":d", XS, YS);
 
  	C.DrawColor = class'CDChatWindowEmojis'.default.BlackColor;
- 	ClipText(C, FrameStartX + MFEmo.Width / 2 + XS + DepressedOffset, DepressedOffset + FrameStartY + MFEmo.Height / 2 - YS / 2, TextSymbol);
+ 	ClipText(C, FrameStartX + MFEmo.Width / 2 + 0.32 * XS + DepressedOffset, DepressedOffset + FrameStartY + MFEmo.Height / 2 - 0.2 * YS, TextSymbol);
  }
 
  function DrawMiniFrameCell(Canvas C, float FrameStartX, float FrameStartY, float Width, float Height, string TextSymbol, Texture Tex)
@@ -522,13 +525,14 @@ function DrawDepressedMiniFrameCell(Canvas C, float FrameStartX, float FrameStar
 
  	C.DrawColor = WhiteColor;
  	DrawMiniFrame(C, FrameStartX, FrameStartY, 2);
+
  	DrawStretchedTexture(C, FrameStartX + 4, FrameStartY + Height / 2  - Height * DisplayFractionV / 2, Width / 2, Height * DisplayFractionV, Tex);
 
  	C.Font = Root.Fonts[F_Bold];
- 	C.TextSize(TextSymbol, XS, YS);
+ 	C.TextSize(":d", XS, YS);
 
  	C.DrawColor = class'CDChatWindowEmojis'.default.BlackColor;
- 	ClipText(C, FrameStartX + MFEmo.Width / 2 + XS, FrameStartY + MFEmo.Height / 2 - YS / 2, TextSymbol);
+ 	ClipText(C, FrameStartX + MFEmo.Width / 2 + 0.32 * XS, FrameStartY + MFEmo.Height / 2 - 0.2 * YS, TextSymbol);
  }
 
  function DrawMiniFrame(Canvas C, float X, float Y, int BorderWidth)

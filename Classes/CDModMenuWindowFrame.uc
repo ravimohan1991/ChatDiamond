@@ -20,6 +20,8 @@
  *                         (https://ut99.org/viewtopic.php?f=7&t=14356)
  *   November, 2022: Transitioning from UTChat to ChatDiamond
  *                 (https://ut99.org/viewtopic.php?f=7&t=14356&start=30#p139510)
+ *   December, 2022: Native experiments
+ *   April, 2023: Native - scripting hybrid progress
  */
 
 //=============================================================================
@@ -40,8 +42,11 @@ class CDModMenuWindowFrame expands UWindowConsoleWindow Config (ChatDiamond);
  // From ConfigurationWindow
  var() config color BackGroundColor;
  var() config bool bApplyBGToChatWindow;
-
  var() config bool bApplyBGToConsole;
+ var() config bool bPlaySoundOnMessageArrival;
+ var() config float EmoSize;
+ var() config float EmoteAnimSpeed;
+ var() config int LastHistoricMessagesNumber;
 
  var CDConfigurationWindow ConfigurationWindow;
 
@@ -193,12 +198,15 @@ class CDModMenuWindowFrame expands UWindowConsoleWindow Config (ChatDiamond);
  	WinHeight = 322;
  }
 
-
  defaultproperties
  {
  	XPos=50
  	YPos=50
  	ClientClass=Class'CDClientSideWindow'
+ 	EmoSize=14
+ 	EmoteAnimSpeed=85
+ 	bPlaySoundOnMessageArrival=True
+ 	LastHistoricMessagesNumber=10
  }
 
 /*

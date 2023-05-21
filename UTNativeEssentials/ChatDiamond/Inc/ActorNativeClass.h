@@ -21,6 +21,7 @@
  *   November, 2022: Transitioning from UTChat to ChatDiamond
  *                 (https://ut99.org/viewtopic.php?f=7&t=14356&start=30#p139510)
  *   December, 2022: Native experiments
+ *   April, 2023: Native - scripting hybrid progress
  */
 
  /*======================================================================================================
@@ -36,38 +37,35 @@
 #pragma pack (push,4)
 #endif
 
- /*
+
  #ifndef NAMES_ONLY
  #define AUTOGENERATE_FUNCTION(cls,idx,name)
- #endif*/
+ #endif
 
-#ifndef NAMES_ONLY
+//#ifndef NAMES_ONLY
+
+#include "json.hpp"
+
+using json = nlohmann::json;
 
 class ACDDiscordActor : public AActor
 {
 public:
 	DECLARE_FUNCTION(execTestFunction)
-		DECLARE_FUNCTION(execSpitIpFromChatString)
-		DECLARE_FUNCTION(execLoadTextureFromFileOnTheRun)
-		DECLARE_FUNCTION(execOpenNativeTestWindow)
-		DECLARE_FUNCTION(execCacheListOfFiles)
-		DECLARE_FUNCTION(execGetIthFileFromCacheList)
-		DECLARE_FUNCTION(execGetGameSystemPath)
-		DECLARE_CLASS(ACDDiscordActor, AActor, 0, ChatDiamond);
+	DECLARE_FUNCTION(execSpitIpFromChatString)
+	DECLARE_FUNCTION(execGetGameSystemPath)
+	DECLARE_FUNCTION(execCacheChatLine)
+	DECLARE_FUNCTION(execGetLineFromCacheBottom)
+	DECLARE_FUNCTION(execAddJsonKeyValue)
+	DECLARE_FUNCTION(execResetJsonContainer)
+	DECLARE_FUNCTION(execFetchValue)
+	DECLARE_FUNCTION(execSerializeJson)
+	DECLARE_FUNCTION(execDeSerializeJson)
+	DECLARE_CLASS(ACDDiscordActor, AActor, 0, ChatDiamond);
 	ACDDiscordActor();
-};
 
-/*
-#define WINDOW_API DLL_EXPORT
-class WCDMesa : UObject
-{
-public:
-	//DECLARE_FUNCTION(execSpawnCDMesa)
-	DECLARE_CLASS(WCDMesa, UObject, 0, ChatDiamond);
-	WCDMesa();
+static json JsonVariable;
 };
-*/
-#endif
 
 #ifndef NAMES_ONLY
 #undef AUTOGENERATE_NAME

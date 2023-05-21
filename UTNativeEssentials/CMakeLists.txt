@@ -57,7 +57,7 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
   set(PLATFORM_PREFIX "Linux")
 endif()
 
-# See what CPU we appear to be targeting... 
+# See what CPU we appear to be targeting...
 macro(check_cpu _CDEFS _NAME _VALUE)
   check_c_source_compiles(
     "
@@ -161,18 +161,11 @@ else()
     set(CMAKE_STATIC_LINKER_FLAGS "${CMAKE_STATIC_LINKER_FLAGS} /LARGEADDRESSAWARE")
 endif()
 
-#
-# /MP
-# enable parallel builds
-#
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP")
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /MP")
 
 # the recursive garbage collector needs a lot of stack space
 set(CMAKE_EXE_LINKER_FLAGS
     "${CMAKE_EXE_LINKER_FLAGS} /STACK:16000000,1000000 /LTCG"
 )
-set(LIBRARY_SUFFIX ".dll")	
 
 if(CMAKE_COMPILER_IS_GNUCC OR (CMAKE_CXX_COMPILER_ID MATCHES "Clang"))
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pipe -fsigned-char -fno-strict-aliasing -Wno-inline-new-delete")
@@ -184,18 +177,18 @@ if(OLDUNREAL_USE_ASAN)
   link_libraries("-fsanitize=address")
 endif()
 
+add_compile_definitions(MOD_BUILD)
+add_compile_definitions(__LINUX_ARM__)
+
 ################################################################################
 # Including External and (or) non Epic libraries
 ################################################################################
-add_subdirectory(External/AkelEdit)
 
 ################################################################################
 # Epic Essentials
 ################################################################################
 add_subdirectory(Core)
 add_subdirectory(Engine)
-
-add_subdirectory(Window)
 
 ################################################################################
 # Link Directories
@@ -215,6 +208,6 @@ target_include_directories(ChatDiamond
 ################################################################################
 # Target Linking Rules
 ################################################################################
-target_link_libraries(ChatDiamond PUBLIC Core Engine AkelEdit Window)
+target_link_libraries(ChatDiamond PUBLIC Core Engine)
 
 # end of CMakeLists.txt ...

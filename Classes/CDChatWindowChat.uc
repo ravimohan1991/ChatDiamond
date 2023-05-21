@@ -20,6 +20,8 @@
  *                         (https://ut99.org/viewtopic.php?f=7&t=14356)
  *   November, 2022: Transitioning from UTChat to ChatDiamond
  *                 (https://ut99.org/viewtopic.php?f=7&t=14356&start=30#p139510)
+ *   December, 2022: Native experiments
+ *   April, 2023: Native - scripting hybrid progress
  */
 
 //==============================================================================
@@ -34,11 +36,11 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
 // "the central or most important part of something."
  #exec AUDIO IMPORT FILE="Sounds\telegram.wav" NAME=MessageKernel GROUP="Sound"
 
- var() config string ChatLog[200];
  var() config string IgnorableStrings[40];
 
  var() config bool bIgnoreMessageFilter;
- var() config bool bUserWantsMessageSound;
+
+ var config bool bUserWantsMessageSound;
 
  var UMenuLabelControl  lblHeading;
  var CDUTChatTextTextureAnimEmoteArea TheTextArea;
@@ -85,7 +87,6 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
 
  function Created ()
  {
-
  	Super.Created();
 
  	CDGRI = Root.GetPlayerOwner().GameReplicationInfo;
@@ -159,7 +160,7 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
  	if (sMesg != "")
  	{
  		TheTextArea.AddText(sMesg);
- 		CacheMessage(sMesg);
+ 		CDDA.CacheChatLine(sMesg);
  		ButSave.bDisabled = false;
  		if(bTalkMessage && bUserWantsMessageSound)
  		{
@@ -169,9 +170,9 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
  	else
  	{
  		TheTextArea.Clear();
- 		for (i = 0; i < 200; i++)
+ 		for (i = FrameWindow.LastHistoricMessagesNumber; i > 0; i--)
  		{
- 			sTemp = ChatLog[i];
+ 			sTemp = CDDA.GetLineFromCacheBottom(i);
  			if (i > 0 && sTemp == "")
  			{
  				break;
@@ -259,32 +260,40 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
  		{
  			SkinName = "Dummy";
  		}
+        CDDA.ResetJsonContainer();
+        CDDA.AddJsonKeyValue("FaceName", FaceName);
+        CDDA.AddJsonKeyValue("SkinName", SkinName);
+        CDDA.AddJsonKeyValue("LocalTime", LocalTimeAndMPOVMarker());
+        CDDA.AddJsonKeyValue("PlayerName", PRI.PlayerName);
+        CDDA.AddJsonKeyValue("ChatMessage", Message);
 
  		if(PRI.bAdmin)
  		{
- 			LoadMessages(FaceName $ ":" $ SkinName $ "::" $ LocalTimeAndMPOVMarker("+") $ "  " $ PRI.PlayerName $ ": " $ Message, true);
+ 			CDDA.AddJsonKeyValue("Team", "Admin");
  		}
  		else if(PRI.Team == 0)
  		{
- 			LoadMessages(FaceName $ ":" $ SkinName $ "::" $ LocalTimeAndMPOVMarker("<") $ "  " $ PRI.PlayerName $ ": " $ Message, true);
+ 			CDDA.AddJsonKeyValue("Team", "Red");
  		}
  		else if(PRI.Team == 1)
  		{
- 			LoadMessages(FaceName $ ":" $ SkinName $ "::" $ LocalTimeAndMPOVMarker(">") $ "  " $ PRI.PlayerName $ ": " $ Message, true);
+ 			CDDA.AddJsonKeyValue("Team", "Blue");
  		}
  		else // for 4-way I need to think
  		{
- 			LoadMessages(FaceName $ ":" $ SkinName $ "::" $ LocalTimeAndMPOVMarker("-") $ "  " $ PRI.PlayerName $ ": " $ Message, true);
+ 			CDDA.AddJsonKeyValue("Team", "Unknowm");
  		}
+
+ 		LoadMessages(CDDA.SerializeJson(), true);
+ 		CDDA.ResetJsonContainer();
  	}
  	else
  	{
 
 	}
 
- 	if(PRI != none && PRI.bIsSpectator)
+ 	if(PRI != none)
  	{
- 		Log("                            Message to spectator: " @ Message @ PRI.PLayerName @ MessageType);
  		// Maybe exhaustive.
  		// Well, player join leave and server adds and whatnot. So we shall use
  		// our filter. Spectators' message is of the form
@@ -305,8 +314,16 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
  			{
  				SkinName = "Dummy";
  			}
+ 			CDDA.ResetJsonContainer();
+ 			CDDA.AddJsonKeyValue("FaceName", FaceName);
+ 			CDDA.AddJsonKeyValue("SkinName", SkinName);
+ 			CDDA.AddJsonKeyValue("LocalTime", LocalTimeAndMPOVMarker());
+ 			CDDA.AddJsonKeyValue("PlayerName", PRI.PlayerName);
+ 			CDDA.AddJsonKeyValue("ChatMessage", DisplayableSpectatorMessage);
+ 			CDDA.AddJsonKeyValue("Team", "Spectator");
 
- 			LoadMessages(FaceName $ ":" $ SkinName $ "::" $ LocalTimeAndMPOVMarker("-") $ "  " $ DisplayableSpectatorMessage, true);//PrepareSpectatorMessageForDisplay(Message));
+ 			LoadMessages(CDDA.SerializeJson(), true);
+ 			CDDA.ResetJsonContainer();
  		}
  		else
  		{
@@ -318,36 +335,40 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
  				{
  					break;
  				}
+ 				return;
  			}
-
- 			Log("Inside interpreattion of messages when sendername is not local player: " $ Message @ PRI.PLayerName @ MessageType);
 
  			// Ok the message may be of the case
  			// (somespectator name):hola
  			// SomeDifferentPRI seems like spectator pri
  			if(SomeDifferentPRI != none)
  			{
- 			Log("Some spectator on multiplay has responded. " $ SomeDifferentPRI.PlayerName);
 
- 			DisplayableSpectatorMessage =  PrepareSpectatorMessageForDisplay(Message, SpectatorLPRI);
+ 				DisplayableSpectatorMessage =  PrepareSpectatorMessageForDisplay(Message, SpectatorLPRI);
 
- 			Log("SomeDifferentPRI is: " @ SomeDifferentPRI.PlayerName @ " SpectatorLPRI detected is: " @ SpectatorLPRI.PlayerName);
+ 				LP = Pawn(SpectatorLPRI.Owner);
+ 				LP.GetMultiSkin(LP, SkinName, FaceName);
 
- 			LP = Pawn(SpectatorLPRI.Owner);
+ 				if(FaceName == "")
+ 				{
+ 					FaceName = "Dummy";
+ 				}
 
- 			LP.GetMultiSkin(LP, SkinName, FaceName);
+ 				if(SkinName == "")
+ 				{
+ 					SkinName = "Dummy";
+ 				}
 
- 			if(FaceName == "")
- 			{
- 				FaceName = "Dummy";
- 			}
+ 				CDDA.ResetJsonContainer();
+ 				CDDA.AddJsonKeyValue("FaceName", FaceName);
+ 				CDDA.AddJsonKeyValue("SkinName", SkinName);
+ 				CDDA.AddJsonKeyValue("LocalTime", LocalTimeAndMPOVMarker());
+ 				CDDA.AddJsonKeyValue("PlayerName", PRI.PlayerName);
+ 				CDDA.AddJsonKeyValue("ChatMessage", DisplayableSpectatorMessage);
+ 				CDDA.AddJsonKeyValue("Team", "Spectator");
 
- 			if(SkinName == "")
- 			{
- 				SkinName = "Dummy";
- 			}
-
- 			 LoadMessages(FaceName $ ":" $ SkinName $ "::" $ LocalTimeAndMPOVMarker("-") $ "  " $ DisplayableSpectatorMessage, true);
+ 				LoadMessages(CDDA.SerializeJson(), true);
+ 				CDDA.ResetJsonContainer();
  			}
  		}
  	}
@@ -380,7 +401,7 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
  		}
  	}
 
- 	return SpectatorName $ ": " $ TempoString;
+ 	return TempoString;
  }
 
  function string FilterSenderName(coerce string Message)
@@ -455,22 +476,10 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
 /*******************************************************************************
  * Routine for modifying the console message as per our interpretation
  * and encode the deliminators accordingly
- *
- * @PARAM Message             The actual message
- * @PARAM CategoryDeliminator Categories are like so
- *                            1. - for neutral spectator (white color)
- *                            2. < for red team category
- *                            3. > for blue team category
- *                            4. = for green color  (could be 4 way team)
- *                            5. + for golden color (could be 4 way team). Admin
- *                               for now.
- *
- * @also see CDUTChatTextTextureAnimEmoteArea::DrawTextTextureLine
- *
  *******************************************************************************
  */
 
- function string LocalTimeAndMPOVMarker(string CategoryDeliminator)
+ function string LocalTimeAndMPOVMarker()
  {
  	local string Mon, Day, Min, Hour;
  	local PlayerPawn PlayerOwner;
@@ -516,21 +525,7 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
  		Hour = string(PlayerOwner.Level.Hour);
  	}
 
- 	return Day @ PlayerOwner.Level.Day @ Mon @ PlayerOwner.Level.Year @ CategoryDeliminator @ Hour $ ":" $ Min;
- }
-
- function CacheMessage(string sMesg)
- {
- 	local int i;
-
- 	for(i = 0; i < 200; i++)
- 	{
- 		if(ChatLog[i] == "")
- 		{
- 			ChatLog[i] = sMesg;
- 			break;
- 		}
- 	}
+ 	return Day @ PlayerOwner.Level.Day @ Mon @ PlayerOwner.Level.Year @ Hour $ ":" $ Min;
  }
 
  function SetChatTextStatus(string Text)
@@ -648,9 +643,9 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
  					}
  					else
  					{
- 					GetPlayerOwner().PreClientTravel();
- 					GetPlayerOwner().ClientTravel("?OverrideClass=Botpack.CHSpectator", TRAVEL_Relative, False);
- 					ButtonPlaySpectate.SetText("Play");
+ 						GetPlayerOwner().PreClientTravel();
+ 						GetPlayerOwner().ClientTravel("?OverrideClass=Botpack.CHSpectator", TRAVEL_Relative, False);
+ 						ButtonPlaySpectate.SetText("Play");
  					}
 
  					break;
@@ -692,7 +687,7 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
  	if(Root.GetPlayerOwner().GameReplicationInfo != CDGRI)
  	{
  		CDGRI = Root.GetPlayerOwner().GameReplicationInfo;
- 		TemporaryServerName =  GenerateServerName();
+ 		TemporaryServerName = GenerateServerName();
 
  		if(TemporaryServerName != "" && TemporaryServerName != "Another UT Server")// ye I don't know what you are doing playing on such server anyways
  		{
@@ -701,7 +696,12 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
  			{
  				VSRP.CDServerName = TemporaryServerName;
  				VSRP.CDMD5Hash = TemporaryServerHash;
- 				LoadMessages(VSRP.CDServerName);
+ 				class'CDDiscordActor'.static.ResetJsonContainer();
+ 				class'CDDiscordActor'.static.AddJsonKeyValue("ServerName", VSRP.CDServerName);
+ 				class'CDDiscordActor'.static.AddJsonKeyValue("LocalTime", LocalTimeAndMPOVMarker());
+ 				class'CDDiscordActor'.static.AddJsonKeyValue("ServerAddress", Root.GetPlayerOwner().Level.GetAddressURL());
+ 				LoadMessages(class'CDDiscordActor'.static.SerializeJson());
+ 				class'CDDiscordActor'.static.ResetJsonContainer();
  			}
  		}
  	}
@@ -722,6 +722,20 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
  {
  	Super.Resized();
  	Resize();
+
+ 	TheTextArea.EmoSizeMultiplier = FrameWindow.EmoSize;
+ 	TheTextArea.TickCounterWarpNumber = (int(FrameWindow.EmoteAnimSpeed) / 24);
+ 	TheTextArea.AnimShockEmote.TexChatSizeFraction = 0.08 * FrameWindow.EmoSize;
+ 	TheTextArea.AnimTrashTalkEmote.TexChatSizeFraction = 0.08 * FrameWindow.EmoSize;
+ }
+
+ function ChatConfigurationUpdated()
+ {
+ 	TheTextArea.EmoSizeMultiplier = FrameWindow.EmoSize;
+ 	TheTextArea.TickCounterWarpNumber = (int(FrameWindow.EmoteAnimSpeed) / 24);
+ 	TheTextArea.AnimShockEmote.TexChatSizeFraction = 0.08 * FrameWindow.EmoSize;
+ 	TheTextArea.AnimTrashTalkEmote.TexChatSizeFraction = 0.08 * FrameWindow.EmoSize;
+ 	LoadMessages();
  }
 
  function Resize()
@@ -764,20 +778,19 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
  {
  	// local Texture SomeTextureImportedNatively;
 
- 	Super.Paint(C,MouseX,MouseY);
+ 	Super.Paint(C, MouseX, MouseY);
 
  	// SomeTextureImportedNatively = CDDA.LoadTextureFromFileOnTheRun("hmm"); //class'CDDiscordActor'.static.LoadTextureFromFileOnTheRun("hmm");
 
  	if(FrameWindow.bApplyBGToChatWindow)
  	{
  		C.DrawColor = FrameWindow.BackGroundColor;
- 	DrawStretchedTexture(C, 0, 0, WinWidth, WinHeight, Texture'BackgroundGradation');
+ 	 	DrawStretchedTexture(C, 0, 0, WinWidth, WinHeight, Texture'BackgroundGradation');
  	}
  	else
  	{
  		DrawStretchedTexture(C, 0, 0, WinWidth, WinHeight, Texture'BlackTexture');
  	}
- 	C.Style = GetPlayerOwner().ERenderStyle.STY_Normal;
  }
 
  function Close(optional bool bByParent)
@@ -789,7 +802,6 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
  // How about all the talk messages on ignore list?
  defaultproperties
  {
- 	bUserWantsMessageSound=true
  	SilColor=(R=180,G=180,B=180)
  	GrnColor=(R=0,G=255,B=32)
  	TxtColor=(R=255,G=255,B=255,A=0)

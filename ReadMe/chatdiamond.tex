@@ -175,9 +175,27 @@ The console now has the following features
 \item A working status bar linked with console configuration modifiers.
 \end{itemize}
 
+\subsection{Configure Window}
+Chat Diamond provides ``real time way'' to configure various user configurable parameters.  This implies instant relevant experience on toggling or tuning those parameters, for instance 
+tuning the RGB values  for background color of Public Chat window and Console window results in the relevant change in the background of Configure Window itself.   Allow me to provide 
+relevant details for configurations
+\begin{itemize}
+\item \emph{Background Color}: Set the RGB values to come up with a gradation color for backgound.  The setting can be instantaneously applied to Public Chats widow and Console window
+\item \emph{Chat Binding}: Click on the box and the key pressed next shall be assigned for opening Public Chats window.
+\end{itemize}
+
+\begin{figure}
+\centering
+\includegraphics[width=0.4\textwidth]{img_configure}
+\caption{Chat Diamond \ChatDiamondVersion~Configure.}
+\label{fig:chatdiamond_configure}
+\end{figure}
+
+
 \subsection{More Pages}
 Please keep in mind that this is very initial stage of Chat Diamond (\ChatDiamondVersion).  The pages to configure various properties of chat messages
 and date format shall be made available as we progress with the development cycle.
+
 
 \section{Installation}
 Chat Diamond is developed and tested with UT99, 469c client.  Although the mod should work on previous versions, I take no pains for maintaining that code simply because I feel that we all should work towards pushing forward the community effort in driving the game (and UE 1) towards modern experience.  So by not supporting the code for earlier versions I am supporting the later versions.
@@ -225,6 +243,23 @@ I am in the process of resolving the accessed non warnings.
 
 \end{itemize}
 
+\section{Version Histroy}
+In this section I am presenting the history of Chat Diamond for general awareness.
+\begin{changelog}[author=The\_Cowboy, sectioncmd=\section*]
+\begin{version}[v=0.5, date=2023-xx-xx]
+  \added
+    \item Configure Window
+  \fixed
+    \item Chat Window text scaling
+    \item Emoji Window emojitext offset (\href{https://github.com/ravimohan1991/ChatDiamond/commit/69b7abbce0617ae1c2de0660379984852df9c76d}{69b7abbc})
+    \item Chat Window emo textures translucency (\href{https://github.com/ravimohan1991/ChatDiamond/commit/6e105d2cce5db1380c27df546e604d0f306eccd4}{6e105d2c})
+    \item Emoji Window emo frames mouse hover detection (\href{https://github.com/ravimohan1991/ChatDiamond/commit/501e585250a6553ca95ca9b9d5e0ad25b1e645b5}{501e5852})
+ \changed
+    \item Using text file instead of ini for dumping chat metadata (\href{https://github.com/ravimohan1991/ChatDiamond/commit/f059be817532fa720804bd20f54a36e3c82ddb9d}{f059be81})
+\end{version}
+\shortversion{v=0.1.0-alpha, date=2022-12-25, changes=Initial alpha}
+\end{changelog}
+
 \section{A note on UT Messaging}
 Chat Diamond's functionality is based upon the tenet ``A complete client side user interface with no dependencies with the server''.  This would imply conforming to the UT standards and any server not conforming to the standards, if so, is not worth visiting.
 
@@ -263,7 +298,7 @@ The basic premise of many cheats providing aim assist is to modify the HUD clien
 
 If the notion of ``cheat-anticheat'' interplay exists in the UT standards, then that simply doesn't fit with the tenant we began with.  We don't want to be sending request to server administrators for specifically whitelisting Chat Diamond which will be reverted by cold silent treatment to say the most and some naggy jibber jabber about the unknown-ness of Chat Diamond, especially when the mod is not that popular.
 
-So with this thinking in mind, the better option would be to replace the client console, which I haven't seen any anti-cheat scanning. This not only gets the client out of hook for sending whitelisting requests but also provides a powerful mechanism to mould the console, specifically for generic needs (see the concept of \emph{filters}).
+So with this thinking in mind, the better option would be to replace the client console, which I haven't seen any decent anti-cheat prohibiting. This not only gets the client out of hook for sending whitelisting requests but also provides a powerful mechanism to mould the console, specifically for generic needs (see the concept of \emph{filters})\footnote{Althought some servers may prohibit the use of custom consoles.  For that you may have to specifically send the whitelist request. You may want to report the relevant console class, which, for Chat Diamond, should be ``ChatDiamond.CDUTConsole''.}.
 
 \subsection{A minor PhD on console messages}
 

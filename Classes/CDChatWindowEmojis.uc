@@ -20,6 +20,8 @@
  *                         (https://ut99.org/viewtopic.php?f=7&t=14356)
  *   November, 2022: Transitioning from UTChat to ChatDiamond
  *                 (https://ut99.org/viewtopic.php?f=7&t=14356&start=30#p139510)
+ *   December, 2022: Native experiments
+ *   April, 2023: Native - scripting hybrid progress
  */
 
 //================================================================================
@@ -220,8 +222,8 @@ class CDChatWindowEmojis extends UWindowPageWindow;
  							Root.QuitGame();
  						break;
 
- 						// Courtsey ProAsm's UTCmds8
- 						case ButtonPlaySpectate:
+ 				// Courtsey ProAsm's UTCmds8
+ 				case ButtonPlaySpectate:
  						if(GetPlayerOwner().PlayerReplicationInfo.bIsSpectator)
  						{
  							GetPlayerOwner().PreClientTravel();
@@ -230,13 +232,12 @@ class CDChatWindowEmojis extends UWindowPageWindow;
  						}
  						else
  						{
- 						GetPlayerOwner().PreClientTravel();
- 						GetPlayerOwner().ClientTravel("?OverrideClass=Botpack.CHSpectator", TRAVEL_Relative, False);
- 						ButtonPlaySpectate.SetText("Play");
+ 							GetPlayerOwner().PreClientTravel();
+ 							GetPlayerOwner().ClientTravel("?OverrideClass=Botpack.CHSpectator", TRAVEL_Relative, False);
+ 							ButtonPlaySpectate.SetText("Play");
  						}
-
  						break;
- 				}
+ 			}
  			break;
  		case 7:
  			ChatWindow.SendMessage(EditMesg);

@@ -21,6 +21,7 @@
  *   November, 2022: Transitioning from UTChat to ChatDiamond
  *                 (https://ut99.org/viewtopic.php?f=7&t=14356&start=30#p139510)
  *   December, 2022: Native experiments
+ *   April, 2023: Native - scripting hybrid progress
  */
 
 //==============================================================================
@@ -43,7 +44,7 @@ class CDDiscordActor extends Actor
 
  native final function bool TestFunction(string S, int I); //This function returns true, and prints the parameters.
 
- /*******************************************************************************
+/*******************************************************************************
  * A native routine to detect the first instance of IP in chat message.
  * The format is as follows:
  * 1. Game Server IP 139.162.235.XXX:4554 (note the port)
@@ -62,13 +63,43 @@ class CDDiscordActor extends Actor
 
  native final static function string SpitIpFromChatString(string Message, out int ICategory); // For now, the routine shall fish for first instance only
 
+/*******************************************************************************
+ * A native routine to cache the chat message along with meta data into
+ * ChatDiamond.txt file. This basically provides virtually unlimited messages
+ * caching.
+ *
+ * @PARAM ChatLine             Chat message with metadata
+ *                             CommandoSkins.Grail:CommandoSkins.goth::Thursday 18 May 2023 - 21:41  somasup: some chatmessage
+ *******************************************************************************
+*/
+ native final static function CacheChatLine(string ChatLine);
+
+/*******************************************************************************
+ * A native routine to get the nth line from bottom of file
+ *
+ * @PARAM LineNumber           Line from the bottom
+ * @return                     the chat metadata
+ *******************************************************************************
+*/
+ native final static function string GetLineFromCacheBottom(int LineNumber);
+
+/*******************************************************************************
+ * A collection of native routines for managing json formatting of chat metadata
+ *******************************************************************************
+*/
+ native static function AddJsonKeyValue(string Key, string Value);
+ native static function string FetchValue(string Key);
+ native static function string SerializeJson();
+ native static function DeSerializeJson(string JsonString);
+ native static function ResetJsonContainer();
+
+/*
  native final static function OpenNativeTestWindow(bool bVisible, UWindowWindow ParentWindow);
  native final static function int CacheListOfFiles(string Extension, string FolderPath);
  native final static function string GetIthFileFromCacheList(int I);
-
  native final static function string GetGameSystemPath();
-
  native final static function Texture LoadTextureFromFileOnTheRun(string FileName);
+ */
 
  function PostBeginPlay()
  {
