@@ -149,7 +149,10 @@ event bool KeyEvent(EInputKey Key, EInputAction Action, FLOAT Delta)
 
  	if(Action == EInputAction.IST_Press && !bNotifiedConfigurationWindow)
  	{
- 		ConfigureWindow.ConsoleKeyEvent(Key, Action, Delta);
+ 		if(ConfigureWindow != none)
+ 		{
+ 		 		ConfigureWindow.ConsoleKeyEvent(Key, Action, Delta);
+ 		}
  		bNotifiedConfigurationWindow = true;
  	}
 
@@ -161,7 +164,10 @@ event bool KeyEvent(EInputKey Key, EInputAction Action, FLOAT Delta)
 {
  	if(Action == EInputAction.IST_Press && !bNotifiedConfigurationWindow)
  	{
- 		ConfigureWindow.ConsoleKeyEvent(Key, Action, Delta);
+ 		if(ConfigureWindow != none)
+ 		{
+ 		 		ConfigureWindow.ConsoleKeyEvent(Key, Action, Delta);
+ 		}
  		bNotifiedConfigurationWindow = true;
  	}
 
