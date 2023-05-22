@@ -236,6 +236,7 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
  	local string SkinName, FaceName, DisplayableSpectatorMessage, SenderString;
  	local Pawn LP;
  	local PlayerReplicationInfo SpectatorLPRI, SomeDifferentPRI;
+ 	local int i;
 
  	if(Message == "" || (bIgnoreMessageFilter && IsMessageIgnorable(Message)))
  	{
@@ -264,12 +265,12 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
  		{
  			SkinName = "Dummy";
  		}
-        CDDA.ResetJsonContainer();
-        CDDA.AddJsonKeyValue("FaceName", FaceName);
-        CDDA.AddJsonKeyValue("SkinName", SkinName);
-        CDDA.AddJsonKeyValue("LocalTime", LocalTimeAndMPOVMarker());
-        CDDA.AddJsonKeyValue("PlayerName", PRI.PlayerName);
-        CDDA.AddJsonKeyValue("ChatMessage", Message);
+ 		CDDA.ResetJsonContainer();
+ 		CDDA.AddJsonKeyValue("FaceName", FaceName);
+ 		CDDA.AddJsonKeyValue("SkinName", SkinName);
+ 		CDDA.AddJsonKeyValue("LocalTime", LocalTimeAndMPOVMarker());
+ 		CDDA.AddJsonKeyValue("PlayerName", PRI.PlayerName);
+ 		CDDA.AddJsonKeyValue("ChatMessage", Message);
 
  		if(PRI.bAdmin)
  		{
@@ -332,14 +333,31 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
  		else
  		{
  			SenderString = FilterSenderName(Message);
+ 			Log("Sendername is:" $ SenderString @ Message);
 
- 			foreach Root.GetPlayerOwner().AllActors(class'PlayerReplicationInfo', SomeDifferentPRI)
+ 			/*foreach Root.GetPlayerOwner().AllActors(class'PlayerReplicationInfo', SomeDifferentPRI)
  			{
  				if(SomeDifferentPRI.PlayerName == SenderString)
  				{
  					break;
  				}
  				return;
+ 			}*/
+
+ 			SomeDifferentPRI = none;
+
+ 			for(i = 0; i < 32; i++)
+ 			{
+ 				if (Root.GetPlayerOwner().GameReplicationInfo != none && Root.GetPlayerOwner().GameReplicationInfo.PRIArray[i] != None)
+				{
+					SpectatorLPRI = Root.GetPlayerOwner().GameReplicationInfo.PRIArray[i];
+					if (SpectatorLPRI.bIsSpectator && !SpectatorLPRI.bWaitingPlayer && SpectatorLPRI.StartTime > 0
+						&& SpectatorLPRI.PlayerName == SenderString)
+					{
+						SomeDifferentPRI = SpectatorLPRI;
+						break;
+					}
+				}
  			}
 
  			// Ok the message may be of the case
@@ -348,9 +366,9 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
  			if(SomeDifferentPRI != none)
  			{
 
- 				DisplayableSpectatorMessage =  PrepareSpectatorMessageForDisplay(Message, SpectatorLPRI);
+ 				DisplayableSpectatorMessage =  PrepareSpectatorMessageForDisplay(Message);
 
- 				LP = Pawn(SpectatorLPRI.Owner);
+ 				LP = Pawn(SomeDifferentPRI.Owner);
  				LP.GetMultiSkin(LP, SkinName, FaceName);
 
  				if(FaceName == "")
@@ -367,7 +385,7 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
  				CDDA.AddJsonKeyValue("FaceName", FaceName);
  				CDDA.AddJsonKeyValue("SkinName", SkinName);
  				CDDA.AddJsonKeyValue("LocalTime", LocalTimeAndMPOVMarker());
- 				CDDA.AddJsonKeyValue("PlayerName", PRI.PlayerName);
+ 				CDDA.AddJsonKeyValue("PlayerName", SomeDifferentPRI.PlayerName);
  				CDDA.AddJsonKeyValue("ChatMessage", DisplayableSpectatorMessage);
  				CDDA.AddJsonKeyValue("Team", "Spectator");
 
@@ -397,11 +415,14 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
 
  	TempoString = Mid(SpectatorMessage, NameEndPosition + 1);
 
- 	foreach Root.GetPlayerOwner().AllActors(class'PlayerReplicationInfo', RelevantPRI)
+ 	if(RelevantPRI != none)
  	{
- 		if(RelevantPRI.PlayerName == SpectatorName)
+ 		foreach Root.GetPlayerOwner().AllActors(class'PlayerReplicationInfo', RelevantPRI)
  		{
- 			break;
+ 			if(RelevantPRI.PlayerName == SpectatorName)
+ 			{
+ 				break;
+ 			}
  		}
  	}
 
@@ -712,21 +733,22 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
 
  	if(Root.GetPlayerOwner().GameReplicationInfo.GameEndedComments != "")
  	{
- 	 if(!bGameEnded)
- 	 {
- 	  bGameEnded = true;
- 	  Log("################ bgameended");
- 	   if(FrameWindow.bOpenChatWindowOnMatchCompletion)
- 	   {
- 	    Log("################ attempting to open chat window");
- 	    //CDUTConSole(Root.Console).KeyEvent(EInputKey(CSWindow.ConfigureWindow.ChatWindowKeyForBind), IST_Press, 0.0);
-         CSWindow.ConfigureWindow.OpenChatWindow();
- 	   }
- 	 }
+ 		if(!bGameEnded)
+ 		{
+ 			bGameEnded = true;
+ 			Log("################ bgameended");
+
+ 			if(FrameWindow.bOpenChatWindowOnMatchCompletion)
+ 			{
+ 				Log("################ attempting to open chat window");
+ 				//CDUTConSole(Root.Console).KeyEvent(EInputKey(CSWindow.ConfigureWindow.ChatWindowKeyForBind), IST_Press, 0.0);
+ 				CSWindow.ConfigureWindow.OpenChatWindow();
+ 			}
+ 		}
  	}
  	else
  	{
- 	  bGameEnded = false;
+ 		bGameEnded = false;
  	}
 
 

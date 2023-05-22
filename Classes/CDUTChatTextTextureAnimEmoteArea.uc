@@ -418,7 +418,7 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  		C.Font = Root.Fonts[F_Normal];
 
  		TempServerString = class'CDDiscordActor'.static.FetchValue("LocalTime") $": joined" @
-         class'CDDiscordActor'.static.FetchValue("ServerAddress") @ TempServerString;
+ 			class'CDDiscordActor'.static.FetchValue("ServerAddress") @ TempServerString;
 
  		TextSize(C, TempServerString, X1, Y1);
  		TextAreaClipText(C, X + WinWidth / 2 - X1 / 2, Y, TempServerString);
@@ -925,14 +925,14 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  		// See the dump file for pplarehell's metadata for boss's credentials
  		// 1. pplarehell boss
  		// 2. surrei SoldierSkins.Blkt5
- 		if(SkinItem == "boss1T_0")
+ 		if(SkinItem == "boss1T_0" || SkinItem == "boss1T_1")
  		{
- 	 		ChatFaceTexture = Texture(DynamicLoadObject("BossSkins.Boss5Xan", class'Texture'));
+ 			ChatFaceTexture = Texture(DynamicLoadObject("BossSkins.Boss5Xan", class'Texture'));
  		}
  		else if(SkinItem == "Blkt3")
  		{
- 		    ChatFaceTexture = Texture(DynamicLoadObject("SoldierSkins.Blkt5Othello", class'Texture'));
-        }
+ 			ChatFaceTexture = Texture(DynamicLoadObject("SoldierSkins.Blkt5Othello", class'Texture'));
+ 		}
  		else
  		{
  	 		ChatFaceTexture = Texture(DynamicLoadObject(NonSandhiFaceNameString, class'Texture'));
