@@ -205,8 +205,6 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  	var string FaceName;
  };
 
- var() config SkinStore CachedFaces[50];
-
  // The maximum height inclusive of FaceTexture, text, and emote when displayed in a line
  // Height(FaceTexture) < Height(emote) type assumption (also obvious)
  var float DefaultTextTextureLineHeight;
@@ -891,30 +889,16 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  {
  	local texture ChatFaceTexture;
  	local string FacePackage, SkinItem, FaceItem, NonSandhiFaceNameString;
- 	//local int i;
 
  	if(FaceNameString == "faceless" || FaceNameString == "")
  	{
  		return texture'faceless';
  	}
- 	/*
- 	for(i = 0; i< 50; i++)
- 	{
- 		if(CachedFaces[i].ChatFace == none)
- 		{
- 			break;
- 		}
- 		else if(CachedFaces[i].FaceName == FaceNameString)
- 		{
- 			return CachedFaces[i].ChatFace;
- 		}
- 	}
- 	*/
 
  	if(Root.GetPlayerOwner() == none)
  	{
-       return texture'faceless';
-    }
+ 		return texture'faceless';
+ 	}
 
  	SkinItem = Root.GetPlayerOwner().GetItemName(SkinNameString);
  	FaceItem = Root.GetPlayerOwner().GetItemName(FaceNameString);
@@ -922,8 +906,8 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
 
  	if(SkinItem == "None" || FaceItem == "Dummy" || SkinItem == "Dummy" || FaceItem == "None")
  	{
-      return texture'faceless';
-    }
+ 		return texture'faceless';
+ 	}
 
  	if(FacePackage == "")
  	{
@@ -937,17 +921,29 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  	}
  	else
  	{
- 		ChatFaceTexture = Texture(DynamicLoadObject(NonSandhiFaceNameString, class'Texture'));
+ 		// First we see case by case, then we may find a general pattern to deal with these exceptions
+ 		// See the dump file for pplarehell's metadata for boss's credentials
+ 		// 1. pplarehell boss
+ 		// 2. surrei SoldierSkins.Blkt5
+ 		if(SkinItem == "boss1T_0")
+ 		{
+ 	 		ChatFaceTexture = Texture(DynamicLoadObject("BossSkins.Boss5Xan", class'Texture'));
+ 		}
+ 		else if(SkinItem == "Blkt3")
+ 		{
+ 		    ChatFaceTexture = Texture(DynamicLoadObject("SoldierSkins.Blkt5Othello", class'Texture'));
+        }
+ 		else
+ 		{
+ 	 		ChatFaceTexture = Texture(DynamicLoadObject(NonSandhiFaceNameString, class'Texture'));
+ 		}
  	}
 
  	if(ChatFaceTexture == none)
  	{
+ 		Log(FacePackage @ SkinItem @ FaceItem @ FaceNameString);
  		ChatFaceTexture = texture'faceless';
  	}
- 	/*
- 	CachedFaces[i].ChatFace = ChatFaceTexture;
- 	CachedFaces[i].FaceName = FaceNameString;
- 	*/
 
  	return ChatFaceTexture;
  }

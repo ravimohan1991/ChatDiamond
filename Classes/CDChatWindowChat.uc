@@ -40,7 +40,8 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
 
  var() config bool bIgnoreMessageFilter;
 
- var config bool bUserWantsMessageSound;
+ //var config bool bUserWantsMessageSound;
+ var bool bGameEnded;
 
  var UMenuLabelControl  lblHeading;
  var CDUTChatTextTextureAnimEmoteArea TheTextArea;
@@ -52,6 +53,7 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
  var UWindowSmallButton ButtonDisconnectAndQuit;
 
  var CDModMenuWindowFrame FrameWindow;
+ var CDClientSideWindow CSWindow;
  var GameReplicationInfo CDGRI;
  var PlayerReplicationInfo LocalPRI;
  var bool bIsWindowChatFunctional;
@@ -88,6 +90,8 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
  function Created ()
  {
  	Super.Created();
+
+ 	bGameEnded = false;
 
  	CDGRI = Root.GetPlayerOwner().GameReplicationInfo;
  	LocalPRI = Root.GetPlayerOwner().PlayerReplicationInfo;
@@ -162,7 +166,7 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
  		TheTextArea.AddText(sMesg);
  		CDDA.CacheChatLine(sMesg);
  		ButSave.bDisabled = false;
- 		if(bTalkMessage && bUserWantsMessageSound)
+ 		if(bTalkMessage && FrameWindow.bPlaySoundOnMessageArrival)
  		{
  			Root.GetPlayerOwner().ClientPlaySound(sound'MessageKernel');
  		}
@@ -705,6 +709,26 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
  			}
  		}
  	}
+
+ 	if(Root.GetPlayerOwner().GameReplicationInfo.GameEndedComments != "")
+ 	{
+ 	 if(!bGameEnded)
+ 	 {
+ 	  bGameEnded = true;
+ 	  Log("################ bgameended");
+ 	   if(FrameWindow.bOpenChatWindowOnMatchCompletion)
+ 	   {
+ 	    Log("################ attempting to open chat window");
+ 	    //CDUTConSole(Root.Console).KeyEvent(EInputKey(CSWindow.ConfigureWindow.ChatWindowKeyForBind), IST_Press, 0.0);
+         CSWindow.ConfigureWindow.OpenChatWindow();
+ 	   }
+ 	 }
+ 	}
+ 	else
+ 	{
+ 	  bGameEnded = false;
+ 	}
+
 
  	if (iTick > 0)
  	{

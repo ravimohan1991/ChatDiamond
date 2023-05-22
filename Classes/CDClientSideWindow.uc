@@ -37,8 +37,6 @@ class CDClientSideWindow extends UWindowConsoleClientWindow config(ChatDiamond);
 
  var UMenuPageControl    Pages;
  var CDChatWindowChat    ChatWindow;
- //var UTChatWindowAdmin   AdminWindow;
- //var UTChatWindowConfig  ConfigWindow;
  var CDChatWindowEmojis    EmojiWindow;
  var CDAboutWindow         AboutWindow;
  var CDUTConsoleWindow     ConsoleWindow;
@@ -63,7 +61,7 @@ class CDClientSideWindow extends UWindowConsoleClientWindow config(ChatDiamond);
  	PageControl = Pages.AddPage("Public Chats", class'CDChatWindowChat');
  	ChatWindow = CDChatWindowChat(PageControl.Page);
  	ChatWindow.FrameWindow = CDModMenuWindowFrame(ParentWindow);
- 	ChatWindow.bUserWantsMessageSound = CDModMenuWindowFrame(ParentWindow).bPlaySoundOnMessageArrival;
+ 	ChatWindow.CSWindow = self;
 
  	PageControl = Pages.AddPage("Emojis", class'CDChatWindowEmojis');
  	EmojiWindow = CDChatWindowEmojis(PageControl.Page);
@@ -110,9 +108,6 @@ class CDClientSideWindow extends UWindowConsoleClientWindow config(ChatDiamond);
  		Pages.GotoTab(Pages.GetTab("Configure"));
  	}
 
- 	//PageControl = Pages.AddPage("Admin", class'UTChatWindowAdmin');
- 	//AdminWindow = UTChatWindowAdmin(PageControl.Page);
-
  	bAcceptsFocus = true;
  	SetAcceptsFocus();
  }
@@ -128,7 +123,6 @@ class CDClientSideWindow extends UWindowConsoleClientWindow config(ChatDiamond);
  function ChatConfigurationUpdated()
  {
  	ChatWindow.ChatConfigurationUpdated();
- 	ChatWindow.bUserWantsMessageSound = CDModMenuWindowFrame(ParentWindow).bPlaySoundOnMessageArrival;
  }
 
  function Resized()

@@ -46,6 +46,7 @@ class CDConfigurationWindow expands UWindowPageWindow;
  var UWindowHSliderControl EmoSizeSlider;
  var UWindowCheckbox ApplyBGToChatWindow, ApplyBGToConsole;
  var UWindowCheckbox PlayMessageArrivedSound;
+ var UWindowCheckbox OpenChatWindowAtMatchCompletion;
  var UWindowEditControl LoadLastMessagesNumber;
  var UWindowSmallButton MessageLoadButton;
  var bool bSecondKeyEvent;
@@ -126,7 +127,12 @@ class CDConfigurationWindow expands UWindowPageWindow;
 
  	PlayMessageArrivedSound.SetText("Play sound on message arrival");
 
- 	LoadLastMessagesNumber = UWindowEditControl(CreateControl(Class'UWindowEditControl', 20, 310, 200, 16));
+ 	OpenChatWindowAtMatchCompletion = UWindowCheckbox(CreateControl(class'UWindowCheckbox', 20, 310, 200, 50));
+ 	OpenChatWindowAtMatchCompletion.SetTextColor(class'CDChatWindowEmojis'.default.WhiteColor);
+
+ 	OpenChatWindowAtMatchCompletion.SetText("Open chat window on match completion");
+
+ 	LoadLastMessagesNumber = UWindowEditControl(CreateControl(Class'UWindowEditControl', 20, 334, 200, 16));
  	LoadLastMessagesNumber.EditBoxWidth = 25;
  	LoadLastMessagesNumber.SetTextColor(class'CDChatWindowEmojis'.default.WhiteColor);
  	LoadLastMessagesNumber.SetText("Load last x messages");
@@ -136,21 +142,13 @@ class CDConfigurationWindow expands UWindowPageWindow;
  	LoadLastMessagesNumber.SetValue("");
  	LoadLastMessagesNumber.Align = TA_Left;
 
- 	MessageLoadButton = UWindowSmallButton(CreateControl(class'UWindowSmallButton', 230, 310, 50, 25));
+ 	MessageLoadButton = UWindowSmallButton(CreateControl(class'UWindowSmallButton', 230, 334, 50, 25));
  	MessageLoadButton.SetText("Load");
  	MessageLoadButton.DownSound = sound'UnrealShare.FSHLITE2';
 
  	// See Paint() for drawing of preview miniframe
 
  	CDUTConsole(Root.Console).ConfigureWindow = self;
-
- 	// For key polling
- 	/*ConfigPoller = UWindowEditControl(CreateControl(Class'UWindowEditControl', 56, 230, 45, 45));
- 	ConfigPoller.SetNumericOnly(False);
- 	ConfigPoller.SetFont(0);
- 	ConfigPoller.SetHistory(True);
- 	ConfigPoller.SetValue("");
- 	ConfigPoller.Align = TA_Left;*/
 
  	SetAcceptsFocus();
 
@@ -206,6 +204,11 @@ class CDConfigurationWindow expands UWindowPageWindow;
 					FrameWindow.bPlaySoundOnMessageArrival = PlayMessageArrivedSound.bChecked;
                     FrameWindow.SaveConfig();
                     ClientWindow.ChatConfigurationUpdated();
+ 				break;
+ 				case OpenChatWindowAtMatchCompletion:
+					FrameWindow.bOpenChatWindowOnMatchCompletion = OpenChatWindowAtMatchCompletion.bChecked;
+                    FrameWindow.SaveConfig();
+                    //ClientWindow.ChatConfigurationUpdated();
  				break;
  				/*
  				case ConfigPoller:
@@ -264,8 +267,21 @@ class CDConfigurationWindow expands UWindowPageWindow;
  		UWindow =  Root.Console.ConsoleWindow.ClientArea;
  		LPages = CDClientSideWindow(UWindow).Pages;
  		LPages.GotoTab(LPages.GetTab("Public Chats"));
- 		// CDChatWindowChat(LPages.GetPage("Public Chats").Page).EditMesg.SetValue("");
  	}
+ }
+
+ function OpenChatWindow()
+ {
+ 	local UMenuPageControl LPages;
+ 	local UWindowWindow UWindow;
+
+    Log("############ inside openchatwindow");
+    Root.Console.bQuickKeyEnable = !Root.Console.bUWindowActive;
+ 	Root.Console.LaunchUWindow();
+ 	Root.Console.ShowConsole();
+ 	UWindow =  Root.Console.ConsoleWindow.ClientArea;
+ 	LPages = CDClientSideWindow(UWindow).Pages;
+ 	LPages.GotoTab(LPages.GetTab("Public Chats"));
  }
 
  function Resized()
@@ -280,6 +296,7 @@ class CDConfigurationWindow expands UWindowPageWindow;
  	EmotesAnimationSpeed.SetValue(FrameWindow.EmoteAnimSpeed);
  	LoadLastMessagesNumber.SetValue(string(FrameWindow.LastHistoricMessagesNumber));
  	ApplyBGToChatWindow.bChecked = FrameWindow.bApplyBGToChatWindow;
+ 	OpenChatWindowAtMatchCompletion.bChecked = FrameWindow.bOpenChatWindowOnMatchCompletion;
  	ApplyBGToConsole.bChecked = FrameWindow.bApplyBGToConsole;
  	PlayMessageArrivedSound.bChecked = FrameWindow.bPlaySoundOnMessageArrival;
  	ChatBindButton.SetText(class'UMenuCustomizeClientWindow'.default.LocalizedKeyName[ChatWindowKeyForBind]);
