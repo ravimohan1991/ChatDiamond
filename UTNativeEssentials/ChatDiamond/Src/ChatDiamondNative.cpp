@@ -101,7 +101,7 @@ IMPLEMENT_FUNCTION(ACDDiscordActor, -1, execCacheChatLine)
 void ACDDiscordActor::execGetLineFromCacheBottom(FFrame& Stack, RESULT_DECL)
 {
 	guard(ACDDiscordActor::execGetLineFromCacheBottom);
-	
+
 	P_GET_INT(LineNumber);
 	P_FINISH;
 
@@ -223,7 +223,7 @@ void ACDDiscordActor::execResetJsonContainer(FFrame& Stack, RESULT_DECL)
 	guard(ACDDiscordActor::execResetJsonContainer);
 
 	P_FINISH;
-	
+
 	JsonVariable.clear();
 
 	unguard
@@ -240,8 +240,8 @@ void ACDDiscordActor::execFetchValue(FFrame& Stack, RESULT_DECL)
 	std::wstring KWString(*Key);
 	std::string KeyString(KWString.begin(), KWString.end());
 
-	std::string ReturnString; 
-	
+	std::string ReturnString;
+
 	if (JsonVariable.empty() || !JsonVariable.contains(KeyString))
 	{
 		ReturnString = "";
@@ -290,7 +290,10 @@ void ACDDiscordActor::execDeSerializeJson(FFrame& Stack, RESULT_DECL)
 	std::wstring JWString(*JsonString);
 	std::string StringToDeserialize(JWString.begin(), JWString.end());
 
-	JsonVariable = json::parse(StringToDeserialize);
+	if(json::accept(StringToDeserialize))
+	{
+		JsonVariable = json::parse(StringToDeserialize);
+	}
 
 	unguard;
 }
