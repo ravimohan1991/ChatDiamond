@@ -294,6 +294,10 @@ void ACDDiscordActor::execDeSerializeJson(FFrame& Stack, RESULT_DECL)
 	{
 		JsonVariable = json::parse(StringToDeserialize);
 	}
+	else
+	{
+		GLog->Logf(TEXT("[ChatDiamond] Illformed string %s detected for json deserialization"), StringToDeserialize.c_str());
+	}
 
 	unguard;
 }
