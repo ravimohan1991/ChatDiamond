@@ -308,7 +308,10 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
  			DisplayableSpectatorMessage =  PrepareSpectatorMessageForDisplay(Message, SpectatorLPRI);
  			LP = Pawn(SpectatorLPRI.Owner);
 
- 			LP.GetMultiSkin(LP, SkinName, FaceName);
+ 			if(LP != none)
+ 			{
+ 				LP.GetMultiSkin(LP, SkinName, FaceName);
+ 			}
 
  			if(FaceName == "")
  			{
@@ -333,16 +336,6 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
  		else
  		{
  			SenderString = FilterSenderName(Message);
- 			Log("Sendername is:" $ SenderString @ Message);
-
- 			/*foreach Root.GetPlayerOwner().AllActors(class'PlayerReplicationInfo', SomeDifferentPRI)
- 			{
- 				if(SomeDifferentPRI.PlayerName == SenderString)
- 				{
- 					break;
- 				}
- 				return;
- 			}*/
 
  			SomeDifferentPRI = none;
 
@@ -369,7 +362,11 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
  				DisplayableSpectatorMessage =  PrepareSpectatorMessageForDisplay(Message);
 
  				LP = Pawn(SomeDifferentPRI.Owner);
- 				LP.GetMultiSkin(LP, SkinName, FaceName);
+
+ 				if(LP != none)
+ 				{
+ 					LP.GetMultiSkin(LP, SkinName, FaceName);
+ 				}
 
  				if(FaceName == "")
  				{

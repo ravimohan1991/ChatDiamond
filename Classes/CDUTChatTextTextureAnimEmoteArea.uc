@@ -172,6 +172,8 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  var CustEmoji   ChatEmojis[28];
  var CustEmoji   WordEmojis[10];
 
+ var CDLoadedTextureList ChatFaces;
+
  var() config string RecognizableEmoTextSymbols[100];
 
  var int MyPos;
@@ -350,6 +352,24 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  	RecognizableEmoTextSymbols[27] = ":y";
  	RecognizableEmoTextSymbols[28] = ":4";
  	RecognizableEmoTextSymbols[29] = ":3";
+
+ 	ClearChatFaces();
+ }
+
+ function ClearChatFaces()
+ {
+ 	if(ChatFaces != None)
+ 	{
+ 		if(ChatFaces.Next == None)
+ 		{
+ 			return;
+ 		}
+
+		ChatFaces.DestroyList();
+	}
+
+	ChatFaces = new class'CDLoadedTextureList';
+	ChatFaces.SetupSentinel();
  }
 
  function FindCategoryDeliminator(string EncodedText, out int Position, out string Deliminator)
@@ -889,10 +909,19 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  {
  	local texture ChatFaceTexture;
  	local string FacePackage, SkinItem, FaceItem, NonSandhiFaceNameString;
+ 	local CDLoadedTextureList LoadedTexture, LTextureIterator;
 
  	if(FaceNameString == "faceless" || FaceNameString == "")
  	{
  		return texture'faceless';
+ 	}
+
+ 	for(LTextureIterator = ChatFaces; LTextureIterator.Next != none; LTextureIterator = CDLoadedTextureList(LTextureIterator.Next))
+ 	{
+ 		if(LTextureIterator.FaceNameString == FaceNameString && LTextureIterator.SkinNameString == SkinNameString)
+ 		{
+ 			return LTextureIterator.LTexture;
+ 		}
  	}
 
  	if(Root.GetPlayerOwner() == none)
@@ -918,6 +947,7 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  	if(IsSandhiNeeded(FaceNameString, NonSandhiFaceNameString))
  	{
  		ChatFaceTexture = Texture(DynamicLoadObject(FacePackage $ SkinItem $ "5" $ FaceItem, class'Texture'));
+ 		Log("[ChatDiamond] Dynamically loading new chat face texture");
  	}
  	else
  	{
@@ -928,22 +958,30 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  		if(SkinItem == "boss1T_0" || SkinItem == "boss1T_1")
  		{
  			ChatFaceTexture = Texture(DynamicLoadObject("BossSkins.Boss5Xan", class'Texture'));
+ 			Log("[ChatDiamond] Dynamically loading new chat face texture");
  		}
  		else if(SkinItem == "Blkt3")
  		{
  			ChatFaceTexture = Texture(DynamicLoadObject("SoldierSkins.Blkt5Othello", class'Texture'));
+ 			Log("[ChatDiamond] Dynamically loading new chat face texture");
  		}
  		else
  		{
  	 		ChatFaceTexture = Texture(DynamicLoadObject(NonSandhiFaceNameString, class'Texture'));
+ 	 		Log("[ChatDiamond] Dynamically loading new chat face texture");
  		}
  	}
 
  	if(ChatFaceTexture == none)
  	{
  		Log(FacePackage @ SkinItem @ FaceItem @ FaceNameString);
- 		ChatFaceTexture = texture'faceless';
+ 		return texture'faceless';
  	}
+
+ 	LoadedTexture = CDLoadedTextureList(ChatFaces.Append(class'CDLoadedTextureList'));
+ 	LoadedTexture.LTexture = ChatFaceTexture;
+ 	LoadedTexture.FaceNameString = FaceNameString;
+ 	LoadedTexture.SkinNameString = SkinNameString;
 
  	return ChatFaceTexture;
  }

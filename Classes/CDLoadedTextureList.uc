@@ -26,5 +26,5 @@
 
 class CDLoadedTextureList expands UWindowList;
 
-var texture LoadedTexture;
-var string Identifier;
+var texture LTexture;
+var string FaceNameString, SkinNameString;
