@@ -417,12 +417,12 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
 
  function float DrawTextTextureLine(Canvas C, UWindowDynamicTextRow L, float Y)
  {
- 	local float X, X1, X2, Y1;
+ 	local float X, X1, X2, Y1, XIncrementor;
  	local string sDate, sName, sMesg, sTm;
  	local string FaceName, SkinName;
  	local string FaceSkinNoText;
  	local float TextureXOccupied, TextureYOccupied;
- 	local string TempServerString;
+ 	local string TempServerString, SJTimeString, SJAddressString, SJNameString;
 
  	if(L.Text == "")
  	{
@@ -431,17 +431,48 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
 
  	class'CDDiscordActor'.static.DeSerializeJson(L.Text);
 
- 	TempServerString = class'CDDiscordActor'.static.FetchValue("ServerName");
+ 	SJNameString = class'CDDiscordActor'.static.FetchValue("ServerName");
 
- 	if(TempServerString != "")
+ 	if(SJNameString != "")
  	{
  		C.Font = Root.Fonts[F_Normal];
 
- 		TempServerString = class'CDDiscordActor'.static.FetchValue("LocalTime") $": joined" @
- 			class'CDDiscordActor'.static.FetchValue("ServerAddress") @ TempServerString;
+ 		SJTimeString = class'CDDiscordActor'.static.FetchValue("LocalTime");
+ 		SJAddressString = class'CDDiscordActor'.static.FetchValue("ServerAddress");
 
+ 		TempServerString = SJTimeString $": joined " @
+ 			SJAddressString @ SJNameString;
+
+ 		// Estimate the total string size
  		TextSize(C, TempServerString, X1, Y1);
- 		TextAreaClipText(C, X + WinWidth / 2 - X1 / 2, Y, TempServerString);
+
+ 		// Start with middle alignment
+ 		C.DrawColor = class'CDChatWindowEmojis'.default.WhiteColor;
+ 		XIncrementor = X + WinWidth / 2 - X1 / 2;
+ 		// Paint the time text
+ 		TextAreaClipText(C, XIncrementor, Y, SJTimeString);
+
+ 		// Proceed with 'joined' phrase
+ 		C.DrawColor = class'CDChatWindowEmojis'.default.GrayColor;
+ 		// Estimate the offset for 'joined'
+ 		TextSize(C, SJTimeString, X1, Y1);
+ 		XIncrementor += X1;
+ 		TextAreaClipText(C, XIncrementor, Y, ": joined ");
+
+ 		// Proceed with address string
+ 		C.DrawColor = class'CDChatWindowEmojis'.default.SageGreenColor;
+ 		// Estimate the offset for server address
+ 		TextSize(C, ": joined ", X1, Y1);
+ 		XIncrementor += X1;
+ 		TextAreaClipText(C, XIncrementor, Y, SJAddressString);
+
+ 		// Proceed with the name string
+ 		C.DrawColor = class'CDChatWindowEmojis'.default.OrangeColor;
+ 		// Estimate the offset for server name
+ 		TextSize(C, SJAddressString, X1, Y1);
+ 		XIncrementor += X1;
+ 		TextAreaClipText(C, XIncrementor, Y, SJNameString);
+
  		return DefaultTextTextureLineHeight;
  	}
 
@@ -892,7 +923,7 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  * Bit tricky way to locate the Texture of chatting player. Please see
  * https://github.com/ravimohan1991/ChatDiamond/wiki/Level-of-Detail-in-Server-Client-Context
  *
- * TODO: Need an algorithm to cache the textures (being rendered each tick)
+ * TODO: Need an algorithm to cache the textures (being rendered each tick) Done
  *
  * We also try and cache the dynamically loaded textures because common sense is common again?
  * @PARAM FaceNameString             The complete string name for face identification

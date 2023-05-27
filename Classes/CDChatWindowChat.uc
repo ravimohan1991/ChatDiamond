@@ -292,10 +292,6 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
  		LoadMessages(CDDA.SerializeJson(), true);
  		CDDA.ResetJsonContainer();
  	}
- 	else
- 	{
-
-	}
 
  	if(PRI != none)
  	{

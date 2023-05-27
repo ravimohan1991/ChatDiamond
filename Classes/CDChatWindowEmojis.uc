@@ -50,7 +50,7 @@ class CDChatWindowEmojis extends UWindowPageWindow;
  var int MaxMFRows;
 
  var color WhiteColor, BlackColor;
- var color PinkColor;
+ var color PinkColor, GrayColor, SageGreenColor, OrangeColor;
 
  var float  PrevWinWidth, PrevWinHeight;
  var float  PageWidth, PageHeight;
@@ -338,6 +338,9 @@ class CDChatWindowEmojis extends UWindowPageWindow;
  	WhiteColor=(R=255,G=255,B=255)
  	PinkColor=(R=255,G=192,B=203)
  	BlackColor=(R=0,G=0,B=0)
+ 	GrayColor=(R=128,G=128,B=128)
+ 	SageGreenColor=(R=138,G=154,B=91)
+ 	OrangeColor=(R=255,G=87,B=51)
  }
 
 /*
