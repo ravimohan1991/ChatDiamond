@@ -212,7 +212,10 @@ void ACDDiscordActor::execAddJsonKeyValue(FFrame& Stack, RESULT_DECL)
 	std::wstring VWString(*Value);
 	std::string ValueString(VWString.begin(), VWString.end());
 
-	JsonVariable.emplace(KeyString, ValueString);
+	if (KeyString != "" && ValueString != "")
+	{
+		JsonVariable.emplace(KeyString, ValueString);
+	}
 
 	unguard
 }

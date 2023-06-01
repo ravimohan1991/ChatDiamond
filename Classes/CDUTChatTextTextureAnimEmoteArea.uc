@@ -200,6 +200,9 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  var string TextUrlCurrent;
 
  var CDLoadedTextureList TextureList;
+ var UWindowHScrollBar HorizontalSB;
+
+ var bool bScrollHorizontal;
 
  struct SkinStore
  {
@@ -264,6 +267,12 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  	return texture'faceless';
  }
 
+ function HideHorizontalSB()
+ {
+    // This may need more looking into
+ 	HorizontalSB.Close();
+ }
+
  function Created()
  {
  	Super.Created();
@@ -282,6 +291,9 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
 
  	HelperContextMenu = CDChatWindowHelperContextMenu(Root.CreateWindow(class'CDChatWindowHelperContextMenu', 0, 0, 100, 100, Self));
  	HelperContextMenu.HideWindow();
+
+ 	HorizontalSB = UWindowHScrollbar(CreateWindow(class'UWindowHScrollbar', 0, WinHeight - 12, WinWidth, 12));
+	HorizontalSB.bAlwaysOnTop = True;
 
  	AnimShockEmote.CurrentAnimFrame = 0;
  	AnimShockEmote.TextSymbol = ":4";

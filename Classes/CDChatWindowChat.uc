@@ -504,6 +504,9 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
 
  	PlayerOwner = Root.GetPlayerOwner();
 
+ 	if(PlayerOwner == none)
+ 	return "";
+
  	Min = string(PlayerOwner.Level.Minute);
  	if(int(Min) < 10) Min = "0" $ Min;
 
@@ -786,7 +789,10 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
  	if (DiffX != 0 || DiffY != 0)
  	{
  		TheTextArea.SetSize(TheTextArea.WinWidth + DiffX, TheTextArea.WinHeight + DiffY);
- 		TheTextArea.WrapWidth = WinWidth - 80;;
+ 		TheTextArea.WrapWidth = WinWidth - 80;
+
+ 		TheTextArea.HorizontalSB.WinTop += DiffY;
+ 		TheTextArea.HorizontalSB.WinWidth = WinWidth - 15;
 
  		ButSave.WinTop += DiffY;
 

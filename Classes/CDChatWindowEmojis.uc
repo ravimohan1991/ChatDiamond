@@ -84,6 +84,7 @@ class CDChatWindowEmojis extends UWindowPageWindow;
  	TheEmoDisplayArea.bVariableRowHeight = True;
  	TheEmoDisplayArea.bScrollOnResize = True;
  	TheEmoDisplayArea.EmoWindowPage = self;
+ 	TheEmoDisplayArea.HideHorizontalSB();
 
  	// Literal copy paste from CDChatWindowChat
  	ButSave = UWindowSmallButton(CreateControl(class'UWindowSmallButton', 4, 230, 50, 25));
