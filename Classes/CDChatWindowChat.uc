@@ -811,6 +811,15 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
  	}
  	PrevWinWidth = WinWidth;
  	PrevWinHeight = WinHeight;
+
+ 	if(GetPlayerOwner() != none && GetPlayerOwner().GetDefaultURL("OverrideClass") == "Botpack.CHSpectator")
+ 	{
+ 		ButtonPlaySpectate.SetText("Play");
+ 	}
+ 	else
+ 	{
+ 		ButtonPlaySpectate.SetText("Spectate");
+ 	}
  }
 
  function BeforePaint( Canvas C, float X, float Y )

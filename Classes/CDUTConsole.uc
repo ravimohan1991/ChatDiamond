@@ -71,7 +71,7 @@ function Message(PlayerReplicationInfo PRI, coerce string Msg, name N)
  	if(ChatWindow != none)
  	{
  		ChatWindow.InterpretAndDisplayTextClientSide(PRI, Msg, N);
- 		Log("In the console: " $ Msg @ "Type: " $ N $ " PRI:" @ PRI.PlayerName);
+ 		//Log("In the console: " $ Msg @ "Type: " $ N $ " PRI:" @ PRI.PlayerName);
  	}
 }
 
@@ -79,7 +79,7 @@ function Message(PlayerReplicationInfo PRI, coerce string Msg, name N)
  {
  	local int ReceieverNameEndPosition, SenderNameEndPosition;
 
- 	Log("IsMessageNonChat: " @ Message @ " Type: " @ MessageType);
+ 	//Log("IsMessageNonChat: " @ Message @ " Type: " @ MessageType);
 
  	// B: Assuming name has no funny character, i.e delimiter itself
  	// A better assumption (club A and B) there are no ':' delimiters in non chat Message for spectator

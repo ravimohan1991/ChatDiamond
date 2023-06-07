@@ -201,8 +201,10 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
 
  var CDLoadedTextureList TextureList;
  var UWindowHScrollBar HorizontalSB;
-
  var bool bScrollHorizontal;
+ var int VisibleColumns;
+ // Calibrator
+ var int NumberOfLettersPerLine;
 
  struct SkinStore
  {
@@ -1175,8 +1177,7 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  		OldH = WinHeight;
  		bWrapped = True;
  	}
- 	else
- 	if(bDirty)
+ 	else if(bDirty)
  	{
  		WordWrap(C, False);
  		bWrapped = True;
@@ -1196,8 +1197,15 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  		DefaultTextTextureLineHeight += UniformHorizontalPadding;
 
  		VisibleRows = WinHeight / DefaultTextTextureLineHeight;
+ 		VisibleColumns = WinWidth / (NumberOfLettersPerLine * Junk);
+
  		Count = List.Count();
  		VertSB.SetRange(0, Count, VisibleRows);
+
+        if(HorizontalSB != none)
+        {
+ 		 	HorizontalSB.SetRange(0, WinWidth, HorizontalSB.WinWidth);
+ 		}
 
  		if(bScrollOnResize)
  		{
@@ -1317,6 +1325,11 @@ function RClick(float X, float Y)
 	//Log("Context click registered!");
 }
 
+function LMouseDown(float X, float Y)
+{
+ super.LMouseDown(X, Y);
+}
+
 function Click(float X, float Y)
  {
 
@@ -1386,6 +1399,7 @@ function Click(float X, float Y)
  	FaceColor=(R=50,G=50,B=50,A=0)
  	UniformHorizontalPadding=10
  	ChatFaceVerticalPadding=9
+ 	NumberOfLettersPerLine=35
 
  	ChatEmojis(0)=(Symbol=":)",Image1=Texture'Smile',Image2=Texture'XSmile',StatusBarText="Smiley!")
  	ChatEmojis(1)=(Symbol=":(",Image1=Texture'Sad',Image2=Texture'XSad',StatusBarText="Sad!")
