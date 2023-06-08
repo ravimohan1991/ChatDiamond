@@ -489,7 +489,7 @@ function PrepareMFDrawLL(float MiniFrameY)
  	MiniFrameX += MFEmo.Width + BetweenTheMiniFrameSeperationX;
 
  	// Continue with the Emotes loop
- 	for(EmoCounter = 29; EmoCounter < 30; EmoCounter++)
+ 	for(EmoCounter = 29; EmoCounter < 32; EmoCounter++)
  	{
  		// Cache values
  		EmoFrames[EmoCounter].MFNumber = EmoCounter;
