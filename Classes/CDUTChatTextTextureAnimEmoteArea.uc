@@ -230,9 +230,12 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
 
  function string GetEmoteTextSymbol(int EmoCounter)
  {
- 	if(EmoCounter == 28)
+ 	switch(EmoCounter)
  	{
- 		return AnimShockEmote.TextSymbol;
+ 		case  28: return  AnimShockEmote.TextSymbol;
+ 		case  29: return  AnimTrashTalkEmote.TextSymbol;
+
+ 		default: return "";
  	}
 
  	 return "";
@@ -240,9 +243,12 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
 
  function string GetEmoteStatusBarText(int EmoCounter)
  {
- 	if(EmoCounter == 28)
+ 	switch(EmoCounter)
  	{
- 		return AnimShockEmote.StatusBarText;
+ 		case  28: return  AnimShockEmote.StatusBarText;
+ 		case  29: return  AnimTrashTalkEmote.StatusBarText;
+
+ 		default: return "";
  	}
 
  	return "";
@@ -261,9 +267,12 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  function texture GetEmoteTexture(int EmoCounter)
  {
  	// Continuation from ChatEmojis end
- 	if(EmoCounter == 28)
+ 	switch(EmoCounter)
  	{
- 		return  AnimShockEmote.Atlas[AnimShockEmote.CurrentAnimFrame];
+ 		case  28: return  AnimShockEmote.Atlas[AnimShockEmote.CurrentAnimFrame];
+ 		case  29: return  AnimTrashTalkEmote.Atlas[AnimTrashTalkEmote.CurrentAnimFrame];
+
+ 		default: return texture'faceless';
  	}
 
  	return texture'faceless';
@@ -271,7 +280,7 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
 
  function HideHorizontalSB()
  {
-    // This may need more looking into
+ 	// This may need more looking into
  	HorizontalSB.Close();
  }
 
@@ -313,6 +322,7 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  	AnimShockEmote.StatusBarText = "Shock Combo!";
 
  	AnimTrashTalkEmote.CurrentAnimFrame = 0;
+ 	AnimTrashTalkEmote.TextSymbol = ":3";
  	AnimTrashTalkEmote.Atlas[0] = texture'ANEArgue0';
  	AnimTrashTalkEmote.Atlas[1] = texture'ANEArgue1';
  	AnimTrashTalkEmote.Atlas[2] = texture'ANEArgue2';
@@ -335,6 +345,7 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  	AnimTrashTalkEmote.Atlas[19] = texture'ANEArgue19';
  	AnimTrashTalkEmote.Atlas[20] = texture'ANEArgue20';
  	AnimTrashTalkEmote.TexChatSizeFraction = 0.60;
+ 	AnimTrashTalkEmote.StatusBarText = "Trashy Talk!";
 
  	RecognizableEmoTextSymbols[0] = ":)";
  	RecognizableEmoTextSymbols[1] = ":(";
@@ -1202,9 +1213,9 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  		Count = List.Count();
  		VertSB.SetRange(0, Count, VisibleRows);
 
-        if(HorizontalSB != none)
-        {
- 		 	HorizontalSB.SetRange(0, WinWidth, HorizontalSB.WinWidth);
+ 		if(HorizontalSB != none)
+ 		{
+ 			HorizontalSB.SetRange(0, WinWidth, HorizontalSB.WinWidth);
  		}
 
  		if(bScrollOnResize)

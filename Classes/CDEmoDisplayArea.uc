@@ -209,7 +209,7 @@
  	else
  	{
  		VSBPosDiff = 0.0;
-    }
+ 	}
  }
 
 /*******************************************************************************
@@ -234,7 +234,7 @@
  		}
  		else
  		{
- 			EmoWindowPage.EditMesg.EditBox.InsertText(GetEmoteTextSymbol(28));
+ 			EmoWindowPage.EditMesg.EditBox.InsertText(GetEmoteTextSymbol(MiniFrameCellNumber));
  		}
  	}
  }
@@ -485,6 +485,48 @@ function PrepareMFDrawLL(float MiniFrameY)
  		Tempo.bIsBeingHovered = false;
  	}
  	Tempo.bSplitByHand = true;// Helps in gauging the row and column numbers of displayable MF
+
+ 	MiniFrameX += MFEmo.Width + BetweenTheMiniFrameSeperationX;
+
+ 	// Continue with the Emotes loop
+ 	for(EmoCounter = 29; EmoCounter < 30; EmoCounter++)
+ 	{
+ 		// Cache values
+ 		EmoFrames[EmoCounter].MFNumber = EmoCounter;
+ 		EmoFrames[EmoCounter].MFEmo = MFEmo;
+
+ 		// Add to MF display list
+ 		Tempo = CDMiniFrameList(DrawnMiniFrameList.Append(class'CDMiniFrameList'));
+
+ 		Tempo.MFWidth = MFEmo.Width;
+ 		Tempo.MFHeight = MFEmo.Height;
+ 		Tempo.XTopLeftPos = MiniFrameX;
+ 		Tempo.YTopLeftPos = MiniFrameY;
+ 		Tempo.XBottomRightPos = MiniFrameX + MFEmo.Width;
+ 		Tempo.YBottomRightPos = MiniFrameY + MFEmo.Height;
+
+ 		Tempo.MFNumber = EmoCounter;
+
+ 		if(EmoCounter == MiniFrameBeingHovered)
+ 		{
+ 			Tempo.bIsBeingHovered = true;
+ 		}
+ 		else
+ 		{
+ 			Tempo.bIsBeingHovered = false;
+ 		}
+
+ 		//Log(Tempo.MFNumber @ "Tempo.MFHeight = " @ MiniFrameHeight);
+
+ 		// Filled the row, now split
+ 		MiniFrameX += MFEmo.Width + BetweenTheMiniFrameSeperationX;
+
+ 		if(MiniFrameX + MFEmo.Width >= WinWidth)
+ 		{
+ 			MiniFrameX = MFEmo.Width * 0.2;
+ 			MiniFrameY += MFEmo.Height + BetweenTheMiniFrameSeperationY;
+ 		}
+ 	}
 }
 
 function DrawDepressedMiniFrameCell(Canvas C, float FrameStartX, float FrameStartY, float Width, float Height, string TextSymbol, Texture Tex)
