@@ -171,6 +171,12 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  #exec Texture Import File=Textures\BARF28.pcx Name=ANEBarf27    Mips=off
  #exec Texture Import File=Textures\BARF29.pcx Name=ANEBarf28    Mips=off
 
+ // Wave Emote
+ #exec Texture Import File=Textures\WAVE1.pcx Name=ANEWave0    Mips=off
+ #exec Texture Import File=Textures\WAVE2.pcx Name=ANEWave1    Mips=off
+ #exec Texture Import File=Textures\WAVE3.pcx Name=ANEWave2    Mips=off
+ #exec Texture Import File=Textures\WAVE4.pcx Name=ANEWave3    Mips=off
+
  // Style for rendering sprites, meshes.
  var(Display) enum ERenderStyle
  {
@@ -211,6 +217,7 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  var AnEmote AnimTrashTalkEmote;
  var AnEmote AnimBananaEmote;
  var AnEmote AnimBarfEmote;
+ var AnEmote AnimWaveEmote;
 
  var CustEmoji   ChatEmojis[28];
  var CustEmoji   WordEmojis[10];
@@ -279,6 +286,7 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  		case  29: return  AnimTrashTalkEmote.TextSymbol;
  		case  30: return  AnimBananaEmote.TextSymbol;
  		case  31: return  AnimBarfEmote.TextSymbol;
+ 		case  32: return  AnimWaveEmote.TextSymbol;
 
  		default: return "";
  	}
@@ -294,6 +302,7 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  		case  29: return  AnimTrashTalkEmote.StatusBarText;
  		case  30: return  AnimBananaEmote.StatusBarText;
  		case  31: return  AnimBarfEmote.StatusBarText;
+ 		case  32: return  AnimWaveEmote.StatusBarText;
 
  		default: return "";
  	}
@@ -320,6 +329,7 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  		case  29: return  AnimTrashTalkEmote.Atlas[AnimTrashTalkEmote.CurrentAnimFrame];
  		case  30: return  AnimBananaEmote.Atlas[AnimBananaEmote.CurrentAnimFrame];
  		case  31: return  AnimBarfEmote.Atlas[AnimBarfEmote.CurrentAnimFrame];
+ 		case  32: return  AnimWaveEmote.Atlas[AnimWaveEmote.CurrentAnimFrame];
 
  		default: return texture'faceless';
  	}
@@ -443,6 +453,15 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  	AnimBarfEmote.TexChatSizeFraction = 0.80;
  	AnimBarfEmote.StatusBarText = "Barf!";
 
+ 	AnimWaveEmote.CurrentAnimFrame = 0;
+ 	AnimWaveEmote.TextSymbol = "/a";
+ 	AnimWaveEmote.Atlas[0] = texture'ANEWAVE0';
+ 	AnimWaveEmote.Atlas[1] = texture'ANEWAVE1';
+ 	AnimWaveEmote.Atlas[2] = texture'ANEWAVE2';
+ 	AnimWaveEmote.Atlas[3] = texture'ANEWAVE3';
+ 	AnimWaveEmote.TexChatSizeFraction = 0.80;
+ 	AnimWaveEmote.StatusBarText = "Wave!";
+
  	RecognizableEmoTextSymbols[0] = ":)";
  	RecognizableEmoTextSymbols[1] = ":(";
  	RecognizableEmoTextSymbols[2] = ":^";
@@ -475,6 +494,7 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  	RecognizableEmoTextSymbols[29] = ":3";
  	RecognizableEmoTextSymbols[30] = "/b";
  	RecognizableEmoTextSymbols[31] = "/p";
+ 	RecognizableEmoTextSymbols[32] = "/a";
 
  	ClearChatFaces();
  }
@@ -861,13 +881,26 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
 
  		else if(Identifier == 54)
  		{
- 			EmoteYDrawCoordinate =  DrawY - AnimBarfEmote.Atlas[AnimTrashTalkEmote.CurrentAnimFrame].VSize * AnimBarfEmote.TexChatSizeFraction / 2 + SomeHeight / 2;
+ 			EmoteYDrawCoordinate =  DrawY - AnimBarfEmote.Atlas[AnimBarfEmote.CurrentAnimFrame].VSize * AnimBarfEmote.TexChatSizeFraction / 2 + SomeHeight / 2;
 
  			DrawStretchedTexture(C, DrawX, EmoteYDrawCoordinate, AnimBarfEmote.Atlas[AnimTrashTalkEmote.CurrentAnimFrame].USize * AnimBarfEmote.TexChatSizeFraction,
  			AnimBarfEmote.Atlas[AnimBarfEmote.CurrentAnimFrame].USize * AnimBarfEmote.TexChatSizeFraction, AnimBarfEmote.Atlas[AnimBarfEmote.CurrentAnimFrame]);
 
  			LateralDisplacement +=  AnimBarfEmote.Atlas[0].USize * AnimBarfEmote.TexChatSizeFraction;
  			DrawX += AnimBarfEmote.Atlas[0].USize * AnimBarfEmote.TexChatSizeFraction;
+
+ 			Message = Mid(Message, EmojiLocation + 2);
+ 		}
+
+ 		else if(Identifier == 55)
+ 		{
+ 			EmoteYDrawCoordinate =  DrawY - AnimWaveEmote.Atlas[AnimWaveEmote.CurrentAnimFrame].VSize * AnimWaveEmote.TexChatSizeFraction / 2 + SomeHeight / 2;
+
+ 			DrawStretchedTexture(C, DrawX, EmoteYDrawCoordinate, AnimWaveEmote.Atlas[AnimWaveEmote.CurrentAnimFrame].USize * AnimWaveEmote.TexChatSizeFraction,
+ 			AnimWaveEmote.Atlas[AnimWaveEmote.CurrentAnimFrame].USize * AnimWaveEmote.TexChatSizeFraction, AnimWaveEmote.Atlas[AnimWaveEmote.CurrentAnimFrame]);
+
+ 			LateralDisplacement +=  AnimWaveEmote.Atlas[0].USize * AnimWaveEmote.TexChatSizeFraction;
+ 			DrawX += AnimWaveEmote.Atlas[0].USize * AnimWaveEmote.TexChatSizeFraction;
 
  			Message = Mid(Message, EmojiLocation + 2);
  		}
@@ -907,6 +940,7 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  		AnimTrashTalkEmote.CurrentAnimFrame++;
  		AnimBananaEmote.CurrentAnimFrame++;
  		AnimBarfEmote.CurrentAnimFrame++;
+ 		AnimWaveEmote.CurrentAnimFrame++;
 
  		if(AnimShockEmote.CurrentAnimFrame > 9)
  		{
@@ -926,6 +960,11 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  		if(AnimBarfEmote.CurrentAnimFrame > 28)
  		{
  			AnimBarfEmote.CurrentAnimFrame = 0;
+ 		}
+
+ 		if(AnimWaveEmote.CurrentAnimFrame > 3)
+ 		{
+ 			AnimWaveEmote.CurrentAnimFrame = 0;
  		}
 
  		TickCounter = 0;
@@ -980,7 +1019,7 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  		URLLocation = Instr(MessageStringPart, BareURLString);
  	}
 
- 	for(Counter = 0; Counter <= 31; Counter++)
+ 	for(Counter = 0; Counter <= 32; Counter++)
  	{
  		EmoLocation = Instr(MessageStringPart, RecognizableEmoTextSymbols[Counter]);
 
@@ -995,6 +1034,7 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  				case  29: EmoArray[EmoCount].Identifier = 52; break;
  				case  30: EmoArray[EmoCount].Identifier = 53; break;
  				case  31: EmoArray[EmoCount].Identifier = 54; break;
+ 				case  32: EmoArray[EmoCount].Identifier = 55; break;
 
  				default: EmoArray[EmoCount].Identifier = Counter; break;
  			}
