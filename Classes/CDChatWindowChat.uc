@@ -233,12 +233,12 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
 
  function InterpretAndDisplayTextClientSide(PlayerReplicationInfo PRI, coerce string Message, name MessageType)
  {
- 	local string SkinName, FaceName, DisplayableSpectatorMessage, SenderString;
+ 	local string SkinName, FaceName, DisplayableSpectatorMessage, SenderString, PlayerName;
  	local Pawn LP;
  	local PlayerReplicationInfo SpectatorLPRI, SomeDifferentPRI;
  	local int i;
 
- 	if(Message == "" || (bIgnoreMessageFilter && IsMessageIgnorable(Message)))
+ 	if(Message == "" || (bIgnoreMessageFilter && IsMessageIgnorable(Message)) || PRI == none || CDDA == none)
  	{
  		return;
  	}
@@ -248,12 +248,30 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
  		if(PRI != none)
  		{
  			LP = Pawn(PRI.Owner);
- 			LP.GetMultiSkin(LP, SkinName, FaceName);
+
+ 			if(LP != none)
+ 			{
+ 				LP.GetMultiSkin(LP, SkinName, FaceName);
+ 			}
+ 			else
+ 			{
+				FaceName = "";
+ 				SkinName = "";
+ 			}
+
+ 			PlayerName = PRI.PlayerName;
  		}
  		else
  		{
  			FaceName = "";
  			SkinName = "";
+
+ 			PlayerName = "NoOne";
+ 		}
+
+ 		if(PlayerName == "")
+ 		{
+ 			PlayerName = "NoOne";
  		}
 
  		if(FaceName == "")
@@ -265,11 +283,12 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
  		{
  			SkinName = "Dummy";
  		}
+
  		CDDA.ResetJsonContainer();
  		CDDA.AddJsonKeyValue("FaceName", FaceName);
  		CDDA.AddJsonKeyValue("SkinName", SkinName);
  		CDDA.AddJsonKeyValue("LocalTime", LocalTimeAndMPOVMarker());
- 		CDDA.AddJsonKeyValue("PlayerName", PRI.PlayerName);
+ 		CDDA.AddJsonKeyValue("PlayerName", PlayerName);
  		CDDA.AddJsonKeyValue("ChatMessage", Message);
 
  		if(PRI.bAdmin)
@@ -292,8 +311,7 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
  		LoadMessages(CDDA.SerializeJson(), true);
  		CDDA.ResetJsonContainer();
  	}
-
- 	if(PRI != none)
+ 	else
  	{
  		// Maybe exhaustive.
  		// Well, player join leave and server adds and whatnot. So we shall use
@@ -303,6 +321,12 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
  		{
  			DisplayableSpectatorMessage =  PrepareSpectatorMessageForDisplay(Message, SpectatorLPRI);
  			LP = Pawn(SpectatorLPRI.Owner);
+
+ 			PlayerName = PRI.PlayerName;
+ 			if(PlayerName == "")
+ 			{
+ 				PlayerName = "NoOne";
+ 			}
 
  			if(LP != none)
  			{
@@ -318,11 +342,12 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
  			{
  				SkinName = "Dummy";
  			}
+
  			CDDA.ResetJsonContainer();
  			CDDA.AddJsonKeyValue("FaceName", FaceName);
  			CDDA.AddJsonKeyValue("SkinName", SkinName);
  			CDDA.AddJsonKeyValue("LocalTime", LocalTimeAndMPOVMarker());
- 			CDDA.AddJsonKeyValue("PlayerName", PRI.PlayerName);
+ 			CDDA.AddJsonKeyValue("PlayerName", PlayerName);
  			CDDA.AddJsonKeyValue("ChatMessage", DisplayableSpectatorMessage);
  			CDDA.AddJsonKeyValue("Team", "Spectator");
 
@@ -374,22 +399,31 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
  					SkinName = "Dummy";
  				}
 
+ 				PlayerName = SomeDifferentPRI.PlayerName;
+ 				if(PlayerName == "")
+ 				{
+ 					PlayerName = "NoOne";
+ 				}
+
  				CDDA.ResetJsonContainer();
  				CDDA.AddJsonKeyValue("FaceName", FaceName);
  				CDDA.AddJsonKeyValue("SkinName", SkinName);
  				CDDA.AddJsonKeyValue("LocalTime", LocalTimeAndMPOVMarker());
- 				CDDA.AddJsonKeyValue("PlayerName", SomeDifferentPRI.PlayerName);
- 				CDDA.AddJsonKeyValue("ChatMessage", DisplayableSpectatorMessage);
+ 				CDDA.AddJsonKeyValue("PlayerName", PlayerName);
+ 				if(DisplayableSpectatorMessage != "")
+ 				{
+ 					CDDA.AddJsonKeyValue("ChatMessage", DisplayableSpectatorMessage);
+ 				}
+ 				else
+ 				{
+ 					CDDA.AddJsonKeyValue("ChatMessage", "No Message");
+ 				}
  				CDDA.AddJsonKeyValue("Team", "Spectator");
 
  				LoadMessages(CDDA.SerializeJson(), true);
  				CDDA.ResetJsonContainer();
  			}
  		}
- 	}
- 	else
- 	{
- 		Log("PRI is none, message is: " @ Message @ " isspectator: " @ PRI.bIsSpectator @ MessageType @ PRI.PlayerName);
  	}
  }
 
@@ -720,7 +754,14 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
  				class'CDDiscordActor'.static.ResetJsonContainer();
  				class'CDDiscordActor'.static.AddJsonKeyValue("ServerName", VSRP.CDServerName);
  				class'CDDiscordActor'.static.AddJsonKeyValue("LocalTime", LocalTimeAndMPOVMarker());
+ 				if(Root.GetPlayerOwner() != none && Root.GetPlayerOwner().Level != none && Root.GetPlayerOwner().Level.GetAddressURL() != "")
+ 				{
  				class'CDDiscordActor'.static.AddJsonKeyValue("ServerAddress", Root.GetPlayerOwner().Level.GetAddressURL());
+ 				}
+ 				else
+ 				{
+ 				 class'CDDiscordActor'.static.AddJsonKeyValue("ServerAddress", "No address");
+                 }
  				LoadMessages(class'CDDiscordActor'.static.SerializeJson());
  				class'CDDiscordActor'.static.ResetJsonContainer();
  			}
@@ -767,16 +808,24 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
 
  	TheTextArea.EmoSizeMultiplier = FrameWindow.EmoSize;
  	TheTextArea.TickCounterWarpNumber = (int(FrameWindow.EmoteAnimSpeed) / 24);
+ 	EmoWindowPage.TheEmoDisplayArea.TickCounterWarpNumber = TheTextArea.TickCounterWarpNumber;
  	TheTextArea.AnimShockEmote.TexChatSizeFraction = 0.08 * FrameWindow.EmoSize;
  	TheTextArea.AnimTrashTalkEmote.TexChatSizeFraction = 0.08 * FrameWindow.EmoSize;
+ 	TheTextArea.AnimBananaEmote.TexChatSizeFraction = 0.065 * FrameWindow.EmoSize;
+ 	TheTextArea.AnimBarfEmote.TexChatSizeFraction = 0.08 * FrameWindow.EmoSize;
+ 	TheTextArea.AnimWaveEmote.TexChatSizeFraction = 0.08 * FrameWindow.EmoSize;
  }
 
  function ChatConfigurationUpdated()
  {
  	TheTextArea.EmoSizeMultiplier = FrameWindow.EmoSize;
  	TheTextArea.TickCounterWarpNumber = (int(FrameWindow.EmoteAnimSpeed) / 24);
+ 	EmoWindowPage.TheEmoDisplayArea.TickCounterWarpNumber = TheTextArea.TickCounterWarpNumber;
  	TheTextArea.AnimShockEmote.TexChatSizeFraction = 0.08 * FrameWindow.EmoSize;
  	TheTextArea.AnimTrashTalkEmote.TexChatSizeFraction = 0.08 * FrameWindow.EmoSize;
+ 	TheTextArea.AnimBananaEmote.TexChatSizeFraction = 0.065 * FrameWindow.EmoSize;
+ 	TheTextArea.AnimBarfEmote.TexChatSizeFraction = 0.08 * FrameWindow.EmoSize;
+ 	TheTextArea.AnimWaveEmote.TexChatSizeFraction = 0.08 * FrameWindow.EmoSize;
  	LoadMessages();
  }
 
