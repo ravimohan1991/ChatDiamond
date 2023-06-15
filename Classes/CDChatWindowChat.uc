@@ -320,7 +320,11 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
  		if(FilterSenderName(Message) == PRI.PlayerName)
  		{
  			DisplayableSpectatorMessage =  PrepareSpectatorMessageForDisplay(Message, SpectatorLPRI);
- 			LP = Pawn(SpectatorLPRI.Owner);
+
+ 			if(SpectatorLPRI != none)
+ 			{
+ 				LP = Pawn(SpectatorLPRI.Owner);
+ 			}
 
  			PlayerName = PRI.PlayerName;
  			if(PlayerName == "")
@@ -365,7 +369,7 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
  				if (Root.GetPlayerOwner().GameReplicationInfo != none && Root.GetPlayerOwner().GameReplicationInfo.PRIArray[i] != None)
 				{
 					SpectatorLPRI = Root.GetPlayerOwner().GameReplicationInfo.PRIArray[i];
-					if (SpectatorLPRI.bIsSpectator && !SpectatorLPRI.bWaitingPlayer && SpectatorLPRI.StartTime > 0
+					if (SpectatorLPRI != none && SpectatorLPRI.bIsSpectator && !SpectatorLPRI.bWaitingPlayer && SpectatorLPRI.StartTime > 0
 						&& SpectatorLPRI.PlayerName == SenderString)
 					{
 						SomeDifferentPRI = SpectatorLPRI;
@@ -739,7 +743,7 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
 
  function Tick(float delta)
  {
- 	if(Root.GetPlayerOwner().GameReplicationInfo != CDGRI)
+ 	if(Root != none && Root.GetPlayerOwner() != none && Root.GetPlayerOwner().GameReplicationInfo != CDGRI)
  	{
  		CDGRI = Root.GetPlayerOwner().GameReplicationInfo;
  		TemporaryServerName = GenerateServerName();
@@ -754,7 +758,7 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
  				class'CDDiscordActor'.static.ResetJsonContainer();
  				class'CDDiscordActor'.static.AddJsonKeyValue("ServerName", VSRP.CDServerName);
  				class'CDDiscordActor'.static.AddJsonKeyValue("LocalTime", LocalTimeAndMPOVMarker());
- 				if(Root.GetPlayerOwner() != none && Root.GetPlayerOwner().Level != none && Root.GetPlayerOwner().Level.GetAddressURL() != "")
+ 				if(Root.GetPlayerOwner().Level != none && Root.GetPlayerOwner().Level.GetAddressURL() != "")
  				{
  				class'CDDiscordActor'.static.AddJsonKeyValue("ServerAddress", Root.GetPlayerOwner().Level.GetAddressURL());
  				}

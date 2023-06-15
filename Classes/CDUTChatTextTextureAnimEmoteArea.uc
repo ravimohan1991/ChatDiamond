@@ -1257,6 +1257,11 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  			ChatFaceTexture = Texture(DynamicLoadObject("SoldierSkins.Blkt5Othello", class'Texture'));
  			Log("[ChatDiamond] Dynamically loading new chat face texture");
  		}
+ 		else if(SkinItem == "cmdo1")
+ 		{
+ 			ChatFaceTexture = Texture(DynamicLoadObject("CommandoSkins.cmdo5Blake", class'Texture'));
+ 			Log("[ChatDiamond] Dynamically loading new chat face texture");
+ 		}
  		else
  		{
  	 		ChatFaceTexture = Texture(DynamicLoadObject(NonSandhiFaceNameString, class'Texture'));

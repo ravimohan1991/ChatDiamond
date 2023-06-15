@@ -268,11 +268,11 @@ void ACDDiscordActor::execSerializeJson(FFrame& Stack, RESULT_DECL)
 
 	std::string SerializedJson;
 
-	if (JsonVariable.empty())
+	if (JsonVariable.is_null() || JsonVariable.empty())
 	{
 		SerializedJson = "";
 	}
-	else
+	else //JsonVariable.is_object()
 	{
 		SerializedJson = JsonVariable.dump();
 	}
