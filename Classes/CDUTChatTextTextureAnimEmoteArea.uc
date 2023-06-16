@@ -1239,7 +1239,7 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  	if(IsSandhiNeeded(FaceNameString, NonSandhiFaceNameString))
  	{
  		ChatFaceTexture = Texture(DynamicLoadObject(FacePackage $ SkinItem $ "5" $ FaceItem, class'Texture'));
- 		Log("[ChatDiamond] Dynamically loading new chat face texture");
+ 		Log("[ChatDiamond] Dynamically loading new chat face texture" @ FacePackage $ SkinItem $ "5" $ FaceItem);
  	}
  	else
  	{
@@ -1250,22 +1250,22 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  		if(SkinItem == "boss1T_0" || SkinItem == "boss1T_1")
  		{
  			ChatFaceTexture = Texture(DynamicLoadObject("BossSkins.Boss5Xan", class'Texture'));
- 			Log("[ChatDiamond] Dynamically loading new chat face texture");
+ 			Log("[ChatDiamond] Dynamically loading new chat face texture" @ "BossSkins.Boss5Xan");
  		}
  		else if(SkinItem == "Blkt3")
  		{
  			ChatFaceTexture = Texture(DynamicLoadObject("SoldierSkins.Blkt5Othello", class'Texture'));
- 			Log("[ChatDiamond] Dynamically loading new chat face texture");
+ 			Log("[ChatDiamond] Dynamically loading new chat face texture" @ "SoldierSkins.Blkt5Othello");
  		}
  		else if(SkinItem == "cmdo1")
  		{
  			ChatFaceTexture = Texture(DynamicLoadObject("CommandoSkins.cmdo5Blake", class'Texture'));
- 			Log("[ChatDiamond] Dynamically loading new chat face texture");
+ 			Log("[ChatDiamond] Dynamically loading new chat face texture" @ "CommandoSkins.cmdo5Blake");
  		}
- 		else
+ 		else// This should not happen. Remember to remove this before releasing
  		{
  	 		ChatFaceTexture = Texture(DynamicLoadObject(NonSandhiFaceNameString, class'Texture'));
- 	 		Log("[ChatDiamond] Dynamically loading new chat face texture");
+ 	 		Log("[ChatDiamond] Dynamically loading new chat face texture" @ NonSandhiFaceNameString);
  		}
  	}
 

@@ -743,7 +743,7 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
 
  function Tick(float delta)
  {
- 	if(Root != none && Root.GetPlayerOwner() != none && Root.GetPlayerOwner().GameReplicationInfo != CDGRI)
+ 	if(Root != none && Root.GetPlayerOwner() != none && Root.GetPlayerOwner().GameReplicationInfo != none && Root.GetPlayerOwner().GameReplicationInfo != CDGRI)
  	{
  		CDGRI = Root.GetPlayerOwner().GameReplicationInfo;
  		TemporaryServerName = GenerateServerName();
@@ -760,12 +760,12 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
  				class'CDDiscordActor'.static.AddJsonKeyValue("LocalTime", LocalTimeAndMPOVMarker());
  				if(Root.GetPlayerOwner().Level != none && Root.GetPlayerOwner().Level.GetAddressURL() != "")
  				{
- 				class'CDDiscordActor'.static.AddJsonKeyValue("ServerAddress", Root.GetPlayerOwner().Level.GetAddressURL());
+ 					class'CDDiscordActor'.static.AddJsonKeyValue("ServerAddress", Root.GetPlayerOwner().Level.GetAddressURL());
  				}
  				else
  				{
- 				 class'CDDiscordActor'.static.AddJsonKeyValue("ServerAddress", "No address");
-                 }
+ 					class'CDDiscordActor'.static.AddJsonKeyValue("ServerAddress", "No address");
+ 				}
  				LoadMessages(class'CDDiscordActor'.static.SerializeJson());
  				class'CDDiscordActor'.static.ResetJsonContainer();
  			}
