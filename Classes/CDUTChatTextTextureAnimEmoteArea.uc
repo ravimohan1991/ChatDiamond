@@ -658,6 +658,7 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  		XIncrementor += X1;
  		TextAreaClipText(C, XIncrementor, Y, SJNameString);
 
+        class'CDDiscordActor'.static.ResetJsonContainer();
  		return DefaultTextTextureLineHeight;
  	}
 
@@ -721,23 +722,15 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  			MessagePass(C, X, Y, sMesg);
  		}
 
+        class'CDDiscordActor'.static.ResetJsonContainer();
  		return DefaultTextTextureLineHeight;
-
-
- 		if (Mid(FaceSkinNoText, 2, 1) != "/")
- 		{
- 			TextSize(C, "07/28 - 12:34   ", X1, X2);
- 			X = X1;
- 		}
-
- 		C.DrawColor = TxtColor;
- 		TextAreaClipText(C, X, Y, FaceSkinNoText);
  	}
  	else
  	{
  		TextAreaClipText(C, X, Y, Mid(FaceSkinNoText, MyPos/4));
  	}
 
+    class'CDDiscordActor'.static.ResetJsonContainer();
  	return DefaultTextTextureLineHeight;
  }
 

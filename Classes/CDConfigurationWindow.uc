@@ -115,7 +115,7 @@ class CDConfigurationWindow expands UWindowPageWindow;
  	EmotesAnimationSpeed = UWindowHSliderControl(CreateControl(class'UWindowHSliderControl', 20, 160, 250, 50));
  	EmotesAnimationSpeed.SetTextColor(class'CDChatWindowEmojis'.default.WhiteColor);
  	EmotesAnimationSpeed.SetText("Animation Speed");
- 	EmotesAnimationSpeed.SetRange(0, 100, 1);
+ 	EmotesAnimationSpeed.SetRange(50, 100, 1);
 
  	EmoSizeSlider = UWindowHSliderControl(CreateCOntrol(class'UWindowHSliderControl', 20, 220, 250, 50));
  	EmoSizeSlider.SetTextColor(class'CDChatWindowEmojis'.default.WhiteColor);

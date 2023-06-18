@@ -500,7 +500,7 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
  		// Remember the continuation concept
  		if(IgnorableStrings[IgnorableMessagecounter] == "")
  		{
- 		 return false;
+ 			return false;
  		}
 
  		if(instr(Message, IgnorableStrings[IgnorableMessageCounter]) != -1)
