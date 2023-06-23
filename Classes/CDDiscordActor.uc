@@ -68,10 +68,12 @@ class CDDiscordActor extends Actor
  * ChatDiamond.txt file. This basically provides virtually unlimited messages
  * caching.
  *
- * @PARAM ChatLine             Chat message with metadata
- *                             CommandoSkins.Grail:CommandoSkins.goth::Thursday 18 May 2023 - 21:41  somasup: some chatmessage
+ * @PARAM ChatLine             Chat message with metadata in json format
+ *                             {"ChatMessage":"smooth","FaceName":"SoldierSkins.Gard4Radkin","LocalTime":"Saturday 20 May 2023 21:57"
+ *                             ,"PlayerName":"MEDIBOT2000","SkinName":"SoldierSkins.Gard3","Team":"Red"}
  *******************************************************************************
 */
+
  native final static function CacheChatLine(string ChatLine);
 
 /*******************************************************************************
@@ -81,12 +83,14 @@ class CDDiscordActor extends Actor
  * @return                     the chat metadata
  *******************************************************************************
 */
+
  native final static function string GetLineFromCacheBottom(int LineNumber);
 
 /*******************************************************************************
  * A collection of native routines for managing json formatting of chat metadata
  *******************************************************************************
 */
+
  native static function AddJsonKeyValue(string Key, string Value);
  native static function string FetchValue(string Key);
  native static function string SerializeJson();

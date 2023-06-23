@@ -269,9 +269,16 @@ void ACDDiscordActor::execSerializeJson(FFrame& Stack, RESULT_DECL)
 	std::string SerializedJson;
 	SerializedJson = "";
 
-	if(!JsonVariable.empty() && JsonVariable.is_object() /* && (JsonVariable.contains("ChatMessage") || JsonVariable.contains("ServerName"))*/)// A hacky way, should check script based strings
+	if(!JsonVariable.empty() && JsonVariable.is_object())
 	{
-		SerializedJson = JsonVariable.dump();
+		try
+		{
+			SerializedJson = JsonVariable.dump();
+		}
+		catch (std::exception& e)
+		{
+			GLog->Logf(TEXT("[Chat Diamond] exception %s"), e.what());//Log output and use printf format.
+		}
 	}
 
 	JsonVariable.clear();
