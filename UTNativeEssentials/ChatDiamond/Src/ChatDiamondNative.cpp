@@ -273,7 +273,7 @@ void ACDDiscordActor::execSerializeJson(FFrame& Stack, RESULT_DECL)
 	{
 		try
 		{
-			SerializedJson = JsonVariable.dump();
+			SerializedJson = JsonVariable.dump(-1, ' ', false, json::error_handler_t::ignore);
 		}
 		catch (std::exception& e)
 		{

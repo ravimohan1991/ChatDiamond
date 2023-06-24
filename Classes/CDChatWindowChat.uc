@@ -97,6 +97,7 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
  	LocalPRI = Root.GetPlayerOwner().PlayerReplicationInfo;
 
  	CDDA = Root.GetPlayerOwner().Spawn(class'CDDiscordActor', Root.GetPlayerOwner());
+ 	CDDA.WindowChat = self;
 
  	VSRP.CDServerName = GenerateServerName();
  	VSRP.CDMD5Hash = class'CDHash'.static.MD5(VSRP.CDServerName);
@@ -174,7 +175,7 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
  	else
  	{
  		TheTextArea.Clear();
- 		for (i = FrameWindow.LastHistoricMessagesNumber; i > 0; i--)
+ 		for (i = FrameWindow.LastHistoricMessagesNumber + 1; i > 0; i--)
  		{
  			sTemp = CDDA.GetLineFromCacheBottom(i);
  			if (i > 0 && sTemp == "")
@@ -743,56 +744,6 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
 
  function Tick(float delta)
  {
- 	if(Root != none && Root.GetPlayerOwner() != none && Root.GetPlayerOwner().GameReplicationInfo != none && Root.GetPlayerOwner().GameReplicationInfo != CDGRI)
- 	{
- 		CDGRI = Root.GetPlayerOwner().GameReplicationInfo;
- 		TemporaryServerName = GenerateServerName();
-
- 		if(TemporaryServerName != "" && TemporaryServerName != "Another UT Server")// ye I don't know what you are doing playing on such server anyways
- 		{
- 			TemporaryServerHash = class'CDHash'.static.MD5(TemporaryServerName);
- 			if(VSRP.CDMD5Hash != TemporaryServerHash)
- 			{
- 				VSRP.CDServerName = TemporaryServerName;
- 				VSRP.CDMD5Hash = TemporaryServerHash;
- 				class'CDDiscordActor'.static.ResetJsonContainer();
- 				class'CDDiscordActor'.static.AddJsonKeyValue("ServerName", VSRP.CDServerName);
- 				class'CDDiscordActor'.static.AddJsonKeyValue("LocalTime", LocalTimeAndMPOVMarker());
- 				if(Root.GetPlayerOwner().Level != none && Root.GetPlayerOwner().Level.GetAddressURL() != "")
- 				{
- 					class'CDDiscordActor'.static.AddJsonKeyValue("ServerAddress", Root.GetPlayerOwner().Level.GetAddressURL());
- 				}
- 				else
- 				{
- 					class'CDDiscordActor'.static.AddJsonKeyValue("ServerAddress", "No address");
- 				}
- 				LoadMessages(class'CDDiscordActor'.static.SerializeJson());
- 				class'CDDiscordActor'.static.ResetJsonContainer();
- 			}
- 		}
- 	}
-
- 	if(Root.GetPlayerOwner().GameReplicationInfo.GameEndedComments != "")
- 	{
- 		if(!bGameEnded)
- 		{
- 			bGameEnded = true;
- 			Log("################ bgameended");
-
- 			if(FrameWindow.bOpenChatWindowOnMatchCompletion)
- 			{
- 				Log("################ attempting to open chat window");
- 				//CDUTConSole(Root.Console).KeyEvent(EInputKey(CSWindow.ConfigureWindow.ChatWindowKeyForBind), IST_Press, 0.0);
- 				CSWindow.ConfigureWindow.OpenChatWindow();
- 			}
- 		}
- 	}
- 	else
- 	{
- 		bGameEnded = false;
- 	}
-
-
  	if (iTick > 0)
  	{
  		iTick--;

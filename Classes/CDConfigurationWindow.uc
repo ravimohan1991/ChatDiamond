@@ -270,20 +270,6 @@ class CDConfigurationWindow expands UWindowPageWindow;
  	}
  }
 
- function OpenChatWindow()
- {
- 	local UMenuPageControl LPages;
- 	local UWindowWindow UWindow;
-
-    Log("############ inside openchatwindow");
-    Root.Console.bQuickKeyEnable = !Root.Console.bUWindowActive;
- 	Root.Console.LaunchUWindow();
- 	Root.Console.ShowConsole();
- 	UWindow =  Root.Console.ConsoleWindow.ClientArea;
- 	LPages = CDClientSideWindow(UWindow).Pages;
- 	LPages.GotoTab(LPages.GetTab("Public Chats"));
- }
-
  function Resized()
  {
  	Super.Resized();

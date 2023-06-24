@@ -33,6 +33,8 @@ class CDDiscordActor extends Actor
 	native
 	noexport;
 
+ var CDChatWindowChat WindowChat;
+
 /*******************************************************************************
  * A native routine for learning and testing basic native interface.
  *
@@ -109,6 +111,57 @@ class CDDiscordActor extends Actor
  {
  	Log("Testing out, well, the TestFunction!");
  	TestFunction("Test", 888); //Your log should output "Hello World! S=Test,I=888"
+ }
+
+ function Tick(float delta)
+ {
+ 	if(WindowChat.Root != none && WindowChat.Root.GetPlayerOwner() != none && WindowChat.Root.GetPlayerOwner().GameReplicationInfo != none && WindowChat.Root.GetPlayerOwner().GameReplicationInfo != WindowChat.CDGRI)
+ 	{
+ 		WindowChat.CDGRI = WindowChat.Root.GetPlayerOwner().GameReplicationInfo;
+ 		WindowChat.TemporaryServerName = WindowChat.GenerateServerName();
+
+ 		if(WindowChat.TemporaryServerName != "" && WindowChat.TemporaryServerName != "Another UT Server")// ye I don't know what you are doing playing on such server anyways
+ 		{
+ 			WindowChat.TemporaryServerHash = class'CDHash'.static.MD5(WindowChat.TemporaryServerName);
+ 			if(WindowChat.VSRP.CDMD5Hash != WindowChat.TemporaryServerHash)
+ 			{
+ 				WindowChat.VSRP.CDServerName = WindowChat.TemporaryServerName;
+ 				WindowChat.VSRP.CDMD5Hash = WindowChat.TemporaryServerHash;
+ 				class'CDDiscordActor'.static.ResetJsonContainer();
+ 				class'CDDiscordActor'.static.AddJsonKeyValue("ServerName", WindowChat.VSRP.CDServerName);
+ 				class'CDDiscordActor'.static.AddJsonKeyValue("LocalTime", WindowChat.LocalTimeAndMPOVMarker());
+ 				if(WindowChat.Root.GetPlayerOwner().Level != none && WindowChat.Root.GetPlayerOwner().Level.GetAddressURL() != "")
+ 				{
+ 					class'CDDiscordActor'.static.AddJsonKeyValue("ServerAddress", WindowChat.Root.GetPlayerOwner().Level.GetAddressURL());
+ 				}
+ 				else
+ 				{
+ 					class'CDDiscordActor'.static.AddJsonKeyValue("ServerAddress", "No address");
+ 				}
+ 				WindowChat.LoadMessages(class'CDDiscordActor'.static.SerializeJson());
+ 				class'CDDiscordActor'.static.ResetJsonContainer();
+ 			}
+ 		}
+ 	}
+
+ 	if(WindowChat.Root.GetPlayerOwner().GameReplicationInfo.GameEndedComments != "")
+ 	{
+ 		if(!WindowChat.bGameEnded)
+ 		{
+ 			WindowChat.bGameEnded = true;
+
+ 			if(WindowChat.FrameWindow.bOpenChatWindowOnMatchCompletion)
+ 			{
+ 				WindowChat.Root.Console.KeyEvent(EInputKey(WindowChat.CSWindow.ConfigureWindow.ChatWindowKeyForBind), IST_Press, 0.0);
+ 			}
+ 		}
+ 	}
+ 	else
+ 	{
+ 		WindowChat.bGameEnded = false;
+ 	}
+
+ 	Super.Tick(delta);
  }
 
 defaultproperties
