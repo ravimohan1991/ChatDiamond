@@ -144,7 +144,7 @@ class CDDiscordActor extends Actor
  		}
  	}
 
- 	if(WindowChat.Root.GetPlayerOwner().GameReplicationInfo.GameEndedComments != "")
+ 	if(WindowChat.Root != none && WindowChat.Root.GetPlayerOwner() != none && WindowChat.Root.GetPlayerOwner().GameReplicationInfo != none && WindowChat.Root.GetPlayerOwner().GameReplicationInfo.GameEndedComments != "")
  	{
  		if(!WindowChat.bGameEnded)
  		{
