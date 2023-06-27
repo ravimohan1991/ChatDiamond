@@ -22,7 +22,6 @@ ChatDiamond's native component makes use of variety of companion libraries which
 # TODO List
 - Add Configure window
   - configure console hot key
-  - configure open chat window at the end of match
   - language preferences
   
 - Add language translator  
