@@ -73,7 +73,7 @@ morestring=[b]", }
 
 \bigskip
 
-\textcolor{pink}{BIG FAT NOTE: Chat Diamond is in very early stages of development.  Please embrace yourselves for unexpected features and bugs here and there punctuated by tons of client logs.  If possible please raise an issue at \href{https://github.com/ravimohan1991/ChatDiamond/issues}{GitHub}!}
+\textcolor{pink}{BIG FAT NOTE: Chat Diamond is in development stage.  Please embrace yourselves for unexpected features and bugs here and there punctuated by accessed none type of logs.  If possible please raise an issue at \href{https://github.com/ravimohan1991/ChatDiamond/issues}{GitHub}!}
 
 \section{Introduction}
 
@@ -204,14 +204,17 @@ and date format shall be made available as we progress with the development cycl
 
 
 \section{Installation}
-Chat Diamond is developed and tested with UT99, 469c client.  Although the mod should work on previous versions, I take no pains for maintaining that code simply because I feel that we all should work towards pushing forward the community effort in driving the game (and UE 1) towards modern experience.  So by not supporting the code for earlier versions I am supporting the later versions.
+Chat Diamond is developed and tested with UT99, \textbf{469c client}.  Although the mod should work on previous versions, I take no pains for maintaining that code simply because I feel that we all should work towards pushing forward the community effort in driving the game (and UE 1) towards modern experience.  So by not supporting the code for earlier versions I am supporting the later versions.
 
 With that being written, feel free to send pull requests to \href{https://github.com/ravimohan1991/ChatDiamond/}{Chat Diamond} repository, even for earlier game versions.
 
-Chat Diamond is essentially a console (and not for the server).  So for installation do the following
+Chat Diamond is essentially a console (and not meant for the server).  So for installation do the following
 \begin{itemize}
-\item Place the \FileColor{ChatDiamond.dll} and \FileColor{ChatDiamond.u} files in \FolderColor{System} directory.
-\item \FileColor{AkelEditd.lib} is optional file and I'd copy that too in \FolderColor{System} directory just to be safe.
+\item
+    \begin{itemize}
+    \item \textbf{Linux}: Place the \FileColor{ChatDiamond.so}, \FileColor{ChatDiamond.ini}, \FileColor{ChatDiamond.txt}, and \FileColor{ChatDiamond.u} in \FolderColor{System}        directory.
+    \item \textbf{Windows}: Place the \FileColor{ChatDiamond.dll}, \FileColor{ChatDiamond.ini}, \FileColor{ChatDiamond.txt}, and \FileColor{ChatDiamond.u} in \FolderColor{System} directory.
+    \end{itemize}
 \item Open \FileColor{UnrealTournament.ini} and find the section \\
 
 \fbox{%

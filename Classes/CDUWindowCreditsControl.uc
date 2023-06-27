@@ -152,7 +152,7 @@ class CDUWindowCreditsControl extends UWindowDialogControl;
  var() float DelayScroll;
  var() float SpeedFade;
  var() float SpeedScroll;
- var() TLine Lines[64];
+ var() TLine Lines[90];
 
 
 // ============================================================================
