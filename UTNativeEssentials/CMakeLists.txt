@@ -13,6 +13,9 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_PROJECT_VERSION_MAJOR "0")
 set(CMAKE_PROJECT_VERSION_MINOR "1")
 set(CMAKE_PROJECT_VERSION_PATCH "0")
+
+#https://github.com/googleapis/google-cloud-cpp/tree/main/google/cloud/translate
+set(CHATDIAMOND_GOOGLE_TRANSLATE_CLOUD "G:/vcpkg/installed/x86-windows")
 # uncomment this to see compiler/linker commands
 # set(CMAKE_VERBOSE_MAKEFILE ON)
 
@@ -193,7 +196,7 @@ add_subdirectory(Engine)
 ################################################################################
 # Link Directories
 ################################################################################
-link_directories(ChatDiamond Core/Lib Engine/Lib Window/Lib)
+link_directories(ChatDiamond Core/Lib Engine/Lib Window/Lib ${CHATDIAMOND_GOOGLE_TRANSLATE_CLOUD}/lib)
 
 ################################################################################
 # Target Definitions / Custom Modding Stuff
@@ -202,12 +205,14 @@ add_subdirectory(ChatDiamond)
 target_include_directories(ChatDiamond
     PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/Core/Inc
-    ${CMAKE_CURRENT_SOURCE_DIR}/Engine/Inc)
+    ${CMAKE_CURRENT_SOURCE_DIR}/Engine/Inc
+	${CHATDIAMOND_GOOGLE_TRANSLATE_CLOUD}/include)
 
 
 ################################################################################
 # Target Linking Rules
 ################################################################################
-target_link_libraries(ChatDiamond PUBLIC Core Engine)
+target_link_libraries(ChatDiamond PUBLIC Core Engine grpc++ grpc)
+#target_link_libraries(ChatDiamond PUBLIC grpc++)
 
 # end of CMakeLists.txt ...

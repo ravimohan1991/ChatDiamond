@@ -29,6 +29,9 @@
 #include <iostream>
 #include <fstream>
 
+#include "translation_client.h"
+#include "project.h"
+
 IMPLEMENT_PACKAGE(ChatDiamond);
 
 IMPLEMENT_CLASS(ACDDiscordActor);
