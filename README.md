@@ -24,6 +24,11 @@ ChatDiamond's native component makes use of variety of companion libraries which
   - configure console hot key
   - language preferences
   
-- Add language translator  
+- Add language translator:
+  With partial success in the native integration, I am abandoning the translation work until [grpc](https://github.com/grpc/grpc/issues/25533) guys come up with the out-of box solution of
+  the certificate error on Windows.
+  ![image](https://github.com/ravimohan1991/ChatDiamond/assets/2173654/35076459-c436-4e72-91b2-b0d2fcea766d)
+
+    
 - Add hyper link recognition for http://www. and https://www.
 - Integration with Discord client using [sleepy-discord](https://github.com/ravimohan1991/sleepy-discord)
