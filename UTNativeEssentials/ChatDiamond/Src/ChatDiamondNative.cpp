@@ -86,7 +86,7 @@ void ACDDiscordActor::execTranslate(FFrame& Stack, RESULT_DECL)
 	auto client = translate::TranslationServiceClient(
 			translate::MakeTranslationServiceConnection());
 
-	auto const project = google::cloud::Project("hehe");
+	auto const project = google::cloud::Project("chatdiamond-translator");
 	auto const target = std::string{ "es-419" };
 	
 	try
@@ -97,13 +97,12 @@ void ACDDiscordActor::execTranslate(FFrame& Stack, RESULT_DECL)
 
 		for (auto const& translation : response->translations()) 
 		{
-			std::cout << translation.translated_text() << "\n";
+			GLog->Logf(TEXT("[Chat Diamond] Translation: %s"), translation.translated_text());
 		}
-
 	}
 	catch (google::cloud::Status const& status)
 	{
-		std::cerr << "google::cloud::Status thrown: " << status << "\n";
+		GLog->Logf(TEXT("[Chat Diamond] google::cloud::Status thrown %s"), status.message().data());
 	}
 
 	unguard;

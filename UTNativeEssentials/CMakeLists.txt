@@ -221,6 +221,8 @@ set_target_properties(google-cloud-cpp::translate_protos PROPERTIES
       IMPORTED_CONFIGURATIONS "Debug;Release"
 	  IMPORTED_LOCATION "G:/vcpkg/buildtrees/google-cloud-cpp/x86-windows-static-rel/google/cloud/translate/google_cloud_cpp_translate_protos.lib"
       IMPORTED_LOCATION_DEBUG "G:/vcpkg/buildtrees/google-cloud-cpp/x86-windows-static-dbg/google/cloud/translate/google_cloud_cpp_translate_protos.lib")
+	  
+add_subdirectory(google-translate)	  
  
 ################################################################################
 # Target Linking Rules

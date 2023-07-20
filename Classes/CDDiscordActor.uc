@@ -89,6 +89,16 @@ class CDDiscordActor extends Actor
  native final static function string GetLineFromCacheBottom(int LineNumber);
 
 /*******************************************************************************
+ * A native routine to test the translation of text in game
+ *
+ * @PARAM LineNumber           Line from the bottom
+ * @return                     the chat metadata
+ *******************************************************************************
+*/
+
+ native final static function Translate();
+
+/*******************************************************************************
  * A collection of native routines for managing json formatting of chat metadata
  *******************************************************************************
 */

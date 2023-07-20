@@ -680,6 +680,7 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
  						SaveConfig();
  						ButSave.bDisabled = True;
  						GetPlayerOwner().ClientMessage("All Messages have been saved to ChatDiamond.ini");
+ 						CDDA.Translate(); // Test google::translate
  					break;
 
  					case ButSend:
