@@ -29,8 +29,8 @@
 #include <iostream>
 #include <fstream>
 
-#include "translation_client.h"
-#include "project.h"
+#include "google/cloud/translate/v3/translation_client.h"
+#include "google/cloud/project.h"
 
 IMPLEMENT_PACKAGE(ChatDiamond);
 
@@ -69,6 +69,46 @@ void ACDDiscordActor::execGetGameSystemPath(FFrame& Stack, RESULT_DECL)
 	unguard;
 }
 IMPLEMENT_FUNCTION(ACDDiscordActor, -1, execGetGameSystemPath)
+
+void ACDDiscordActor::execTranslate(FFrame& Stack, RESULT_DECL)
+{
+	guard(ACDDiscordActor::execTranslate);
+
+	P_FINISH;
+
+	auto constexpr kText = R"""(
+								Four score and seven years ago our fathers brought forth on this
+								continent, a new nation, conceived in Liberty, and dedicated to
+								the proposition that all men are created equal.)""";
+
+	namespace translate = ::google::cloud::translate_v3;
+
+	auto client = translate::TranslationServiceClient(
+			translate::MakeTranslationServiceConnection());
+
+	auto const project = google::cloud::Project("hehe");
+	auto const target = std::string{ "es-419" };
+	
+	try
+	{
+		auto response = client.TranslateText(project.FullName(), target, { std::string{kText} });
+
+		if (!response) throw std::move(response).status();
+
+		for (auto const& translation : response->translations()) 
+		{
+			std::cout << translation.translated_text() << "\n";
+		}
+
+	}
+	catch (google::cloud::Status const& status)
+	{
+		std::cerr << "google::cloud::Status thrown: " << status << "\n";
+	}
+
+	unguard;
+}
+IMPLEMENT_FUNCTION(ACDDiscordActor, -1, execTranslate)
 
 void ACDDiscordActor::execCacheChatLine(FFrame& Stack, RESULT_DECL)
 {

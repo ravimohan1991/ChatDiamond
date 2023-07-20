@@ -1,4 +1,5 @@
 mkdir UTNativeLightHouse
 cd UTNativeLightHouse
-cmake -A Win32 -DCMAKE_INSTALL_PREFIX=G:\SteamLibrary\UnrealTournamentGOTY\System -DCMAKE_TOOLCHAIN_FILE=cmake/MSVC.cmake ..
+cmake -A Win32 -DCMAKE_INSTALL_PREFIX=G:\SteamLibrary\UnrealTournamentGOTY\System -DCMAKE_TOOLCHAIN_FILE=cmake/MSVC.cmake -DCMAKE_PREFIX_PATH=G:\vcpkg\buildtrees\google-cloud-cpp\x86-windows-static-rel\google\cloud\translate;G:\vcpkg\installed\x86-windows-static\share\google_cloud_cpp_googleapis;G:\vcpkg\installed\x86-windows-static\share\protobuf;G:\vcpkg\installed\x86-windows-static\share\grpc;G:\vcpkg\installed\x86-windows-static\share\upb;G:\vcpkg\installed\x86-windows-static\share\re2;G:\vcpkg\installed\x86-windows-static\share\google_cloud_cpp_common;G:\vcpkg\installed\x86-windows-static\share\absl;G:\vcpkg\installed\x86-windows-static\share\google_cloud_cpp_grpc_utils;G:\vcpkg\installed\x86-windows-static\share\c-ares;G:\vcpkg\installed\x86-windows-static\share\google_cloud_cpp_translate -DZLIB_LIBRARY=G:\vcpkg\installed\x86-windows-static\lib\zlib.lib -DOPENSSL_ROOT_DIR=G:\vcpkg\packages\openssl_x86-windows-static -DC-ARES_DIR=G:\vcpkg\packages\c-ares_x86-windows-static\lib -DPROTOBUF_PROTOC_EXECUTABLE=G:\vcpkg\installed\x86-windows-static\tools\protobuf ..
 pause
+

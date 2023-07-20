@@ -14,8 +14,6 @@ set(CMAKE_PROJECT_VERSION_MAJOR "0")
 set(CMAKE_PROJECT_VERSION_MINOR "1")
 set(CMAKE_PROJECT_VERSION_PATCH "0")
 
-#https://github.com/googleapis/google-cloud-cpp/tree/main/google/cloud/translate
-set(CHATDIAMOND_GOOGLE_TRANSLATE_CLOUD "G:/vcpkg/installed/x86-windows")
 # uncomment this to see compiler/linker commands
 # set(CMAKE_VERBOSE_MAKEFILE ON)
 
@@ -196,7 +194,7 @@ add_subdirectory(Engine)
 ################################################################################
 # Link Directories
 ################################################################################
-link_directories(ChatDiamond Core/Lib Engine/Lib Window/Lib ${CHATDIAMOND_GOOGLE_TRANSLATE_CLOUD}/lib)
+link_directories(ChatDiamond Core/Lib Engine/Lib Window/Lib)
 
 ################################################################################
 # Target Definitions / Custom Modding Stuff
@@ -208,11 +206,27 @@ target_include_directories(ChatDiamond
     ${CMAKE_CURRENT_SOURCE_DIR}/Engine/Inc
 	${CHATDIAMOND_GOOGLE_TRANSLATE_CLOUD}/include)
 
-
+################################################################################
+# Find google translate package and make arrangements
+# 
+# https://github.com/googleapis/google-cloud-cpp/tree/main/google/cloud/translate
+# You may want to use vcpkg to download dependencies and build with 
+# vcpkg install google-cloud-cpp[core,translate]:x86-windows-static
+################################################################################
+find_package(google_cloud_cpp_translate REQUIRED)
+set_target_properties(google-cloud-cpp::translate PROPERTIES
+      IMPORTED_CONFIGURATIONS "Debug;Release"
+      IMPORTED_LOCATION "G:/vcpkg/buildtrees/google-cloud-cpp/x86-windows-static-rel/google/cloud/translate/google_cloud_cpp_translate.lib"
+      IMPORTED_LOCATION_DEBUG "G:/vcpkg/buildtrees/google-cloud-cpp/x86-windows-static-dbg/google/cloud/translate/google_cloud_cpp_translate.lib")
+set_target_properties(google-cloud-cpp::translate_protos PROPERTIES
+      IMPORTED_CONFIGURATIONS "Debug;Release"
+	  IMPORTED_LOCATION "G:/vcpkg/buildtrees/google-cloud-cpp/x86-windows-static-rel/google/cloud/translate/google_cloud_cpp_translate_protos.lib"
+      IMPORTED_LOCATION_DEBUG "G:/vcpkg/buildtrees/google-cloud-cpp/x86-windows-static-dbg/google/cloud/translate/google_cloud_cpp_translate_protos.lib")
+ 
 ################################################################################
 # Target Linking Rules
 ################################################################################
-target_link_libraries(ChatDiamond PUBLIC Core Engine grpc++ grpc)
-#target_link_libraries(ChatDiamond PUBLIC grpc++)
+target_link_libraries(ChatDiamond PUBLIC Core Engine
+                        optimized google-cloud-cpp::translate)
 
 # end of CMakeLists.txt ...
