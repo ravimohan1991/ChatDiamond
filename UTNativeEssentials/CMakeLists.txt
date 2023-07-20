@@ -203,8 +203,7 @@ add_subdirectory(ChatDiamond)
 target_include_directories(ChatDiamond
     PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/Core/Inc
-    ${CMAKE_CURRENT_SOURCE_DIR}/Engine/Inc
-	${CHATDIAMOND_GOOGLE_TRANSLATE_CLOUD}/include)
+    ${CMAKE_CURRENT_SOURCE_DIR}/Engine/Inc)
 
 ################################################################################
 # Find google translate package and make arrangements
