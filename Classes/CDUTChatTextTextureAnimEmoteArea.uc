@@ -270,9 +270,8 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  var CDLoadedTextureList TextureList;
  var UWindowHScrollBar HorizontalSB;
  var bool bScrollHorizontal;
- var int VisibleColumns;
- // Calibrator
- var int NumberOfLettersPerLine;
+ var int MaximumRowPartitionCount;
+ var int MaximumChatLineSize;  // Including date and face textures
 
  struct SkinStore
  {
@@ -602,12 +601,14 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
 
  function float DrawTextTextureLine(Canvas C, UWindowDynamicTextRow L, float Y)
  {
- 	local float X, X1, X2, Y1, XIncrementor;
+ 	local float X, X1, X2, Y1, XIncrementor, MaxCounter;
  	local string sDate, sName, sMesg, sTm;
  	local string FaceName, SkinName;
- 	local string FaceSkinNoText;
+ 	local string FaceSkinNoText, MessageToPrint;
  	local float TextureXOccupied, TextureYOccupied;
  	local string TempServerString, SJTimeString, SJAddressString, SJNameString;
+ 	local float HorizontalScrollSkip;
+ 	local int MessageSplitPosition;
 
  	if(L.Text == "")
  	{
@@ -658,7 +659,7 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  		XIncrementor += X1;
  		TextAreaClipText(C, XIncrementor, Y, SJNameString);
 
-        class'CDDiscordActor'.static.ResetJsonContainer();
+ 		class'CDDiscordActor'.static.ResetJsonContainer();
  		return DefaultTextTextureLineHeight;
  	}
 
@@ -674,6 +675,11 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  		sMesg = class'CDDiscordActor'.static.FetchValue("ChatMessage");
  		sName = class'CDDiscordActor'.static.FetchValue("PlayerName");
 
+ 		TextSize(C, sMesg, X1, Y1);
+
+ 		//	HorizontalScrollSkip = (HorizontalSB.Pos) * X1 / (1 + X1 / WinWidth) + 2;
+ 		HorizontalScrollSkip = (HorizontalSB.Pos) * MaximumChatLineSize / MaximumRowPartitionCount + 2;
+
  		C.Font = Root.Fonts[F_Normal];
 
  		TextSize(C, sDate, X1, Y1);
@@ -681,11 +687,16 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  		C.DrawColor = ChatColor;
  		C.SetPos(X, Y);
 
- 		TextAreaClipText(C, X, Y, sDate);
+ 		if(X >= HorizontalScrollSkip)
+ 		{
+ 			TextAreaClipText(C, X, Y, sDate);
+ 			X = X1 + 2 + ChatFaceVerticalPadding;
+ 		}
 
- 		X = X1 + 2 + ChatFaceVerticalPadding;
-
- 		DrawChatFace(C, X, Y, LocateChatFaceTexture(FaceName, SkinName), Y1, TextureXOccupied, TextureYOccupied);
+ 		if(X >= HorizontalScrollSkip)
+ 		{
+ 			DrawChatFace(C, X, Y, LocateChatFaceTexture(FaceName, SkinName), Y1, TextureXOccupied, TextureYOccupied);
+ 		}
 
  		if (bChat)
  		{
@@ -710,19 +721,57 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  				C.DrawColor = WhiteColor;
  			}
 
- 			X = X1 + 2 + ChatFaceVerticalPadding + TextureXOccupied + 2;
+ 			if(X >= HorizontalScrollSkip)
+ 			{
+ 				X = X1 + 2 + ChatFaceVerticalPadding + TextureXOccupied + 2;
+ 			}
+
  			C.SetPos(X, Y);
 
- 			TextAreaClipText(C, X, Y, sName);
+ 			if(X >= HorizontalScrollSkip)
+ 			{
+ 				TextAreaClipText(C, X, Y, sName);
+ 				C.DrawColor = TxtColor;
 
- 			C.DrawColor = TxtColor;
- 			TextSize(C, sName $ "  ", X2, Y1);
- 			X = X1 + 2 + ChatFaceVerticalPadding + TextureXOccupied + 2 + X2;
+ 				TextSize(C, sName $ "  ", X2, Y1);
+ 				X = X1 + 2 + ChatFaceVerticalPadding + TextureXOccupied + 2 + X2;
+ 			}
 
- 			MessagePass(C, X, Y, sMesg);
+ 			TextSize(C, sMesg, X2, Y1);
+
+ 			MaxCounter = X + X2;
+ 			if(MaxCounter > MaximumChatLineSize)
+ 			{
+ 				MaximumChatLineSize = MaxCounter;
+ 			}
+
+ 			X2 = 0;
+
+ 			while(true)
+ 			{
+ 				MessageSplitPosition = GetMessageSplitPos(C, sMesg, WinWidth - X);
+
+ 				if(MessageSplitPosition == -1)
+ 				{
+ 					MessagePass(C, X, Y, sMesg);
+ 					break;
+ 				}
+
+ 				MessageToPrint = Left(sMesg, MessageSplitPosition);
+ 				TextSize(C, MessageToPrint, X1, Y1);
+
+ 				if(X + X1 >= HorizontalScrollSkip)
+ 				{
+ 					MessagePass(C, X, Y, MessageToPrint);
+ 					break;
+ 				}
+
+ 				sMesg = Mid(sMesg, MessageSplitPosition);
+ 				X = 0;
+ 			}
  		}
 
-        class'CDDiscordActor'.static.ResetJsonContainer();
+ 		class'CDDiscordActor'.static.ResetJsonContainer();
  		return DefaultTextTextureLineHeight;
  	}
  	else
@@ -730,9 +779,52 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  		TextAreaClipText(C, X, Y, Mid(FaceSkinNoText, MyPos/4));
  	}
 
-    class'CDDiscordActor'.static.ResetJsonContainer();
+ 	class'CDDiscordActor'.static.ResetJsonContainer();
  	return DefaultTextTextureLineHeight;
  }
+
+ // find where to break the line
+function int GetMessageSplitPos(Canvas C, string MessageText, optional float MaxWidth)
+{
+	local float W, H, LineWidth, NextWordWidth;
+	local string Input, NextWord;
+	local int WordsThisRow, WrapPos;
+
+    if(MaxWidth == 0)
+    MaxWidth = WinWidth;
+
+	// quick check
+	TextAreaTextSize(C, MessageText, W, H);
+	if(W <= MaxWidth)
+		return -1;
+
+	Input = MessageText;
+	WordsThisRow = 0;
+	LineWidth = 0;
+	WrapPos = 0;
+	NextWord = "";
+
+	while(Input != "" || NextWord != "")
+	{
+		if(NextWord == "")
+		{
+			RemoveNextWord(Input, NextWord);
+			TextAreaTextSize(C, NextWord, NextWordWidth, H);
+		}
+		if(WordsThisRow > 0 && LineWidth + NextWordWidth > MaxWidth)
+		{
+			return WrapPos;
+		}
+		else
+		{
+			WrapPos += Len(NextWord);
+			LineWidth += NextWordWidth;
+			NextWord = "";
+			WordsThisRow++;
+		}
+	}
+	return -1;
+}
 
 /********************************************************************************
  * A message pass between DrawTextTextureLine and DrawChatMessageWithEmoji
@@ -763,7 +855,6 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  			TextUrlCurrent = URLStringExtract;
 
  			CDChatWindow.SetCursor(Root.HandCursor);
- 			Log("Setting the cursor to Handcursor");
  		}
  		else
  		{
@@ -1405,7 +1496,7 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  	local float TempoTextHeight, TempoTextureHeight;
  	local int i;
  	local float Y, Junk;
- 	local bool bWrapped;
+ 	//local float WinWidthInCanvasContext;
 
  	C.DrawColor = TextColor;
  	TextUrlCurrent = "";
@@ -1415,66 +1506,39 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  	else
  		C.Font = Root.Fonts[Font];
 
- 	if(OldW != WinWidth || OldH != WinHeight)
+ 	// Obtain the ChatFace texture height
+ 	DrawChatFace(C, 0 , 0, LocateChatFaceTexture(), 0, , TempoTextureHeight);
+
+ 	// Obtain the text (maybe emote) height
+ 	TextAreaTextSize(C, "A", Junk, TempoTextHeight);
+
+ 	DefaultTextTextureLineHeight = max(TempoTextHeight, TempoTextureHeight);
+
+ 	// Some horizontal padding (gap?)
+ 	DefaultTextTextureLineHeight += UniformHorizontalPadding;
+
+ 	VisibleRows = WinHeight / DefaultTextTextureLineHeight;
+
+ 	Count = List.Count();
+ 	VertSB.SetRange(0, Count, VisibleRows);
+
+ 	if(WinWidth < MaximumChatLineSize)
  	{
- 		WordWrap(C, True);
- 		OldW = WinWidth;
- 		OldH = WinHeight;
- 		bWrapped = True;
+ 		MaximumRowPartitionCount = 1 + MaximumChatLineSize / WinWidth;
  	}
- 	else if(bDirty)
+ 	else
  	{
- 		WordWrap(C, False);
- 		bWrapped = True;
+ 		MaximumRowPartitionCount = 1;
  	}
 
- 	if(bWrapped)
+ 	if(MaximumRowPartitionCount == 1)
  	{
- 		// Obtain the ChatFace texture height
- 		DrawChatFace(C, 0 , 0, LocateChatFaceTexture(), 0, , TempoTextureHeight);
-
- 		// Obtain the text (maybe emote) height
- 		TextAreaTextSize(C, "A", Junk, TempoTextHeight);
-
- 		DefaultTextTextureLineHeight = max(TempoTextHeight, TempoTextureHeight);
-
- 		// Some horizontal padding (gap?)
- 		DefaultTextTextureLineHeight += UniformHorizontalPadding;
-
- 		VisibleRows = WinHeight / DefaultTextTextureLineHeight;
- 		VisibleColumns = WinWidth / (NumberOfLettersPerLine * Junk);
-
- 		Count = List.Count();
- 		VertSB.SetRange(0, Count, VisibleRows);
-
- 		if(HorizontalSB != none)
- 		{
- 			HorizontalSB.SetRange(0, WinWidth, HorizontalSB.WinWidth);
- 		}
-
- 		if(bScrollOnResize)
- 		{
- 			if(bTopCentric)
- 			{
- 				VertSB.Pos = 0;
- 			}
- 			else
- 			{
- 				VertSB.Pos = VertSB.MaxPos;
- 			}
- 		}
-
- 		if(bAutoScrollbar && !bVariableRowHeight)
- 		{
- 			if(Count <= VisibleRows)
- 			{
- 				VertSB.HideWindow();
- 			}
- 			else
- 			{
- 				VertSB.ShowWindow();
- 			}
- 		}
+ 		HorizontalSB.HideWindow();
+ 	}
+ 	else
+ 	{
+ 		HorizontalSB.SetRange(0, MaximumRowPartitionCount, 1);
+ 		HorizontalSB.ShowWindow();
  	}
 
  	if(bTopCentric)
@@ -1644,7 +1708,6 @@ function Click(float X, float Y)
  	FaceColor=(R=50,G=50,B=50,A=0)
  	UniformHorizontalPadding=10
  	ChatFaceVerticalPadding=9
- 	NumberOfLettersPerLine=35
 
  	ChatEmojis(0)=(Symbol=":)",Image1=Texture'Smile',Image2=Texture'XSmile',StatusBarText="Smiley!")
  	ChatEmojis(1)=(Symbol=":(",Image1=Texture'Sad',Image2=Texture'XSad',StatusBarText="Sad!")
