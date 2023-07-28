@@ -151,7 +151,7 @@ class CDConfigurationWindow expands UWindowPageWindow;
  	AutoScrollChat = UWindowCheckbox(CreateControl(class'UWindowCheckbox', 20, 360, 200, 50));
  	AutoScrollChat.SetTextColor(class'CDChatWindowEmojis'.default.WhiteColor);
 
- 	AutoScrollChat.SetText("Auto scroll chat");
+ 	AutoScrollChat.SetText("Auto v-scroll chat");
 
  	// See Paint() for drawing of preview miniframe
 
