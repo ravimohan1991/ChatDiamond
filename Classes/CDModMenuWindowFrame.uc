@@ -45,6 +45,7 @@ class CDModMenuWindowFrame expands UWindowConsoleWindow Config (ChatDiamond);
  var() config bool bApplyBGToConsole;
  var() config bool bPlaySoundOnMessageArrival;
  var() config bool bOpenChatWindowOnMatchCompletion;
+ var() config bool bAutoScrollChat;
  var() config float EmoSize;
  var() config float EmoteAnimSpeed;
  var() config int LastHistoricMessagesNumber;

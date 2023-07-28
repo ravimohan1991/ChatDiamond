@@ -251,11 +251,11 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  var Color ChatColor, GrnColor, YelColor, BluColor, RedColor, WhiteColor, TxtColor, FaceColor;
  var texture StaticTransparencyTexture;
 
- var float FrameRate;
+ //var float FrameRate;
  var float EmoSizeMultiplier;
  var int TickCounter;
  var int TickCounterWarpNumber;
- var int DesiredAnimationFrameRate;
+ //var int DesiredAnimationFrameRate;
  var float MouseMoveY;
 
  var CDChatWindowHelperContextMenu HelperContextMenu;
@@ -370,11 +370,13 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  	// Powers of two, I presume!
  	StaticTransparencyTexture = texture'LadrStatic.Static_a00'; // 256 by 256 pixels
 
- 	FrameRate = 60;
+ 	//FrameRate = 60;
  	TickCounter = 0;
 
- 	DesiredAnimationFrameRate = 24;
- 	TickCounterWarpNumber = (int(FrameRate) / 24);
+ 	bAutoScrollBar = false;
+
+ 	//DesiredAnimationFrameRate = 24;
+ 	//TickCounterWarpNumber = (int(FrameRate) / 24);
 
  	bIsStatusSetByChatMessage = false;
  	TextUrlCurrent = "";
@@ -556,52 +558,9 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
 	ChatFaces.SetupSentinel();
  }
 
- function FindCategoryDeliminator(string EncodedText, out int Position, out string Deliminator)
- {
- 	local int TempoPosition;
-
- 	TempoPosition = Instr(EncodedText, "-");
-
- 	if(TempoPosition != -1)
- 	{
- 		Deliminator = "-";
- 		Position = TempoPosition;
- 		return;
- 	}
-
- 	TempoPosition = Instr(EncodedText, "<");
-
- 	if(TempoPosition != -1)
- 	{
- 		Deliminator = "<";
- 		Position = TempoPosition;
- 		return;
- 	}
-
- 	TempoPosition = Instr(EncodedText, ">");
-
- 	if(TempoPosition != -1)
- 	{
- 		Deliminator = ">";
- 		Position = TempoPosition;
- 		return;
- 	}
-
- 	TempoPosition = Instr(EncodedText, "+");
-
- 	if(TempoPosition != -1)
- 	{
- 		Deliminator = "+";
- 		Position = TempoPosition;
- 		return;
- 	}
-
- 	Log("ChatDiamond: Text - " $ EncodedText $ " has no identifiable category deliminator");
- }
-
  function float DrawTextTextureLine(Canvas C, UWindowDynamicTextRow L, float Y)
  {
- 	local float X, X1, X2, Y1, XIncrementor, MaxCounter;
+ 	local float X, X1, X2, Y1, X3, XIncrementor, MaxCounter, DrawX;
  	local string sDate, sName, sMesg, sTm;
  	local string FaceName, SkinName;
  	local string FaceSkinNoText, MessageToPrint;
@@ -663,7 +622,9 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  		return DefaultTextTextureLineHeight;
  	}
 
- 	X = 2;
+ 	HorizontalScrollSkip = (HorizontalSB.Pos) * MaximumChatLineSize / MaximumRowPartitionCount + 2;
+
+ 	X = 2 - HorizontalScrollSkip; // Horizontal reference
 
  	FaceName = class'CDDiscordActor'.static.FetchValue("FaceName");
  	SkinName = class'CDDiscordActor'.static.FetchValue("SkinName");
@@ -675,10 +636,7 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  		sMesg = class'CDDiscordActor'.static.FetchValue("ChatMessage");
  		sName = class'CDDiscordActor'.static.FetchValue("PlayerName");
 
- 		TextSize(C, sMesg, X1, Y1);
-
- 		//	HorizontalScrollSkip = (HorizontalSB.Pos) * X1 / (1 + X1 / WinWidth) + 2;
- 		HorizontalScrollSkip = (HorizontalSB.Pos) * MaximumChatLineSize / MaximumRowPartitionCount + 2;
+ 		//TextSize(C, sMesg, X1, Y1);
 
  		C.Font = Root.Fonts[F_Normal];
 
@@ -687,16 +645,10 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  		C.DrawColor = ChatColor;
  		C.SetPos(X, Y);
 
- 		if(X >= HorizontalScrollSkip)
- 		{
- 			TextAreaClipText(C, X, Y, sDate);
- 			X = X1 + 2 + ChatFaceVerticalPadding;
- 		}
+ 		TextAreaClipText(C, X, Y, sDate);
+ 		DrawX = X + X1 + 2 + ChatFaceVerticalPadding;
 
- 		if(X >= HorizontalScrollSkip)
- 		{
- 			DrawChatFace(C, X, Y, LocateChatFaceTexture(FaceName, SkinName), Y1, TextureXOccupied, TextureYOccupied);
- 		}
+ 		DrawChatFace(C, DrawX, Y, LocateChatFaceTexture(FaceName, SkinName), Y1, TextureXOccupied, TextureYOccupied);
 
  		if (bChat)
  		{
@@ -721,54 +673,36 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  				C.DrawColor = WhiteColor;
  			}
 
- 			if(X >= HorizontalScrollSkip)
- 			{
- 				X = X1 + 2 + ChatFaceVerticalPadding + TextureXOccupied + 2;
- 			}
+ 			DrawX = X + X1 + 2 + ChatFaceVerticalPadding + TextureXOccupied + 2;
 
- 			C.SetPos(X, Y);
+ 			C.SetPos(DrawX, Y);
 
- 			if(X >= HorizontalScrollSkip)
- 			{
- 				TextAreaClipText(C, X, Y, sName);
- 				C.DrawColor = TxtColor;
+ 			TextAreaClipText(C, DrawX, Y, sName);
+ 			C.DrawColor = TxtColor;
 
- 				TextSize(C, sName $ "  ", X2, Y1);
- 				X = X1 + 2 + ChatFaceVerticalPadding + TextureXOccupied + 2 + X2;
- 			}
+ 			TextSize(C, sName $ "  ", X2, Y1);
+ 			DrawX = X + X1 + 2 + ChatFaceVerticalPadding + TextureXOccupied + 2 + X2;
 
- 			TextSize(C, sMesg, X2, Y1);
+ 			TextSize(C, sMesg, X3, Y1);
 
- 			MaxCounter = X + X2;
+ 			// Estimation of longest message (including date and time and facetexture) for partitioning
+ 			MaxCounter = X1 + 2 + ChatFaceVerticalPadding + TextureXOccupied + 2 + X2 + X3;
  			if(MaxCounter > MaximumChatLineSize)
  			{
  				MaximumChatLineSize = MaxCounter;
  			}
 
- 			X2 = 0;
+ 			MessageSplitPosition = GetMessageSplitPos(C, sMesg, WinWidth - DrawX);
 
- 			while(true)
+ 			if(MessageSplitPosition == -1)
  			{
- 				MessageSplitPosition = GetMessageSplitPos(C, sMesg, WinWidth - X);
-
- 				if(MessageSplitPosition == -1)
- 				{
- 					MessagePass(C, X, Y, sMesg);
- 					break;
- 				}
-
+ 				MessagePass(C, DrawX, Y, sMesg);
+			}
+ 			else
+ 			{
  				MessageToPrint = Left(sMesg, MessageSplitPosition);
- 				TextSize(C, MessageToPrint, X1, Y1);
-
- 				if(X + X1 >= HorizontalScrollSkip)
- 				{
- 					MessagePass(C, X, Y, MessageToPrint);
- 					break;
- 				}
-
- 				sMesg = Mid(sMesg, MessageSplitPosition);
- 				X = 0;
- 			}
+ 				MessagePass(C, DrawX, Y, MessageToPrint);
+			}
  		}
 
  		class'CDDiscordActor'.static.ResetJsonContainer();
@@ -783,48 +717,101 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  	return DefaultTextTextureLineHeight;
  }
 
- // find where to break the line
-function int GetMessageSplitPos(Canvas C, string MessageText, optional float MaxWidth)
-{
+ // find where to break the line, taken from Epic's code
+ function int GetMessageSplitPos(Canvas C, string MessageText, optional float MaxWidth)
+ {
 	local float W, H, LineWidth, NextWordWidth;
 	local string Input, NextWord;
 	local int WordsThisRow, WrapPos;
 
-    if(MaxWidth == 0)
-    MaxWidth = WinWidth;
+ 	if(MaxWidth == 0)
+ 	{
+ 		MaxWidth = WinWidth;
+ 	}
 
-	// quick check
-	TextAreaTextSize(C, MessageText, W, H);
-	if(W <= MaxWidth)
-		return -1;
+ 	// quick check
+ 	TextAreaTextSize(C, MessageText, W, H);
+ 	if(W <= MaxWidth)
+ 	{
+ 		return -1;
+ 	}
 
-	Input = MessageText;
-	WordsThisRow = 0;
-	LineWidth = 0;
-	WrapPos = 0;
-	NextWord = "";
+ 	Input = MessageText;
+ 	WordsThisRow = 0;
+ 	LineWidth = 0;
+ 	WrapPos = 0;
+ 	NextWord = "";
 
-	while(Input != "" || NextWord != "")
-	{
-		if(NextWord == "")
-		{
-			RemoveNextWord(Input, NextWord);
-			TextAreaTextSize(C, NextWord, NextWordWidth, H);
-		}
-		if(WordsThisRow > 0 && LineWidth + NextWordWidth > MaxWidth)
-		{
-			return WrapPos;
-		}
-		else
-		{
-			WrapPos += Len(NextWord);
-			LineWidth += NextWordWidth;
-			NextWord = "";
-			WordsThisRow++;
-		}
-	}
-	return -1;
-}
+ 	while(Input != "" || NextWord != "")
+ 	{
+ 		if(NextWord == "")
+ 		{
+ 			RemoveNextWord(Input, NextWord);
+ 			TextAreaTextSize(C, NextWord, NextWordWidth, H);
+ 		}
+ 		if(WordsThisRow > 0 && LineWidth + NextWordWidth > MaxWidth)
+ 		{
+ 			return WrapPos;
+ 		}
+ 		else
+ 		{
+ 			WrapPos += Len(NextWord);
+ 			LineWidth += NextWordWidth;
+ 			NextWord = "";
+ 			WordsThisRow++;
+ 		}
+ 	}
+ 	return -1;
+ }
+
+ function UWindowDynamicTextRow AddText(string NewLine)
+ {
+ 	local UWindowDynamicTextRow L;
+ 	local string Temp;
+ 	local int i;
+
+ 	bDirty = True;
+
+ 	i = InStr(NewLine, "\\n");
+ 	if(i != -1)
+ 	{
+ 		Temp = Mid(NewLine, i+2);
+ 		NewLine = Left(NewLine, i);
+ 	}
+ 	else
+ 	{
+ 		Temp = "";
+ 	}
+
+
+ 	// reuse a row if possible
+ 	L = CheckMaxRows();
+
+ 	if(L != None)
+ 	{
+ 		List.AppendItem(L);
+ 	}
+ 	else
+ 	{
+ 		L = UWindowDynamicTextRow(List.Append(RowClass));
+ 	}
+
+ 	L.Text = NewLine;
+ 	L.WrapParent = None;
+ 	L.bRowDirty = True;
+
+ 	if(Temp != "")
+ 	{
+ 		AddText(Temp);
+ 	}
+
+ 	if(bAutoScrollbar)
+ 	{
+ 		VertSB.Pos = VertSB.MaxPos + 1;
+ 	}
+
+ 	return L;
+ }
 
 /********************************************************************************
  * A message pass between DrawTextTextureLine and DrawChatMessageWithEmoji

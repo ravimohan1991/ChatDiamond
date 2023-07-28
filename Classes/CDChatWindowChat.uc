@@ -763,6 +763,7 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
 
  	TheTextArea.EmoSizeMultiplier = FrameWindow.EmoSize;
  	TheTextArea.TickCounterWarpNumber = (int(FrameWindow.EmoteAnimSpeed) / 24);
+ 	TheTextArea.bAutoScrollBar = FrameWindow.bAutoScrollChat;
  	EmoWindowPage.TheEmoDisplayArea.TickCounterWarpNumber = TheTextArea.TickCounterWarpNumber;
  	TheTextArea.AnimShockEmote.TexChatSizeFraction = 0.08 * FrameWindow.EmoSize;
  	TheTextArea.AnimTrashTalkEmote.TexChatSizeFraction = 0.08 * FrameWindow.EmoSize;
@@ -776,6 +777,7 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
  {
  	TheTextArea.EmoSizeMultiplier = FrameWindow.EmoSize;
  	TheTextArea.TickCounterWarpNumber = (int(FrameWindow.EmoteAnimSpeed) / 24);
+ 	TheTextArea.bAutoScrollBar = FrameWindow.bAutoScrollChat;
  	EmoWindowPage.TheEmoDisplayArea.TickCounterWarpNumber = TheTextArea.TickCounterWarpNumber;
  	TheTextArea.AnimShockEmote.TexChatSizeFraction = 0.08 * FrameWindow.EmoSize;
  	TheTextArea.AnimTrashTalkEmote.TexChatSizeFraction = 0.08 * FrameWindow.EmoSize;

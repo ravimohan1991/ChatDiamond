@@ -47,6 +47,7 @@ class CDConfigurationWindow expands UWindowPageWindow;
  var UWindowCheckbox ApplyBGToChatWindow, ApplyBGToConsole;
  var UWindowCheckbox PlayMessageArrivedSound;
  var UWindowCheckbox OpenChatWindowAtMatchCompletion;
+ var UWIndowCheckbox AutoScrollChat;
  var UWindowEditControl LoadLastMessagesNumber;
  var UWindowSmallButton MessageLoadButton;
  var bool bSecondKeyEvent;
@@ -144,7 +145,13 @@ class CDConfigurationWindow expands UWindowPageWindow;
 
  	MessageLoadButton = UWindowSmallButton(CreateControl(class'UWindowSmallButton', 230, 334, 50, 25));
  	MessageLoadButton.SetText("Load");
+
  	MessageLoadButton.DownSound = sound'UnrealShare.FSHLITE2';
+
+ 	AutoScrollChat = UWindowCheckbox(CreateControl(class'UWindowCheckbox', 20, 360, 200, 50));
+ 	AutoScrollChat.SetTextColor(class'CDChatWindowEmojis'.default.WhiteColor);
+
+ 	AutoScrollChat.SetText("Auto scroll chat");
 
  	// See Paint() for drawing of preview miniframe
 
@@ -201,14 +208,19 @@ class CDConfigurationWindow expands UWindowPageWindow;
 					ClientWindow.ChatConfigurationUpdated();
  				break;
  				case PlayMessageArrivedSound:
-					FrameWindow.bPlaySoundOnMessageArrival = PlayMessageArrivedSound.bChecked;
-                    FrameWindow.SaveConfig();
-                    ClientWindow.ChatConfigurationUpdated();
+ 					FrameWindow.bPlaySoundOnMessageArrival = PlayMessageArrivedSound.bChecked;
+ 					FrameWindow.SaveConfig();
+ 					ClientWindow.ChatConfigurationUpdated();
  				break;
  				case OpenChatWindowAtMatchCompletion:
 					FrameWindow.bOpenChatWindowOnMatchCompletion = OpenChatWindowAtMatchCompletion.bChecked;
-                    FrameWindow.SaveConfig();
-                    //ClientWindow.ChatConfigurationUpdated();
+ 					FrameWindow.SaveConfig();
+ 					//ClientWindow.ChatConfigurationUpdated();
+ 				break;
+ 				case AutoScrollChat:
+ 					FrameWindow.bAutoScrollChat = AutoScrollChat.bChecked;
+ 					FrameWindow.SaveConfig();
+ 					ClientWindow.ChatConfigurationUpdated();
  				break;
  				/*
  				case ConfigPoller:
@@ -284,6 +296,7 @@ class CDConfigurationWindow expands UWindowPageWindow;
  	ApplyBGToChatWindow.bChecked = FrameWindow.bApplyBGToChatWindow;
  	OpenChatWindowAtMatchCompletion.bChecked = FrameWindow.bOpenChatWindowOnMatchCompletion;
  	ApplyBGToConsole.bChecked = FrameWindow.bApplyBGToConsole;
+ 	AutoScrollChat.bChecked = FrameWindow.bAutoScrollChat;
  	PlayMessageArrivedSound.bChecked = FrameWindow.bPlaySoundOnMessageArrival;
  	ChatBindButton.SetText(class'UMenuCustomizeClientWindow'.default.LocalizedKeyName[ChatWindowKeyForBind]);
  }
@@ -377,7 +390,7 @@ class CDConfigurationWindow expands UWindowPageWindow;
  }
 
  // Drawing functions
-  function DrawEmoteMiniFrame(Canvas C, float X, float Y, int BorderWidth)
+ function DrawEmoteMiniFrame(Canvas C, float X, float Y, int BorderWidth)
  {
  	// Top Line
  	DrawStretchedTexture(C, X, Y, BorderWidth, BorderWidth, Texture'BlueMenuTL');
