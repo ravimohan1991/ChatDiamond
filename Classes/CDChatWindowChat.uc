@@ -790,7 +790,6 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
  	TheTextArea.AnimBarfEmote.TexChatSizeFraction = 0.08 * FrameWindow.EmoSize;
  	TheTextArea.AnimWaveEmote.TexChatSizeFraction = 0.08 * FrameWindow.EmoSize;
  	TheTextArea.AnimArseMissEmote.TexChatSizeFraction = 0.08 * FrameWindow.EmoSize;
- 	LoadMessages();
  }
 
  function Resize()

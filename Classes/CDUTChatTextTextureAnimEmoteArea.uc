@@ -764,55 +764,6 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  	return -1;
  }
 
- function UWindowDynamicTextRow AddText(string NewLine)
- {
- 	local UWindowDynamicTextRow L;
- 	local string Temp;
- 	local int i;
-
- 	bDirty = True;
-
- 	i = InStr(NewLine, "\\n");
- 	if(i != -1)
- 	{
- 		Temp = Mid(NewLine, i+2);
- 		NewLine = Left(NewLine, i);
- 	}
- 	else
- 	{
- 		Temp = "";
- 	}
-
-
- 	// reuse a row if possible
- 	L = CheckMaxRows();
-
- 	if(L != None)
- 	{
- 		List.AppendItem(L);
- 	}
- 	else
- 	{
- 		L = UWindowDynamicTextRow(List.Append(RowClass));
- 	}
-
- 	L.Text = NewLine;
- 	L.WrapParent = None;
- 	L.bRowDirty = True;
-
- 	if(Temp != "")
- 	{
- 		AddText(Temp);
- 	}
-
- 	if(bAutoScrollbar)
- 	{
- 		VertSB.Pos = VertSB.MaxPos + 1;
- 	}
-
- 	return L;
- }
-
 /********************************************************************************
  * A message pass between DrawTextTextureLine and DrawChatMessageWithEmoji
  * for performing operations like copying of relevant text or right translation!!
@@ -1526,6 +1477,12 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  	{
  		HorizontalSB.SetRange(0, MaximumRowPartitionCount, 1);
  		HorizontalSB.ShowWindow();
+ 	}
+
+ 	if(bAutoScrollbar && bDirty)
+ 	{
+ 		VertSB.Pos = VertSB.MaxPos;
+ 		bDirty = false;
  	}
 
  	if(bTopCentric)

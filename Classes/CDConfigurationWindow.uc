@@ -246,8 +246,8 @@ class CDConfigurationWindow expands UWindowPageWindow;
   					{
  						FrameWindow.LastHistoricMessagesNumber = Temp;
  						FrameWindow.SaveConfig();
-
  						ClientWindow.ChatConfigurationUpdated();
+ 						ClientWindow.ReloadChatMessages();
   					}
  				break;
  			}

@@ -125,6 +125,11 @@ class CDClientSideWindow extends UWindowConsoleClientWindow config(ChatDiamond);
  	ChatWindow.ChatConfigurationUpdated();
  }
 
+ function ReloadChatMessages()
+ {
+ 	ChatWindow.LoadMessages();
+ }
+
  function Resized()
  {
  	Super.Resized();
