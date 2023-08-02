@@ -48,7 +48,7 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
  var UWindowEditControl EditMesg;
 
  var UWindowSmallButton ButSend;
- var UWindowSmallButton ButSave;
+ var UWindowSmallButton ButClear;
  var UWindowSmallButton ButtonPlaySpectate;
  var UWindowSmallButton ButtonDisconnectAndQuit;
 
@@ -118,9 +118,9 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
  	TheTextArea.bScrollOnResize = True;
  	TheTextArea.CDChatWindow = self;
 
- 	ButSave = UWindowSmallButton(CreateControl(class'UWindowSmallButton', 4, 230, 50, 25));
- 	ButSave.SetText("Save");
- 	ButSave.DownSound = sound'UnrealShare.FSHLITE2';
+ 	ButClear = UWindowSmallButton(CreateControl(class'UWindowSmallButton', 4, 230, 50, 25));
+ 	ButClear.SetText("Clear");
+ 	ButClear.DownSound = sound'UnrealShare.FSHLITE2';
 
  	ButSend = UWindowSmallButton(CreateControl(class'UWindowSmallButton', 278, 230, 50, 25));
  	ButSend.SetText("Send");
@@ -166,7 +166,6 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
  	{
  		TheTextArea.AddText(sMesg);
  		CDDA.CacheChatLine(sMesg);
- 		ButSave.bDisabled = false;
  		if(bTalkMessage && FrameWindow.bPlaySoundOnMessageArrival)
  		{
  			Root.GetPlayerOwner().ClientPlaySound(sound'MessageKernel');
@@ -606,9 +605,9 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
  			TheTextArea.bIsStatusSetByChatMessage = false;
  		}
 
- 		if(C == ButSave)
+ 		if(C == ButClear)
  		{
- 			FrameWindow.StatusBarText = "Save the messages in ChatDiamond.ini!";
+ 			FrameWindow.StatusBarText = "Clear the messages in the window!";
  			TheTextArea.bIsStatusSetByChatMessage = false;
  		}
 
@@ -643,7 +642,7 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
  			FrameWindow.StatusBarText = "";
  		}
 
- 		if(C == ButSave)
+ 		if(C == ButClear)
  		{
  			FrameWindow.StatusBarText = "";
  		}
@@ -676,10 +675,9 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
  		case DE_Click:
  			switch(C)
  				{
- 					case ButSave:
- 						SaveConfig();
- 						ButSave.bDisabled = True;
- 						GetPlayerOwner().ClientMessage("All Messages have been saved to ChatDiamond.ini");
+ 					case ButClear:
+ 						TheTextArea.Clear();
+ 						GetPlayerOwner().ClientMessage("All Messages have been cleared in the window");
  					break;
 
  					case ButSend:
@@ -771,6 +769,7 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
  	TheTextArea.AnimBarfEmote.TexChatSizeFraction = 0.08 * FrameWindow.EmoSize;
  	TheTextArea.AnimWaveEmote.TexChatSizeFraction = 0.08 * FrameWindow.EmoSize;
  	TheTextArea.AnimArseMissEmote.TexChatSizeFraction = 0.08 * FrameWindow.EmoSize;
+ 	TheTextArea.DateFormatIndex = FrameWindow.DateFormatIndex;
 
  	if(FrameWindow.bAutoScrollChat)
  	{
@@ -790,6 +789,7 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
  	TheTextArea.AnimBarfEmote.TexChatSizeFraction = 0.08 * FrameWindow.EmoSize;
  	TheTextArea.AnimWaveEmote.TexChatSizeFraction = 0.08 * FrameWindow.EmoSize;
  	TheTextArea.AnimArseMissEmote.TexChatSizeFraction = 0.08 * FrameWindow.EmoSize;
+ 	TheTextArea.DateFormatIndex = FrameWindow.DateFormatIndex;
  }
 
  function Resize()
@@ -806,7 +806,7 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
  		TheTextArea.HorizontalSB.WinTop += DiffY;
  		TheTextArea.HorizontalSB.WinWidth = WinWidth - 15;
 
- 		ButSave.WinTop += DiffY;
+ 		ButClear.WinTop += DiffY;
 
  		ButSend.WinLeft += DiffX;
  		ButSend.WinTop += DiffY;

@@ -272,6 +272,7 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  var bool bScrollHorizontal;
  var int MaximumRowPartitionCount;
  var int MaximumChatLineSize;  // Including date and face textures
+ var int DateFormatIndex;
 
  struct SkinStore
  {
@@ -632,7 +633,7 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  	if (bChat)
  	{
  		sTm = class'CDDiscordActor'.static.FetchValue("Team");
- 		sDate = class'CDDiscordActor'.static.FetchValue("LocalTime");
+ 		sDate = GetLocalTimeInAppropriateFormat();
  		sMesg = class'CDDiscordActor'.static.FetchValue("ChatMessage");
  		sName = class'CDDiscordActor'.static.FetchValue("PlayerName");
 
@@ -716,6 +717,97 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  	class'CDDiscordActor'.static.ResetJsonContainer();
  	return DefaultTextTextureLineHeight;
  }
+
+/********************************************************************************
+ * A routine to generate date string in accordance with user's desired settings
+ *
+ * The deserialized format is "Tuesday 1 Aug 2023 22:15"
+ *
+ ********************************************************************************
+ */
+
+ function string GetLocalTimeInAppropriateFormat()
+ {
+ 	local string TentativeDate;
+
+ 	TentativeDate = class'CDDiscordActor'.static.FetchValue("LocalTime");
+
+ 	Switch(DateFormatIndex)
+ 	{
+ 		case 0:
+ 			return TentativeDate;
+ 		case 1:
+ 			return GetIthDateComponent(TentativeDate, 0) $ " " $ GetIthDateComponent(TentativeDate, 1)
+ 			$ " " $ GetIthDateComponent(TentativeDate, 2) $ " " $ GetIthDateComponent(TentativeDate, 3) $ " " $ ConvertToTwelveHourClock(GetIthDateComponent(TentativeDate, 4));
+ 		default:
+ 			return "Date Unknown";
+ 	}
+ }
+
+////////////////////////////// Date Parsing Helper Function /////////////////////////////////////
+
+ // Components are counted from 0
+ function string GetIthDateComponent(string LongDefaultDate, int Component)
+ {
+ 	local string TentativeShrinkingString, ReturnString;
+ 	local int Counter, SpaceLocation;
+
+ 	TentativeShrinkingString = LongDefaultDate;// just for clarity
+
+ 	for(Counter = 0; Counter <= Component; Counter++)
+ 	{
+ 		SpaceLocation = Instr(TentativeShrinkingString, " ");
+
+ 		if(SpaceLocation == -1)
+ 		{
+ 			ReturnString = TentativeShrinkingString;
+ 		}
+ 		else
+ 		{
+ 			ReturnString = Left(TentativeShrinkingString, SpaceLocation);
+ 		}
+
+ 		TentativeShrinkingString = Mid(TentativeShrinkingString, SpaceLocation + 1);
+ 	}
+
+ 	return ReturnString;
+ }
+
+ // assumption 24 hour clock 16:25
+ function string ConvertToTwelveHourClock(string TwentyFourHourClockTime)
+ {
+ 	local int Hours, Minutes;
+ 	local int DeliminatorPosition;
+
+ 	DeliminatorPosition = Instr(TwentyFourHourClockTime, ":");
+
+ 	Hours = int(Left(TwentyFourHourClockTime, DeliminatorPosition));
+ 	Minutes = int(Mid(TwentyfourHourClockTime, DeliminatorPosition + 1));
+
+ 	if(Hours > 12 && Hours != 0)
+ 	{
+ 		Hours = Hours - 12;
+ 		return Hours $ ":" $ Minutes $ " PM";
+ 	}
+ 	else if(Hours == 0)
+ 	{
+ 		Hours = 12;
+ 		return Hours $ ":" $ Minutes $ " AM";
+ 	}
+
+ 	if(Hours == 12)
+ 	{
+ 		return Hours $ ":" $ Minutes $ " PM";
+ 	}
+ 	else
+ 	{
+ 		return Hours $ ":" $ Minutes $ " AM";
+ 	}
+
+ 	return "AM PM deduction error?";
+ }
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
 
  // find where to break the line, taken from Epic's code
  function int GetMessageSplitPos(Canvas C, string MessageText, optional float MaxWidth)
@@ -1471,12 +1563,14 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
 
  	if(MaximumRowPartitionCount == 1)
  	{
- 		HorizontalSB.HideWindow();
+ 		//HorizontalSB.HideWindow();
+ 		HorizontalSB.bDisabled = true;
  	}
  	else
  	{
+ 		HorizontalSB.bDisabled = false;
  		HorizontalSB.SetRange(0, MaximumRowPartitionCount, 1);
- 		HorizontalSB.ShowWindow();
+ 		//HorizontalSB.ShowWindow();
  	}
 
  	if(bAutoScrollbar && bDirty)

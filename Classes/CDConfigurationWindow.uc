@@ -50,6 +50,7 @@ class CDConfigurationWindow expands UWindowPageWindow;
  var UWIndowCheckbox AutoScrollChat;
  var UWindowEditControl LoadLastMessagesNumber;
  var UWindowSmallButton MessageLoadButton;
+ var UWindowComboControl DateFormatDropMenu;
  var bool bSecondKeyEvent;
 
  var UMenuRaisedButton ChatBindButton;
@@ -153,6 +154,22 @@ class CDConfigurationWindow expands UWindowPageWindow;
 
  	AutoScrollChat.SetText("Auto v-scroll chat");
 
+ 	DateFormatDropMenu = UWindowComboControl(CreateControl(class'UWindowComboControl', 20, 400, 350, 1));
+	DateFormatDropMenu.EditBoxWidth = 250;
+	DateFormatDropMenu.SetTextColor(class'CDChatWindowEmojis'.default.WhiteColor);
+	DateFormatDropMenu.SetText("Date Format");
+	DateFormatDropMenu.SetHelpText("Set date format in chat");
+	DateFormatDropMenu.SetFont(F_Normal);
+	DateFormatDropMenu.AddItem("Day, Date: dd / month / yyyy, Time: 24 hours");
+	DateFormatDropMenu.AddItem("Day, Date: dd / month / yyyy, Time: 12 hours");
+	DateFormatDropMenu.AddItem("Date: dd / month / yyyy, Time: 24 hours");
+	DateFormatDropMenu.AddItem("Date: dd / month / yyyy, Time: 12 hours");
+	DateFormatDropMenu.AddItem("Date: month / yyyy, Time: 24 hours");
+	DateFormatDropMenu.AddItem("Date: month / yyyy, Time: 12 hours");
+	DateFormatDropMenu.AddItem("Date: mm / yy, Time: 24 hours");
+	DateFormatDropMenu.AddItem("Date: mm / yy, Time: 12 hours");
+	DateFormatDropMenu.SetSelectedIndex(0);
+
  	// See Paint() for drawing of preview miniframe
 
  	CDUTConsole(Root.Console).ConfigureWindow = self;
@@ -215,12 +232,17 @@ class CDConfigurationWindow expands UWindowPageWindow;
  				case OpenChatWindowAtMatchCompletion:
 					FrameWindow.bOpenChatWindowOnMatchCompletion = OpenChatWindowAtMatchCompletion.bChecked;
  					FrameWindow.SaveConfig();
- 					//ClientWindow.ChatConfigurationUpdated();
+ 					ClientWindow.ChatConfigurationUpdated();
  				break;
  				case AutoScrollChat:
  					FrameWindow.bAutoScrollChat = AutoScrollChat.bChecked;
  					FrameWindow.SaveConfig();
  					ClientWindow.ChatConfigurationUpdated();
+ 				break;
+ 				case DateFormatDropMenu:
+					FrameWindow.DateFormatIndex = DateFormatDropMenu.GetSelectedIndex();
+                    FrameWindow.SaveConfig();
+                    ClientWindow.ChatConfigurationUpdated();
  				break;
  				/*
  				case ConfigPoller:
@@ -299,6 +321,7 @@ class CDConfigurationWindow expands UWindowPageWindow;
  	AutoScrollChat.bChecked = FrameWindow.bAutoScrollChat;
  	PlayMessageArrivedSound.bChecked = FrameWindow.bPlaySoundOnMessageArrival;
  	ChatBindButton.SetText(class'UMenuCustomizeClientWindow'.default.LocalizedKeyName[ChatWindowKeyForBind]);
+ 	DateFormatDropMenu.SetSelectedIndex(FrameWindow.DateFormatIndex);
  }
 
  function Resize()

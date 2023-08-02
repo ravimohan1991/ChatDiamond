@@ -49,6 +49,7 @@ class CDModMenuWindowFrame expands UWindowConsoleWindow Config (ChatDiamond);
  var() config float EmoSize;
  var() config float EmoteAnimSpeed;
  var() config int LastHistoricMessagesNumber;
+ var() config int DateFormatIndex;
 
  var CDConfigurationWindow ConfigurationWindow;
 
@@ -209,6 +210,7 @@ class CDModMenuWindowFrame expands UWindowConsoleWindow Config (ChatDiamond);
  	EmoteAnimSpeed=85
  	bPlaySoundOnMessageArrival=True
  	LastHistoricMessagesNumber=10
+ 	DateFormatIndex=0
  }
 
 /*

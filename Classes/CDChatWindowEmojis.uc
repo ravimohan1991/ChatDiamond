@@ -57,7 +57,7 @@ class CDChatWindowEmojis extends UWindowPageWindow;
  var string DetailMode;
 
  var UWindowSmallButton ButSend;
- var UWindowSmallButton ButSave;
+ var UWindowSmallButton ButClear;
  var UWindowSmallButton ButtonPlaySpectate;
  var UWindowSmallButton ButtonDisconnectAndQuit;
  var UWindowEditControl EditMesg;
@@ -87,9 +87,9 @@ class CDChatWindowEmojis extends UWindowPageWindow;
  	TheEmoDisplayArea.HideHorizontalSB();
 
  	// Literal copy paste from CDChatWindowChat
- 	ButSave = UWindowSmallButton(CreateControl(class'UWindowSmallButton', 4, 230, 50, 25));
- 	ButSave.SetText("Save");
- 	ButSave.DownSound = sound'UnrealShare.FSHLITE2';
+ 	ButClear = UWindowSmallButton(CreateControl(class'UWindowSmallButton', 4, 230, 50, 25));
+ 	ButClear.SetText("Clear");
+ 	ButClear.DownSound = sound'UnrealShare.FSHLITE2';
 
  	ButSend = UWindowSmallButton(CreateControl(class'UWindowSmallButton', 278, 230, 50, 25));
  	ButSend.SetText("Send");
@@ -137,9 +137,9 @@ class CDChatWindowEmojis extends UWindowPageWindow;
  			FrameWindow.StatusBarText = "Send the message!";
  		}
 
- 		if(C == ButSave)
+ 		if(C == ButClear)
  		{
- 			FrameWindow.StatusBarText = "Save the messages in ChatDiamond.ini!";
+ 			FrameWindow.StatusBarText = "Clear the messages in the window!";
  		}
 
  		if(C == ButtonPlaySpectate)
@@ -165,7 +165,7 @@ class CDChatWindowEmojis extends UWindowPageWindow;
  			FrameWindow.StatusBarText = "";
  		}
 
- 		if(C == ButSave)
+ 		if(C == ButClear)
  		{
  			FrameWindow.StatusBarText = "";
  		}
@@ -209,34 +209,33 @@ class CDChatWindowEmojis extends UWindowPageWindow;
  		case DE_Click:
  			switch(C)
  			{
- 				case ButSave:
- 							ChatWindow.SaveConfig();
- 							ButSave.bDisabled = True;
- 							GetPlayerOwner().ClientMessage("All Messages have been saved to ChatDiamond.ini");
+ 				case ButClear:
+ 							ChatWindow.TheTextArea.Clear();
+ 							GetPlayerOwner().ClientMessage("All Messages have been cleared in the window");
  						break;
 
- 						case ButSend:
+ 				case ButSend:
  							ChatWindow.SendMessage(EditMesg);
  						break;
 
- 						case ButtonDisconnectAndQuit:
+ 				case ButtonDisconnectAndQuit:
  							Root.QuitGame();
  						break;
 
  				// Courtsey ProAsm's UTCmds8
  				case ButtonPlaySpectate:
- 						if(GetPlayerOwner().PlayerReplicationInfo.bIsSpectator)
- 						{
- 							GetPlayerOwner().PreClientTravel();
- 							GetPlayerOwner().ClientTravel("?OverrideClass=", TRAVEL_Relative, False);
- 							ButtonPlaySpectate.SetText("Spectate");
- 						}
- 						else
- 						{
- 							GetPlayerOwner().PreClientTravel();
- 							GetPlayerOwner().ClientTravel("?OverrideClass=Botpack.CHSpectator", TRAVEL_Relative, False);
- 							ButtonPlaySpectate.SetText("Play");
- 						}
+ 							if(GetPlayerOwner().PlayerReplicationInfo.bIsSpectator)
+ 							{
+ 								GetPlayerOwner().PreClientTravel();
+ 								GetPlayerOwner().ClientTravel("?OverrideClass=", TRAVEL_Relative, False);
+ 								ButtonPlaySpectate.SetText("Spectate");
+ 							}
+ 							else
+ 							{
+ 								GetPlayerOwner().PreClientTravel();
+ 								GetPlayerOwner().ClientTravel("?OverrideClass=Botpack.CHSpectator", TRAVEL_Relative, False);
+ 								ButtonPlaySpectate.SetText("Play");
+ 							}
  						break;
  			}
  			break;
@@ -277,7 +276,7 @@ class CDChatWindowEmojis extends UWindowPageWindow;
  		TheEmoDisplayArea.SetSize(TheEmoDisplayArea.WinWidth + DiffX, TheEmoDisplayArea.WinHeight + DiffY);
  		TheEmoDisplayArea.WrapWidth = TheEmoDisplayArea.WinWidth - 80;
 
- 		ButSave.WinTop += DiffY;
+ 		ButClear.WinTop += DiffY;
 
  		ButSend.WinLeft += DiffX;
  		ButSend.WinTop += DiffY;
