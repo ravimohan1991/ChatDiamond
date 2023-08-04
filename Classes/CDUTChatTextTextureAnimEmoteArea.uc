@@ -267,6 +267,7 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
 
  var CDLoadedTextureList TextureList;
  var UWindowHScrollBar HorizontalSB;
+ var float HorizontalPosCache;
  var bool bScrollHorizontal;
  var int MaximumRowPartitionCount;
  var int MaximumChatLineSize;  // Including date and face textures
@@ -652,7 +653,7 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  		// assumption: no connection with horizontal scrolling
  		if(lblChatHeading.Text == "")
  		{
- 			if(DateFormatIndex == 10)
+ 			if(HorizontalSB.Pos != 0 || DateFormatIndex == 10)
  			{
  				HeadingText = "";
  			}
@@ -1238,6 +1239,12 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  	}
 
  	bIsMouseOverChatText = false;
+
+ 	if(HorizontalSB.Pos != HorizontalPosCache)
+ 	{
+ 		lblChatHeading.SetText("");
+ 		HorizontalPosCache = HorizontalSB.Pos;
+ 	}
 
  	super.Tick(DeltaTime);
  }
