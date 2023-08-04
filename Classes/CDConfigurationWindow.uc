@@ -155,20 +155,23 @@ class CDConfigurationWindow expands UWindowPageWindow;
  	AutoScrollChat.SetText("Auto v-scroll chat");
 
  	DateFormatDropMenu = UWindowComboControl(CreateControl(class'UWindowComboControl', 20, 400, 350, 1));
-	DateFormatDropMenu.EditBoxWidth = 250;
-	DateFormatDropMenu.SetTextColor(class'CDChatWindowEmojis'.default.WhiteColor);
-	DateFormatDropMenu.SetText("Date Format");
-	DateFormatDropMenu.SetHelpText("Set date format in chat");
-	DateFormatDropMenu.SetFont(F_Normal);
-	DateFormatDropMenu.AddItem("Day, Date: dd / month / yyyy, Time: 24 hours");
-	DateFormatDropMenu.AddItem("Day, Date: dd / month / yyyy, Time: 12 hours");
-	DateFormatDropMenu.AddItem("Date: dd / month / yyyy, Time: 24 hours");
-	DateFormatDropMenu.AddItem("Date: dd / month / yyyy, Time: 12 hours");
-	DateFormatDropMenu.AddItem("Date: month / yyyy, Time: 24 hours");
-	DateFormatDropMenu.AddItem("Date: month / yyyy, Time: 12 hours");
-	DateFormatDropMenu.AddItem("Date: mm / yy, Time: 24 hours");
-	DateFormatDropMenu.AddItem("Date: mm / yy, Time: 12 hours");
-	DateFormatDropMenu.SetSelectedIndex(0);
+ 	DateFormatDropMenu.EditBoxWidth = 250;
+ 	DateFormatDropMenu.SetTextColor(class'CDChatWindowEmojis'.default.WhiteColor);
+ 	DateFormatDropMenu.SetText("Date Format");
+ 	DateFormatDropMenu.SetHelpText("Set date format in chat");
+ 	DateFormatDropMenu.SetFont(F_Normal);
+ 	DateFormatDropMenu.AddItem("Day, Date: dd / month / yyyy, Time: 24 hours");
+ 	DateFormatDropMenu.AddItem("Day, Date: dd / month / yyyy, Time: 12 hours");
+ 	DateFormatDropMenu.AddItem("Date: dd / month / yyyy, Time: 24 hours");
+ 	DateFormatDropMenu.AddItem("Date: dd / month / yyyy, Time: 12 hours");
+ 	DateFormatDropMenu.AddItem("Date: month / yyyy, Time: 24 hours");
+ 	DateFormatDropMenu.AddItem("Date: month / yyyy, Time: 12 hours");
+ 	DateFormatDropMenu.AddItem("Date: mm / yy, Time: 24 hours");
+ 	DateFormatDropMenu.AddItem("Date: mm / yy, Time: 12 hours");
+ 	DateFormatDropMenu.AddItem("Time: 24 hours");
+ 	DateFormatDropMenu.AddItem("Time: 12 hours");
+ 	DateFormatDropMenu.AddItem("No Date");
+ 	DateFormatDropMenu.SetSelectedIndex(0);
 
  	// See Paint() for drawing of preview miniframe
 
@@ -183,7 +186,7 @@ class CDConfigurationWindow expands UWindowPageWindow;
 
  function Notify (UWindowDialogControl C, byte E)
  {
-  	local int Temp;
+ 	local int Temp;
 
  	super.Notify(C, E);
 
@@ -240,9 +243,9 @@ class CDConfigurationWindow expands UWindowPageWindow;
  					ClientWindow.ChatConfigurationUpdated();
  				break;
  				case DateFormatDropMenu:
-					FrameWindow.DateFormatIndex = DateFormatDropMenu.GetSelectedIndex();
-                    FrameWindow.SaveConfig();
-                    ClientWindow.ChatConfigurationUpdated();
+ 					FrameWindow.DateFormatIndex = DateFormatDropMenu.GetSelectedIndex();
+ 					FrameWindow.SaveConfig();
+ 					ClientWindow.ChatConfigurationUpdated();
  				break;
  				/*
  				case ConfigPoller:
@@ -263,9 +266,9 @@ class CDConfigurationWindow expands UWindowPageWindow;
  					bSecondKeyEvent = true;
  				break;
  				case MessageLoadButton:
-  					Temp = int(LoadLastMessagesNumber.GetValue());
-  					if(Temp != FrameWindow.LastHistoricMessagesNumber)
-  					{
+ 					Temp = int(LoadLastMessagesNumber.GetValue());
+ 					if(Temp != FrameWindow.LastHistoricMessagesNumber)
+ 					{
  						FrameWindow.LastHistoricMessagesNumber = Temp;
  						FrameWindow.SaveConfig();
  						ClientWindow.ChatConfigurationUpdated();

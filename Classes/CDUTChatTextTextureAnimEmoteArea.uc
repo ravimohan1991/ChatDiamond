@@ -251,11 +251,9 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  var Color ChatColor, GrnColor, YelColor, BluColor, RedColor, WhiteColor, TxtColor, FaceColor;
  var texture StaticTransparencyTexture;
 
- //var float FrameRate;
  var float EmoSizeMultiplier;
  var int TickCounter;
  var int TickCounterWarpNumber;
- //var int DesiredAnimationFrameRate;
  var float MouseMoveY;
 
  var CDChatWindowHelperContextMenu HelperContextMenu;
@@ -273,6 +271,8 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  var int MaximumRowPartitionCount;
  var int MaximumChatLineSize;  // Including date and face textures
  var int DateFormatIndex;
+ //var float DateTitleSpace;
+ var UMenuLabelControl  lblChatHeading;
 
  struct SkinStore
  {
@@ -310,7 +310,7 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  		default: return "";
  	}
 
- 	 return "";
+ 	return "";
  }
 
  function string GetEmoteStatusBarText(int EmoCounter)
@@ -561,8 +561,8 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
 
  function float DrawTextTextureLine(Canvas C, UWindowDynamicTextRow L, float Y)
  {
- 	local float X, X1, X2, Y1, X3, XIncrementor, MaxCounter, DrawX;
- 	local string sDate, sName, sMesg, sTm;
+ 	local float X, X1, X2, Y1, X3, XIncrementor, MaxCounter, DrawX, SpacePaddingSize;
+ 	local string sDate, sName, sMesg, sTm, HeadingText;
  	local string FaceName, SkinName;
  	local string FaceSkinNoText, MessageToPrint;
  	local float TextureXOccupied, TextureYOccupied;
@@ -637,8 +637,6 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  		sMesg = class'CDDiscordActor'.static.FetchValue("ChatMessage");
  		sName = class'CDDiscordActor'.static.FetchValue("PlayerName");
 
- 		//TextSize(C, sMesg, X1, Y1);
-
  		C.Font = Root.Fonts[F_Normal];
 
  		TextSize(C, sDate, X1, Y1);
@@ -650,6 +648,32 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  		DrawX = X + X1 + 2 + ChatFaceVerticalPadding;
 
  		DrawChatFace(C, DrawX, Y, LocateChatFaceTexture(FaceName, SkinName), Y1, TextureXOccupied, TextureYOccupied);
+
+ 		// assumption: no connection with horizontal scrolling
+ 		if(lblChatHeading.Text == "")
+ 		{
+ 			if(DateFormatIndex == 10)
+ 			{
+ 				HeadingText = "";
+ 			}
+ 			else if (DateFormatIndex == 8 || DateFormatIndex == 9)
+ 			{
+ 				HeadingText = " Time";
+ 			}
+ 			else
+ 			{
+ 				HeadingText = " Date";
+ 			}
+
+ 			while(SpacePaddingSize < DrawX)
+ 			{
+ 				HeadingText = HeadingText $ " ";
+ 				TextSize(C, HeadingText, SpacePaddingSize, Y1);
+ 			}
+
+ 			HeadingText = HeadingText $ "Message";
+ 			lblChatHeading.SetText(HeadingText);
+ 		}
 
  		if (bChat)
  		{
@@ -739,6 +763,26 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  		case 1:
  			return GetIthDateComponent(TentativeDate, 0) $ " " $ GetIthDateComponent(TentativeDate, 1)
  			$ " " $ GetIthDateComponent(TentativeDate, 2) $ " " $ GetIthDateComponent(TentativeDate, 3) $ " " $ ConvertToTwelveHourClock(GetIthDateComponent(TentativeDate, 4));
+ 		case 2:
+ 			return GetIthDateComponent(TentativeDate, 1)
+ 			$ " " $ GetIthDateComponent(TentativeDate, 2) $ " " $ GetIthDateComponent(TentativeDate, 3) $ " " $ GetIthDateComponent(TentativeDate, 4);
+ 		case 3:
+ 			return GetIthDateComponent(TentativeDate, 1)
+ 			$ " " $ GetIthDateComponent(TentativeDate, 2) $ " " $ GetIthDateComponent(TentativeDate, 3) $ " " $ ConvertToTwelveHourClock(GetIthDateComponent(TentativeDate, 4));
+ 		case 4:
+ 			return GetIthDateComponent(TentativeDate, 2) $ " " $ GetIthDateComponent(TentativeDate, 3) $ " " $ GetIthDateComponent(TentativeDate, 4);
+ 		case 5:
+ 			return GetIthDateComponent(TentativeDate, 2) $ " " $ GetIthDateComponent(TentativeDate, 3) $ " " $ ConvertToTwelveHourClock(GetIthDateComponent(TentativeDate, 4));
+ 		case 6:
+ 			return ConvertToNumericMonth(GetIthDateComponent(TentativeDate, 2)) $ "/" $ ExtractLastTwoDigits(GetIthDateComponent(TentativeDate, 3)) $ " " $ GetIthDateComponent(TentativeDate, 4);
+ 		case 7:
+ 			return ConvertToNumericMonth(GetIthDateComponent(TentativeDate, 2)) $ "/" $ ExtractLastTwoDigits(GetIthDateComponent(TentativeDate, 3)) $ " " $ ConvertToTwelveHourClock(GetIthDateComponent(TentativeDate, 4));
+ 		case 8:
+ 			return GetIthDateComponent(TentativeDate, 4);
+ 		case 9:
+ 			return ConvertToTwelveHourClock(GetIthDateComponent(TentativeDate, 4));
+ 		case 10:
+ 			return " ";
  		default:
  			return "Date Unknown";
  	}
@@ -784,6 +828,11 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  	Hours = int(Left(TwentyFourHourClockTime, DeliminatorPosition));
  	Minutes = int(Mid(TwentyfourHourClockTime, DeliminatorPosition + 1));
 
+ 	if(Minutes < 10)
+ 	{
+ 	 	Minutes = int("0" $ Minutes);
+ 	}
+
  	if(Hours > 12 && Hours != 0)
  	{
  		Hours = Hours - 12;
@@ -805,6 +854,30 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
  	}
 
  	return "AM PM deduction error?";
+ }
+
+ function string ConvertToNumericMonth(string MonthString)
+ {
+ 	switch(MonthString)
+ 	{
+ 		case  "Jan": return "01"; break;
+ 		case  "Feb": return "02"; break;
+ 		case  "Mar": return "03"; break;
+ 		case  "Apr": return "04"; break;
+ 		case  "May": return "05"; break;
+ 		case  "Jun": return "06"; break;
+ 		case  "Jul": return "07"; break;
+ 		case  "Aug": return "08"; break;
+ 		case  "Sep": return "09"; break;
+ 		case "Oct": return "10"; break;
+ 		case "Nov": return "11"; break;
+ 		case "Dec": return "12"; break;
+ 	}
+ }
+
+ function string ExtractLastTwoDigits(string SomeString)
+ {
+ 	return Mid(SomeString, Len(SomeString) - 2);
  }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1672,10 +1745,10 @@ function RClick(float X, float Y)
 	//Log("Context click registered!");
 }
 
-function LMouseDown(float X, float Y)
-{
- super.LMouseDown(X, Y);
-}
+ function LMouseDown(float X, float Y)
+ {
+ 	super.LMouseDown(X, Y);
+ }
 
 function Click(float X, float Y)
  {

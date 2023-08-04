@@ -104,7 +104,7 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
 
  	lblHeading = UMenuLabelControl(CreateControl(Class'UMenuLabelControl', 0, 0, 200, 16));
  	lblHeading.Font = F_Bold;
- 	lblHeading.SetText(" Date                                       Message ");
+ 	lblHeading.SetText("");
  	lblHeading.Align = TA_Left;
  	lblHeading.SetTextColor(GrnColor);
 
@@ -117,6 +117,7 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
  	TheTextArea.bVariableRowHeight = True;
  	TheTextArea.bScrollOnResize = True;
  	TheTextArea.CDChatWindow = self;
+ 	TheTextArea.lblChatHeading = lblHeading;
 
  	ButClear = UWindowSmallButton(CreateControl(class'UWindowSmallButton', 4, 230, 50, 25));
  	ButClear.SetText("Clear");
@@ -789,7 +790,12 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
  	TheTextArea.AnimBarfEmote.TexChatSizeFraction = 0.08 * FrameWindow.EmoSize;
  	TheTextArea.AnimWaveEmote.TexChatSizeFraction = 0.08 * FrameWindow.EmoSize;
  	TheTextArea.AnimArseMissEmote.TexChatSizeFraction = 0.08 * FrameWindow.EmoSize;
- 	TheTextArea.DateFormatIndex = FrameWindow.DateFormatIndex;
+
+ 	if(TheTextArea.DateFormatIndex != FrameWindow.DateFormatIndex)
+ 	{
+ 		TheTextArea.DateFormatIndex = FrameWindow.DateFormatIndex;
+ 		lblHeading.SetText("");
+ 	}
  }
 
  function Resize()
@@ -851,7 +857,7 @@ class CDChatWindowChat extends UWindowPageWindow config (ChatDiamond);
  	if(FrameWindow.bApplyBGToChatWindow)
  	{
  		C.DrawColor = FrameWindow.BackGroundColor;
- 	 	DrawStretchedTexture(C, 0, 0, WinWidth, WinHeight, Texture'BackgroundGradation');
+ 		DrawStretchedTexture(C, 0, 0, WinWidth, WinHeight, Texture'BackgroundGradation');
  	}
  	else
  	{
