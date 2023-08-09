@@ -5,14 +5,17 @@
                                             - Lul, Practicality
  ]]
 
+cmake_minimum_required(VERSION 3.13)
+
 project(UTNativeEssentials)
 set(OLDUNREAL_VERSION "469c")
-cmake_minimum_required(VERSION 3.13) # we need add_link_options
-set(CMAKE_CXX_STANDARD 11)
+
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_PROJECT_VERSION_MAJOR "0")
 set(CMAKE_PROJECT_VERSION_MINOR "1")
 set(CMAKE_PROJECT_VERSION_PATCH "0")
+
 # uncomment this to see compiler/linker commands
 # set(CMAKE_VERBOSE_MAKEFILE ON)
 
@@ -28,8 +31,8 @@ include(CMakePackageConfigHelpers)
 #             - Inc
 #             - Src
 #      - Classes
+#      - ChatDiamondBin
 #  - System
-#  - ChatDiamondBin
 
 # Control where the static and shared libraries are built
 # We would want a semi-packaging fashioned way where all bianries are together
@@ -42,11 +45,10 @@ set(CHATDIAMONDLIBRARYFOLDER "CompanionLibraries")
 set(UTGOTYROOT "${CMAKE_CURRENT_SOURCE_DIR}/../../")
 
 
-
 ################################################################################
 # Figure out build type and target platform
 ################################################################################
-
+# we need add_link_options
 # Sanity checks
 if(WIN32 AND NOT WINDOWS)
   set(WINDOWS TRUE)
@@ -85,16 +87,18 @@ check_cpu(
   "defined(__i386__) || defined(__i686__) || defined(_M_IX86) || defined(i386)"
   "x86" OLDUNREAL_X86
 )
-
 check_cpu("defined(__x86_64__) || defined(_M_X64)" "amd64" OLDUNREAL_AMD64)
-
 check_cpu("defined(__arm__)" "arm" OLDUNREAL_ARM)
-
 check_cpu("defined(__arm64__)" "arm64" OLDUNREAL_ARM64)
 
 if (NOT OLDUNREAL_CHOSE_CPU)
   message(FATAL_ERROR "We don't support this architecture yet")
 endif()
+
+message(STATUS "*****************************************************************************************")
+message(STATUS "* Native Build Environment: ${PLATFORM_PREFIX} platform and ${OLDUNREAL_CPU} cpu detected")
+message(STATUS "* Setting files for native mod build for Unreal Torunament ${OLDUNREAL_VERSION}")
+message(STATUS "*****************************************************************************************")
 
 ################################################################################
 # Build options
@@ -111,7 +115,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${REPOSITORYROOT}/ChatDiamondBin/${PLATFORM_
 
 
 ################################################################################
-# Locate or Build all 3rd party headers and libs
+# Locate or Build all 3rd party headers and libs# we need add_link_options
 ################################################################################
 
 #include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/FindUE1Dependencies.cmake)
@@ -120,21 +124,16 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${REPOSITORYROOT}/ChatDiamondBin/${PLATFORM_
 # Set compiler and linker flags
 ################################################################################
 
-#add_compile_definitions("$<$<CONFIG:Debug>:_DEBUG>")
-#add_compile_definitions("$<$<CONFIG:Release>:_RELEASE>")
-#add_compile_definitions("$<$<CONFIG:Release>:NDEBUG>")
-#add_compile_definitions("$<$<CONFIG:Release>:RELEASE>")
-
-#add_compile_definitions(UTGLR_UT_BUILD)
-#add_compile_definitions(UTGLR_USES_ALPHABLEND=1)
-#add_compile_definitions(ENGINE_ARCHITECTURE="${OLDUNREAL_CPU}")
-
 # use multi-threaded version of C runtime lib and link it statically
 add_compile_definitions(_CRT_SECURE_NO_WARNINGS=1)
 add_compile_definitions(_CRT_NO_VA_START_VALIDATION)
 add_compile_definitions(UNICODE=1)
 add_compile_definitions(_UNICODE=1)
 add_compile_definitions(WIN32=1)
+
+if(LINUX)
+  add_compile_definitions(__LINUX_ARM__)
+endif()
 
 if(OLDUNREAL_AMD64)
    add_compile_definitions(WIN64=1)
@@ -161,7 +160,6 @@ else()
     set(CMAKE_STATIC_LINKER_FLAGS "${CMAKE_STATIC_LINKER_FLAGS} /LARGEADDRESSAWARE")
 endif()
 
-
 # the recursive garbage collector needs a lot of stack space
 set(CMAKE_EXE_LINKER_FLAGS
     "${CMAKE_EXE_LINKER_FLAGS} /STACK:16000000,1000000 /LTCG"
@@ -178,7 +176,6 @@ if(OLDUNREAL_USE_ASAN)
 endif()
 
 add_compile_definitions(MOD_BUILD)
-add_compile_definitions(__LINUX_ARM__)
 
 ################################################################################
 # Including External and (or) non Epic libraries
@@ -203,7 +200,6 @@ target_include_directories(ChatDiamond
     PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/Core/Inc
     ${CMAKE_CURRENT_SOURCE_DIR}/Engine/Inc)
-
 
 ################################################################################
 # Target Linking Rules
