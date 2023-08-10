@@ -148,6 +148,27 @@ endif()
 
 if(OLDUNREAL_AMD64)
    add_compile_definitions(WIN64=1)
+elseif(WINDOWS)
+    #
+    # /Zc:wchar_t-
+    # do not treat wchar_t as a built-in type. Doing so would break binary
+    # compat with almost all native mods for earlier UT versions
+    #
+    # /arch:SSE2
+    # assume we have at least a Pentium 4
+    #
+    # /LARGEADDRESSAWARE
+    # we can handle more than 2Gb of RAM even in 32bit builds
+    #
+    # /Zp4
+    # use 4-byte alignment for structs. This is necessary for binary compatibility
+    #
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /Zc:wchar_t- /arch:SSE2 /Zp4 -DWINDOWS_IGNORE_PACKING_MISMATCH")
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /Zc:wchar_t- /arch:SSE2 /Zp4 -DWINDOWS_IGNORE_PACKING_MISMATCH")
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /LARGEADDRESSAWARE")
+    set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} /LARGEADDRESSAWARE")
+    set(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} /LARGEADDRESSAWARE")
+    set(CMAKE_STATIC_LINKER_FLAGS "${CMAKE_STATIC_LINKER_FLAGS} /LARGEADDRESSAWARE")
 endif()
 
 # the recursive garbage collector needs a lot of stack space
