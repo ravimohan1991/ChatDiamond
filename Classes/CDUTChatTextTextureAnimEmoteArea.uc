@@ -650,7 +650,6 @@ class CDUTChatTextTextureAnimEmoteArea extends UWindowDynamicTextArea;
 
  		DrawChatFace(C, DrawX, Y, LocateChatFaceTexture(FaceName, SkinName), Y1, TextureXOccupied, TextureYOccupied);
 
- 		// assumption: no connection with horizontal scrolling
  		if(lblChatHeading.Text == "")
  		{
  			if(HorizontalSB.Pos != 0 || DateFormatIndex == 10)
