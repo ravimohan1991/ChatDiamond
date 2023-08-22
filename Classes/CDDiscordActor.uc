@@ -166,6 +166,7 @@ class CDDiscordActor extends Actor
 
 defaultproperties
 {
+    bHidden=true
 }
 
 /*

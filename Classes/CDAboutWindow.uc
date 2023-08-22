@@ -74,6 +74,12 @@ class CDAboutWindow expands UWindowPageWindow;
  	CDCreditsControl.AddLineUrl("https://github.com/nlohmann/json",, "C++ Json");
  	CDCreditsControl.AddPadding(CategoryPadding);
 
+ 	CDCreditsControl.AddLineText("Voluntary Efforts",, CreditsCategoryColor);
+ 	CDCreditsControl.AddPadding(AfterCategoryTitlePadding);
+ 	CDCreditsControl.AddLineText("Members of EatSleepUT", 1);
+ 	CDCreditsControl.AddLineUrl("https://eatsleeput.com/",, "eatsleeput.com");
+ 	CDCreditsControl.AddPadding(CategoryPadding);
+
  	CDCreditsControl.AddLineText("Special Thanks To:",, CreditsCategoryColor);
  	CDCreditsControl.AddPadding(AfterCategoryTitlePadding);
  	CDCreditsControl.AddLineText("No0ne (for nice suggestions)", 1);

@@ -214,7 +214,14 @@ void ACDDiscordActor::execAddJsonKeyValue(FFrame& Stack, RESULT_DECL)
 
 	if (KeyString != "" && ValueString != "")
 	{
-		JsonVariable.emplace(KeyString, ValueString);
+		try
+		{
+			JsonVariable.emplace(KeyString, ValueString);
+		}
+		catch (std::exception& e)
+		{
+			GLog->Logf(TEXT("[Chat Diamond] exception %s"), e.what());//Log output and use printf format.
+		}
 	}
 
 	unguard
@@ -227,7 +234,14 @@ void ACDDiscordActor::execResetJsonContainer(FFrame& Stack, RESULT_DECL)
 
 	P_FINISH;
 
-	JsonVariable.clear();
+	try
+	{
+		JsonVariable.clear();
+	}
+	catch (std::exception& e)
+	{
+		GLog->Logf(TEXT("[Chat Diamond] exception %s"), e.what());//Log output and use printf format.
+	}
 
 	unguard
 }

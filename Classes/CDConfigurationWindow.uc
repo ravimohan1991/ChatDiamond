@@ -99,7 +99,7 @@ class CDConfigurationWindow expands UWindowPageWindow;
  	ApplyBGToConsole.SetText("Apply To Console");
  	//ApplyBGToConsole.bChecked = FrameWindow.bApplyBGToConsole;
 
- 	ChatBindButton = UMenuRaisedButton(CreateControl(class'UMenuRaisedButton', 144, 120, 60, 1));
+ 	ChatBindButton = UMenuRaisedButton(CreateControl(class'UMenuRaisedButton', 144, 120, 80, 1));
  	ChatBindButton.SetTextColor(class'CDChatWindowEmojis'.default.WhiteColor);
 
  	ChatBindButton.SetText(class'UMenuCustomizeClientWindow'.default.LocalizedKeyName[ChatWindowKeyForBind]);
