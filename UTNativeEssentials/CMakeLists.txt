@@ -5,7 +5,7 @@
                                             - Lul, Practicality
  ]]
 
-cmake_minimum_required(VERSION 3.13)
+cmake_minimum_required(VERSION 3.6)
 
 project(UTNativeEssentials)
 set(OLDUNREAL_VERSION "469c")
@@ -129,11 +129,20 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${REPOSITORYROOT}/ChatDiamondBin/${PLATFORM_
 ################################################################################
 
 # use multi-threaded version of C runtime lib and link it statically
+if(Windows)
 add_compile_definitions(_CRT_SECURE_NO_WARNINGS=1)
 add_compile_definitions(_CRT_NO_VA_START_VALIDATION)
+add_compile_definitions(WIN32=1)
+endif()
+
 add_compile_definitions(UNICODE=1)
 add_compile_definitions(_UNICODE=1)
-add_compile_definitions(WIN32=1)
+
+if(OLDUNREAL_X86)
+add_compile_definitions(ENGINE_ARCHITECTURE=x86)
+else()
+add_compile_definitions(ENGINE_ARCHITECTURE=amd64)
+endif()
 
 if(LINUX)
   add_compile_definitions(__LINUX_ARM__)
@@ -147,7 +156,7 @@ if(MACOS)
 endif()
 
 if(OLDUNREAL_AMD64)
-   add_compile_definitions(WIN64=1)
+   #add_compile_definitions(WIN64=1)
 elseif(WINDOWS)
     #
     # /Zc:wchar_t-
@@ -191,6 +200,10 @@ add_compile_definitions(MOD_BUILD)
 ################################################################################
 # Including External and (or) non Epic libraries
 ################################################################################
+#add_compile_definitions(HAVE_STRUCT_TIMEVAL HAVE_NETINET_IN_H HAVE_SOCKET HAVE_SELECT USE_BLOCKING_SOCKETS)
+#add_compile_definitions(SIZEOF_SHORT=2 SIZEOF_INT=2 SIZEOF_LONG=2 SIZEOF_CURL_OFF_T=2 SIZEOF_SIZE_T=2)
+
+add_subdirectory(sleepy-discord)
 
 ################################################################################
 # Epic Essentials
