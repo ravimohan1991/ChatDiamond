@@ -7,11 +7,10 @@
 
 cmake_minimum_required(VERSION 3.0.0)
 
-project(ChatDiamond)
+file(GLOB_RECURSE CD_HEADERS Inc/*.h Inc/*.hpp)
+file(GLOB_RECURSE CD_CPPFILES Src/*.cpp)
 
-file(GLOB CD_HEADERS Inc/*.h Inc/*.hpp)
-
-add_library(ChatDiamond SHARED Src/ChatDiamondNative.cpp ${CD_HEADERS})
+add_library(ChatDiamond SHARED ${CD_CPPFILES} ${CD_HEADERS})
 
 # INTERFACE (Something that Consumers require but Producers don't)
 # Since I am a library coder here, I am the Producer
@@ -21,7 +20,7 @@ target_include_directories(ChatDiamond
     PRIVATE
         # where the library itself will look for its internal headers
         ${CMAKE_CURRENT_SOURCE_DIR}/Inc
-        ${CMAKE_CURRENT_SOURCE_DIR}/../Window/Inc
+        ${CMAKE_CURRENT_SOURCE_DIR}/Inc/sleepy_discord
     PUBLIC
         # where top-level project will look for the library's public headers
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Inc>

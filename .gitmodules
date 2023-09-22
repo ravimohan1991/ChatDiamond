@@ -1,0 +1,3 @@
+[submodule "UTNativeEssentials/sleepy-discord"]
+	path = UTNativeEssentials/sleepy-discord
+	url = https://github.com/ravimohan1991/sleepy-discord.git
