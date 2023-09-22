@@ -24,6 +24,7 @@
  *   April, 2023: Native - scripting hybrid progress
  */
 
+#include "sleepy_discord/sleepy_discord.h"
 #include "ChatDiamondNative.h"
 #include <regex>
 #include <iostream>
@@ -34,6 +35,17 @@ IMPLEMENT_PACKAGE(ChatDiamond);
 IMPLEMENT_CLASS(ACDDiscordActor);
 
 json ACDDiscordActor::JsonVariable;
+
+class MyClientClass : public SleepyDiscord::DiscordClient
+{
+public:
+	using SleepyDiscord::DiscordClient::DiscordClient;
+	void onMessage(SleepyDiscord::Message message) override
+	{
+		if (message.startsWith("whcg hello"))
+			sendMessage(message.channelID, "Hello " + message.author.username);
+	}
+};
 
 ACDDiscordActor::ACDDiscordActor()
 {

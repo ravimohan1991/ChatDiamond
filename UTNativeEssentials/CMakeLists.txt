@@ -5,13 +5,14 @@
                                             - Lul, Practicality
  ]]
 
-cmake_minimum_required(VERSION 3.6)
+cmake_minimum_required(VERSION 3.13)
 
 project(UTNativeEssentials)
 set(OLDUNREAL_VERSION "469c")
 
-set(CMAKE_CXX_STANDARD 20)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
+#set(CMAKE_CXX_STANDARD 20)
+#set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_PROJECT_VERSION_MAJOR "0")
 set(CMAKE_PROJECT_VERSION_MINOR "1")
 set(CMAKE_PROJECT_VERSION_PATCH "0")
@@ -44,6 +45,7 @@ set(CHATDIAMONDLIBRARYFOLDER "CompanionLibraries")
 # UT GOTY directory
 set(UTGOTYROOT "${CMAKE_CURRENT_SOURCE_DIR}/../../")
 
+add_subdirectory(sleepy-discord)
 
 ################################################################################
 # Figure out build type and target platform
@@ -200,10 +202,16 @@ add_compile_definitions(MOD_BUILD)
 ################################################################################
 # Including External and (or) non Epic libraries
 ################################################################################
+
+# for finding package threads in linux https://stackoverflow.com/q/73110847
+#set(CMAKE_THREAD_LIBS_INIT "-lpthread")
+#set(CMAKE_HAVE_THREADS_LIBRARY 1)
+#set(CMAKE_USE_WIN32_THREADS_INIT 0)
+#set(CMAKE_USE_PTHREADS_INIT 1)
+#set(THREADS_PREFER_PTHREAD_FLAG ON)
+
 #add_compile_definitions(HAVE_STRUCT_TIMEVAL HAVE_NETINET_IN_H HAVE_SOCKET HAVE_SELECT USE_BLOCKING_SOCKETS)
 #add_compile_definitions(SIZEOF_SHORT=2 SIZEOF_INT=2 SIZEOF_LONG=2 SIZEOF_CURL_OFF_T=2 SIZEOF_SIZE_T=2)
-
-add_subdirectory(sleepy-discord)
 
 ################################################################################
 # Epic Essentials
@@ -223,11 +231,14 @@ add_subdirectory(ChatDiamond)
 target_include_directories(ChatDiamond
     PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/Core/Inc
-    ${CMAKE_CURRENT_SOURCE_DIR}/Engine/Inc)
+    ${CMAKE_CURRENT_SOURCE_DIR}/Engine/Inc
+    #${CMAKE_CURRENT_SOURCE_DIR}/sleepy-discord/deps/websocketpp/
+    ${CMAKE_CURRENT_SOURCE_DIR}/sleepy-discord/include
+)
 
 ################################################################################
 # Target Linking Rules
 ################################################################################
-target_link_libraries(ChatDiamond PUBLIC Core Engine)
+target_link_libraries(ChatDiamond PUBLIC Core Engine sleepy-discord)
 
 # end of CMakeLists.txt ...
