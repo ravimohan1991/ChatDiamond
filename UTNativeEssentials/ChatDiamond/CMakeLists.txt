@@ -5,7 +5,7 @@
                                             - Lul, Practicality
  ]]
 
-cmake_minimum_required(VERSION 3.0.0)
+cmake_minimum_required(VERSION 3.23)
 
 file(GLOB_RECURSE CD_HEADERS Inc/*.h Inc/*.hpp)
 file(GLOB_RECURSE CD_CPPFILES Src/*.cpp)
