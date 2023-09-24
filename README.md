@@ -1,3 +1,19 @@
+# Compiling (discord-integration)
+  - Linux:
+      Make sure to install openssl and another library I forgot, using apt-get or aptitude
+  - Windows:
+      make sure to install [openssl 32 bit library](https://slproweb.com/products/Win32OpenSSL.html)
+      also in CMakeLists.txt
+      ```
+      set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON) // for generating sleepy-discord.lib
+
+      set(OPENSSL_ROOT_DIR "C:/Program\ Files\ (x86)/OpenSSL-Win32")
+      set(OPENSSL_INCLUDE_DIR "C:/Program\ Files\ (x86)/OpenSSL-Win32/include")
+
+      set(OPENSSL_LIBRARIES "C:/Program\ Files\ (x86)/OpenSSL-Win32/lib")
+      ```
+          
+
 ![CDBanner](https://user-images.githubusercontent.com/2173654/207157208-aee2c72f-3879-4529-9f4e-b787e3940f9d.png)
 "One can't get better friend than Pen!"
                                    ~ Anonymous
