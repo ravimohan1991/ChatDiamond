@@ -61,10 +61,11 @@ void ACDDiscordActor::execTestFunction(FFrame& Stack, RESULT_DECL)
 
 	GLog->Logf(TEXT("Hello World! S=%s,I=%i"), *S, I);//Log output and use printf format.
 
-	MyClientClass client("token", SleepyDiscord::USER_CONTROLED_THREADS);
-		client.setIntents(SleepyDiscord::Intent::SERVER_MESSAGES);
-		client.run();
-
+	//MyClientClass client("NTc0NDc0MTIwNDY1NzQzODk2.GvQyY2.31a-kpfWBVkTLG11Olq1-lR0uKyLNldvh2X0T8", SleepyDiscord::USER_CONTROLED_THREADS);
+	//client.setIntents(SleepyDiscord::Intent::SERVER_MESSAGES);
+	
+	// try with stand alone sleepy-discord
+	//client.run();
 
 	//You may also use debugf(TEXT("Hello world!")) since it may be easier to remember.
 	*(UBOOL*)Result = true;// Return true to UScript, this is how you return a result. You cast your result into "Result" -- whatever it may be.

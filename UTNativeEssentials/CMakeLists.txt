@@ -52,6 +52,7 @@ set(UTGOTYROOT "${CMAKE_CURRENT_SOURCE_DIR}/../../")
 set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
 # we include sleepy-discord here because there is some import issue when done later (after old unreal crap)
 add_subdirectory(sleepy-discord)
+add_subdirectory(sleepy-discord/examples/hello)
 
 ################################################################################
 # Figure out build type and target platform
