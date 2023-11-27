@@ -55,13 +55,13 @@ class CDUTConsole extends UTConsole config (ChatDiamond);
 
 function Message(PlayerReplicationInfo PRI, coerce string Msg, name N)
 {
- 	if(bFilterNonChatMessages && !Root.GetPlayerOwner().PlayerReplicationInfo.bIsSpectator && !(N == 'Say' || N == 'TeamSay'))
+ 	if(bFilterNonChatMessages && !PRI.bIsSpectator && !(N == 'Say' || N == 'TeamSay'))
  	{
  		return;
  	}
 
  	// A: Assuming broadcasted messages don't have `:` delimiter
- 	if(bFilterNonChatMessages && Root.GetPlayerOwner().PlayerReplicationInfo.bIsSpectator && (IsSpectatorMessageNonChat(Msg, true, N)))
+ 	if(bFilterNonChatMessages && PRI.bIsSpectator && (IsSpectatorMessageNonChat(Msg, true, N)))
  	{
  		return;
  	}

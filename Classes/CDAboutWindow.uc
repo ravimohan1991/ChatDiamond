@@ -105,7 +105,7 @@ class CDAboutWindow expands UWindowPageWindow;
  	CDCreditsControl.AddLineUrl("https://www.oldunreal.com/phpBB3/viewtopic.php?f=37&t=3938",, "Native-Mod Tutorial");
  	CDCreditsControl.AddPadding(CategoryPadding);
 
- 	CDCreditsControl.AddLineUrl("https://eatsleeput.com/d/192-chatdiamond", 2 ,"Forum");
+ 	CDCreditsControl.AddLineUrl("https://ut99.org/viewtopic.php?f=7&t=15608", 2 ,"Forum");
  	CDCreditsControl.AddLineText("Please visit the forum for suggestions and feedbacks");
 
  	// Setting initial conditions for each scrolling context
