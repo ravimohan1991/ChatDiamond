@@ -33,10 +33,12 @@
 \definecolor{mygreen}{rgb}{0,0.6,0}
 \definecolor{mygray}{rgb}{0.5,0.5,0.5}
 \definecolor{mymauve}{rgb}{0.58,0,0.82}
+\definecolor{myinfrared}{rgb}{0.58,0.17,0.25}
 
 \newcommand{\ChatDiamondVersion}{0.8}
 \newcommand{\FileColor}[1]{{\color{Purple} #1}}
 \newcommand{\FolderColor}[1]{{\color{mygray} #1}}
+\newcommand{\ClassColor}[1]{{\color{myinfrared} #1}}
 
 \lstdefinelanguage{cmake} {morekeywords={one,two,three,four,five,six,seven,eight,
 nine,ten,eleven,twelve,o,clock,rock,around,the,tonight}, sensitive=false,
@@ -73,7 +75,7 @@ morestring=[b]", }
 
 \bigskip
 
-\textcolor{pink}{BIG FAT NOTE: Chat Diamond is in development stage.  Please embrace yourselves for unexpected features and bugs here and there punctuated by accessed none type of logs.  If possible please raise an issue at \href{https://github.com/ravimohan1991/ChatDiamond/issues}{GitHub}!}
+%\textcolor{pink}{BIG FAT NOTE: Chat Diamond is in development stage.  Please embrace yourselves for unexpected features and bugs here and there punctuated by accessed none type of logs.  If possible please raise an issue at \href{https://github.com/ravimohan1991/ChatDiamond/issues}{GitHub}!}
 
 \section{Introduction}
 
@@ -108,7 +110,7 @@ morestring=[b]", }
 Chat Diamond (version \ChatDiamondVersion) is a purely client-side mod for Unreal Tournament G.O.T.Y (UT99) which replaces the default UT console with a more appropriate one.  This functionality allows the achievement of the following
 \begin{itemize}
 \item Gathering of raw messages delivered to the console and relevant categorization, along with chat message separation, of them.
-\item Introduction of appropriate web-query for translation to local or demand of the language.
+\item Introduction of (could be) appropriate web-query for translation to local or demand of the language\footnote{This feature is work in progress.  I have tried hooking with google translate. Seems like there is some modification needed within the library and no out-of-box solution yet. If you are interested you may see the branch \href{https://github.com/ravimohan1991/ChatDiamond/tree/google-translator}{google-translator}}.
 \end{itemize}
 
 \begin{figure}
@@ -120,11 +122,11 @@ Chat Diamond (version \ChatDiamondVersion) is a purely client-side mod for Unrea
 
 \subsection{Chat Window}
 \label{sec:chatwindow}
-Figure \ref{fig:chatdiamond} shows the current form of the chat window. The following features are supported
+Figure \ref{fig:chatdiamond} shows the current form\footnote{You may notice the version mismatch, between actual 0.8 and display 0.1.0-alpha versions, however, there is no difference at the UI level for display purposes.} of the chat window. The following features are supported
 \begin{itemize}
 \item Display of sender's avatar face.
 \item Static emojis and animated emotes.
-\item Display of Date and Time (long format for now).
+\item Display of Date and Time (variety of formats available).
 \item Display of the Server name for reference purposes.
 \item Ability to copy text and IP address (both game and web server) from chat messages.
 \begin{itemize}
@@ -134,7 +136,6 @@ Figure \ref{fig:chatdiamond} shows the current form of the chat window. The foll
 \item Ability to display hyperlinks with clickable feature for relevant navigation and mouse cursor distinction.
 \begin{itemize}
 \item On clicking web or game server IP, the player can reach the relevant website (http:// only) or UT99 game server.
-\item On clicking http://something.com or https://something.com, the player can reach the desired site, if valid URL is posted.
 \end{itemize}
 \end{itemize}
 
@@ -150,7 +151,7 @@ Figure \ref{fig:chatdiamond} shows the current form of the chat window. The foll
 In order to display complete list of supported emojis (and emotes), collectively called \emph{Emos}, the Emoji window \ref{fig:chatdiamond_emos} (which was texture based for UT Chat) has been 
 written almost completely in unreal script (save the textures).  This allows the support for the following 
 \begin{itemize}
-\item A curation of selection page for framed Emos.
+\item A curation of framed Emos in the selection page.
 \item An interactive way of display, which depresses the frame being hovered with a sound and generates a distinct clicking
 experience.
 \item Emoji and Chat window text areas are synced, meaning, whatever you write or select in one window, which gets registered
@@ -170,6 +171,7 @@ in the text area, is copied over to the next one.
 
 The console now has the following features
 \begin{itemize}
+\label{itemz:consolefeatures}
 \item Non-chat filter to filter out server or mutator advertisements, in the console. Although SmartCTF cover and seal messages may also get filtered.
 \item Event filter censors death messages corresponding to the weapon used.
 \item A clear button to clean or reset the console.
@@ -185,26 +187,48 @@ relevant details for configurations
 \item \emph{Chat Binding}: Click on the box and the key pressed next shall be assigned for opening Public Chats window.
 \item \emph{Animation Speed}: Real time adjustmet, by dragging the calibration slider, as per personal taste.
 \item \emph{Emo Size}: Real time adjustment for setting the size of emoji's and emotes simultaneously.
-\item \emph{Message Arrival Sound}: Check if you want telegram style sound to be played on message dlivery.
+\item \emph{Message Arrival Sound}: Check if you want telegram style sound to be played on message delivery.
 \item \emph{Open Chat At The End}: Check if you to open the chat window \ref{sec:chatwindow} when the match ends.
-\item \emph{Load Messages}: $x$ is the number of messages in history that you want Chat Diamond to load\footnote{Chat Diamond has the capacity to store virtually all the messages without the need of erasing history.  Loading of more messages would be slow though.  Optimal number is 20 - 40 after which you can start noticing the slow down.  For complete history of messages, check out \FileColor{ChatDiamond.txt} which contains chat and relevant metadat in \href{https://en.wikipedia.org/wiki/JSON}{json} strings.}.
+\item \emph{Load Messages}: $x$ is the number of messages in history that you want Chat Diamond to load\footnote{Chat Diamond has the capacity to store virtually all the messages without the need of erasing history.  Loading of more messages would be slow though.  Optimal number is 20 - 40 after which you can start noticing the slow down.  For complete history of messages, check out \FileColor{ChatDiamond.txt} which contains chat and relevant metadata in \href{https://en.wikipedia.org/wiki/JSON}{json} strings.}.
+\item \emph{Auto v-scroll chat}: Option to auto scroll the chat vertically.
+\item \emph{Date format}: Chat Diamond provides variety of date formats which are provided in the following list
+\begin{itemize}
+\item Day, Date\{dd:month:yyyy\}, Time\{24 hours\}
+\item Day, Date\{dd:month:yyyy\}, Time\{12 hours\}
+\item Date\{dd:month:yyyy\}, Time\{24 hours\}
+\item Date\{dd:month:yyyy\}, Time\{12 hours\}
+\item Date\{month:yyyy\}, Time\{24 hours\}
+\item Date\{month:yyyy\}, Time\{12 hours\}
+\item Date\{mm:yyyy\}, Time\{24 hours\}
+\item Date\{mm:yyyy\}, Time\{12 hours\}
+\item Time\{24 hours\}
+\item Time\{12 hours\} 
+\end{itemize}
 \end{itemize}
 
 \begin{figure}
 \centering
-\includegraphics[width=0.9\textwidth]{img_configure}
+\includegraphics[width=0.6\textwidth]{img_configure}
 \caption{Chat Diamond \ChatDiamondVersion~Configure.}
 \label{fig:chatdiamond_configure}
 \end{figure}
 
+\subsection{About Window}
+
+This page \ref{fig:chatdiamond_about} shows the information about the invovled parties via scrolling credits. Basically, my way of saying thank you for the help I got through various formats of communications.
+\begin{figure}
+\centering
+\includegraphics[width=0.6\textwidth]{img_about}
+\caption{Chat Diamond \ChatDiamondVersion~About.}
+\label{fig:chatdiamond_about}
+\end{figure}
 
 \subsection{More Pages}
-Please keep in mind that this is very initial stage of Chat Diamond (\ChatDiamondVersion).  The pages to configure various properties of chat messages
-and date format shall be made available as we progress with the development cycle.
+If you have suggestions for a cool feature that may require more page(s), feel free to post on \href{https://github.com/ravimohan1991/ChatDiamond/issues}{github repository}. Or send a pm to the\_cowboy at \href{https://ut99.org}{ut99.org}.
 
 
 \section{Installation}
-Chat Diamond is developed and tested with UT99, \textbf{469c client}.  Although the mod should work on previous versions, I take no pains for maintaining that code simply because I feel that we all should work towards pushing forward the community effort in driving the game (and UE 1) towards modern experience.  So by not supporting the code for earlier versions I am supporting the later versions.
+Chat Diamond is developed and tested with UT99, \textbf{469c} and \textbf{469d client}.  Although the mod should work on previous versions, I take no pains for maintaining that code simply because I feel that we all should work towards pushing forward the community effort in driving the game (and UE 1) towards modern experience.  So by not supporting the code for earlier versions I am supporting the later versions.
 
 With that being written, feel free to send pull requests to \href{https://github.com/ravimohan1991/ChatDiamond/}{Chat Diamond} repository, even for earlier game versions.
 
@@ -245,10 +269,10 @@ Chat Diamond is essentially a console (and not meant for the server).  So for in
 
 \end{itemize}
 
-\section{Version Histroy}
+\section{Version History}
 In this section I am presenting the history of Chat Diamond for general awareness.
 \begin{changelog}[author=The\_Cowboy, sectioncmd=\section*]
-\begin{version}[v=0.8, date=2023-xx-xx]
+\begin{version}[v=0.8, date=2023-12-10]
   \added
     \item Configure Window
     \item Several emotes
@@ -271,7 +295,8 @@ In this section I am presenting the history of Chat Diamond for general awarenes
 \end{changelog}
 
 \section{A note on UT Messaging}
-Chat Diamond's functionality is based upon the tenet ``A complete client side user interface with no dependencies with the server''.  This would imply conforming to the UT standards and any server not conforming to the standards, if so, is not worth visiting.
+\label{section:utmessaging}
+Chat Diamond's functionality is based upon the tenet ``A complete client side user interface with no dependencies with the server''\footnote{This is what makes Chat Diamond different from available (2023) chat modifications in UT.}.  This would imply conforming to the vanilla UT standards and any server not conforming to the standards, if so, is not worth visiting, IMHO.
 
 Based upon the above motivation we have a choice to make between replacing the client HUD or UT console, in order to gather the UT messages client side.  My first instinct was to replace the HUD because that would give more precise classification of the messages, in the sense Epic wrote the code, like \href{http://uncodex.ut-files.com/UT/v436/Source_botpack/challengehud.html}{so} (line 1499)
 
@@ -304,7 +329,7 @@ simulated function Message( PlayerReplicationInfo PRI, coerce string Msg, name M
    %* \ldots *)           
 \end{lstlisting}
 
-The basic premise of many cheats providing aim assist is to modify the HUD client side and display the adversary's position behind the wall or a radar.  This is the reason why modern anti-cheats are not receptive of clients modifying HUD, and thus, work with the concept of ``whitelisting''.
+The basic premise of many cheats providing aim assist is to modify the HUD client side and display the adversary's position behind the wall or a radar.  This is the reason why modern anti-cheats\footnote{By modern, I can only mean the actively developed anti-cheat ACE whose source code is not available so my perception of the software is retrospective, meaning, gained from reverse engineering and guesses.} are not receptive of clients modifying HUD, and thus, work with the concept of ``whitelisting''.
 
 If the notion of ``cheat-anticheat'' interplay exists in the UT standards, then that simply doesn't fit with the tenant we began with.  We don't want to be sending request to server administrators for specifically whitelisting Chat Diamond which will be reverted by cold silent treatment to say the most and some naggy jibber jabber about the unknown-ness of Chat Diamond, especially when the mod is not that popular.
 
@@ -348,7 +373,40 @@ It is clear that both the console and HUD should receive same messages with no d
 \label{fig:chatdiamond_console_hud}
 \end{figure}
 
-Please note that Chat Diamond's console is not much different from default UT99, visually.  The changes are how Chat Diamond interprets the raw messages thrown and utilize them in a constructive way. So this is where magic \href{https://github.com/ravimohan1991/ChatDiamond/blob/859323fbd80266b21c9dab163b067cacfa318463/Classes/CDUTConsole.uc#L52-L71}{code} comes in.  In order to understand that let me first demonstrate UT messaging by a table\footnote{\label{foot:hudconsolediff} The ``messages'' for instance: `plushie was smacked down by Mental\_Instituitions's Rocket Launcher', are actually strings which can be seen in the line 117 of the \href{http://uncodex.ut-files.com/UT/v436/Source_botpack/deathmessageplus.html}{code}.  This also shows how some death messages can be suppressed in the console thus differing from HUD.}.
+Please note that Chat Diamond's console is not much different from that of default UT99, visually.  The changes are how Chat Diamond interprets the raw messages thrown and utilizes them in a constructive way, for instance, putting up for the display in ``Public Chats'' page.
+
+We begin the study with the \href{https://github.com/ravimohan1991/ChatDiamond/blob/b52b17fbfcdbb2a4d8adfb952d9acfb1985c850e/Classes/CDUTConsole.uc#L56}{code} which is a function that gets called whenever a console printable message is receieved by the client.  A look at the snippet\footnote{For getting to know the `N' in function Messge(), we refer to the snippet \ref{section:utmessaging}.} 
+
+\begin{lstlisting}[frame=single]
+function Message(PlayerReplicationInfo PRI, coerce string Msg, name N)
+{
+ 	if(bFilterNonChatMessages && !PRI.bIsSpectator && !(N == 'Say' || N == 'TeamSay'))
+ 	{
+ 		return;
+ 	}
+
+ 	// A: Assuming broadcasted messages don't have `:` delimiter
+ 	if(bFilterNonChatMessages && PRI.bIsSpectator && (IsSpectatorMessageNonChat(Msg, true, N)))
+ 	{
+ 		return;
+ 	}
+
+ 	super.Message(PRI, Msg, N);
+
+ 	if(ChatWindow != none)
+ 	{
+ 		ChatWindow.InterpretAndDisplayTextClientSide(PRI, Msg, N);
+ 		//Log("In the console: " $ Msg @ "Type: " $ N $ " PRI:" @ PRI.PlayerName);
+ 	}
+}  
+\end{lstlisting}
+shows the heuristics for dealing with non-spectating and spectating message senders for filtering (see \ref{itemz:consolefeatures}) the console displayable messages.  For instance, the first heuristic, line 3 is saying that if filtering of non-chat messages is desired (meaning censorship of server adds and whatnot) and if message sender is not spectating then the messages of category not belonging to `Say' or `TeamSay' are not printed, both in console and ``Public Chat'' pages.
+
+\subsubsection{Message Classification}    
+Remember that during the duration of a game, we are bombarded with plethora of messages in raw from, ranging from game relevant events (for instance \ClassColor{CTFMessage} messages) to mutator sent messages (for instance ServerAdds messages).  Chat Diamond's complex\footnote{Just enough to capture the message differentiation trait.} algorithm then attempts to classify the messages into ``Chat'' and ``Non-Chat'' categories.
+
+
+ In order to demonstrate that, let me show a UT messaging by a table\footnote{\label{foot:hudconsolediff} The ``messages'' for instance: `plushie was smacked down by Mental\_Instituitions's Rocket Launcher', are actually strings which can be seen in the line 117 of the \href{http://uncodex.ut-files.com/UT/v436/Source_botpack/deathmessageplus.html}{code}.  This also shows how some death messages can be suppressed in the console thus differing from HUD in the context of message display.}  \ref{tab:messageform} present in APPENDIX \ref{append:messagingtables}.
 
 The mapping to relevant arguments is like so in Table \ref{tab:messageform}.
 
@@ -825,6 +883,7 @@ is used for collecting the arguments of our uscript function \texttt{TestFunctio
 \appendix
 
 \section{Messaging Tables}
+\label{append:messagingtables}
 
 \begin{tabcontainer}
  \begin{tabularx}{\textwidth}{| X | X | X | X |}

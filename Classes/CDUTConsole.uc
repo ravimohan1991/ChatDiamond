@@ -55,6 +55,11 @@ class CDUTConsole extends UTConsole config (ChatDiamond);
 
 function Message(PlayerReplicationInfo PRI, coerce string Msg, name N)
 {
+ 	if(PRI == none)
+ 	{
+ 	 	return;
+ 	}
+
  	if(bFilterNonChatMessages && !PRI.bIsSpectator && !(N == 'Say' || N == 'TeamSay'))
  	{
  		return;
