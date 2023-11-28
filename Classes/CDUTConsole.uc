@@ -45,6 +45,7 @@ class CDUTConsole extends UTConsole config (ChatDiamond);
  * Routine to gather the messages supplied to the client via PlayerPawn
  *
  * @PARAM PRI                 The PlayerReplicationInfo of involved individual
+ *                            who is receiving the message
  * @PARAM Msg                 The actual message
  * @PARAM N                   Message type
  *
@@ -55,18 +56,20 @@ class CDUTConsole extends UTConsole config (ChatDiamond);
 
 function Message(PlayerReplicationInfo PRI, coerce string Msg, name N)
 {
+ 	//Log("In the console: " $ Msg @ "Type: " $ N $ " PRI:" @ PRI.PlayerName);
+
  	if(PRI == none)
  	{
  	 	return;
  	}
 
- 	if(bFilterNonChatMessages && !PRI.bIsSpectator && !(N == 'Say' || N == 'TeamSay'))
+ 	if(bFilterNonChatMessages && !PRI.bIsSpectator && (!(N == 'Say' || N == 'TeamSay') && IsMessageNonChat(Msg, false, N)))
  	{
  		return;
  	}
 
  	// A: Assuming broadcasted messages don't have `:` delimiter
- 	if(bFilterNonChatMessages && PRI.bIsSpectator && (IsSpectatorMessageNonChat(Msg, true, N)))
+ 	if(bFilterNonChatMessages && PRI.bIsSpectator && (IsMessageNonChat(Msg, true, N)))
  	{
  		return;
  	}
@@ -80,52 +83,39 @@ function Message(PlayerReplicationInfo PRI, coerce string Msg, name N)
  	}
 }
 
- function bool IsSpectatorMessageNonChat(string Message, bool bIsSpectator, name MessageType)
+function bool IsMessageNonChat(string Message, bool bIsSpectator, name MessageType)
  {
- 	local int ReceieverNameEndPosition, SenderNameEndPosition;
+ 	local int SenderNameEndPosition;
 
  	//Log("IsMessageNonChat: " @ Message @ " Type: " @ MessageType);
 
  	// B: Assuming name has no funny character, i.e delimiter itself
  	// A better assumption (club A and B) there are no ':' delimiters in non chat Message for spectator
  	// except for the spectator name seperator
- 	ReceieverNameEndPosition = Instr(Message, ":");
+ 	SenderNameEndPosition = Instr(Message, ":");
 
  	if(bIsSpectator)
  	{
- 		if(ReceieverNameEndPosition != -1)
- 		{
- 			SenderNameEndPosition = Instr(mid(Message, ReceieverNameEndPosition), ":");
- 			if(SenderNameEndPosition != -1)
- 			{
- 				return false;
- 			}
- 			return true;
- 		}
- 		else if(ReceieverNameEndPosition == -1 && (MessageType == 'Say' || MessageType == 'TeamSay'))
+ 		if(SenderNameEndPosition != -1)
  		{
  			return false;
  		}
+ 		return true;
  	}
- 	else// EXPERIMENTAL
+ 	else
  	{
- 		if(ReceieverNameEndPosition != -1)
+ 		if(SenderNameEndPosition != -1)
  		{
- 			Log("Non spectator message is (0): " @ Message);
  			return false;
  		}
- 		else
- 		{
- 			Log("Non spectator message is: (1)" @ Message);
- 			return true;
- 		}
+ 		return true;
  	}
 
  	// IDK atm
  	return true;
  }
 
- event AddString( coerce string Msg )
+event AddString( coerce string Msg )
  {
  	if(bFilterEvents)
  	{
