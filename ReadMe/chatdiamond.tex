@@ -375,18 +375,25 @@ It is clear that both the console and HUD should receive same messages with no d
 
 Please note that Chat Diamond's console is not much different from that of default UT99, visually.  The changes are how Chat Diamond interprets the raw messages thrown and utilizes them in a constructive way, for instance, putting up for the display in ``Public Chats'' page.
 
-We begin the study with the \href{https://github.com/ravimohan1991/ChatDiamond/blob/b52b17fbfcdbb2a4d8adfb952d9acfb1985c850e/Classes/CDUTConsole.uc#L56}{code} which is a function that gets called whenever a console printable message is receieved by the client.  A look at the snippet\footnote{For getting to know the `N' in function Messge(), we refer to the snippet \ref{section:utmessaging}.} 
+We begin the study with the \href{https://github.com/ravimohan1991/ChatDiamond/blob/b27b03b444078e1fe206bd1687278fd84f9d4823/Classes/CDUTConsole.uc#L57C44-L57C44}{code} which is a function that gets called whenever a console printable message is receieved by the client.  A look at the snippet\footnote{For getting to know the `N' in function Messge(), we refer to the snippet \ref{section:utmessaging}.} 
 
 \begin{lstlisting}[frame=single]
 function Message(PlayerReplicationInfo PRI, coerce string Msg, name N)
 {
- 	if(bFilterNonChatMessages && !PRI.bIsSpectator && !(N == 'Say' || N == 'TeamSay'))
+ 	//Log("In the console: " $ Msg @ "Type: " $ N $ " PRI:" @ PRI.PlayerName);
+
+ 	if(PRI == none)
+ 	{
+ 	 	return;
+ 	}
+
+ 	if(bFilterNonChatMessages && !PRI.bIsSpectator && (!(N == 'Say' || N == 'TeamSay') && IsMessageNonChat(Msg, false, N)))
  	{
  		return;
  	}
 
  	// A: Assuming broadcasted messages don't have `:` delimiter
- 	if(bFilterNonChatMessages && PRI.bIsSpectator && (IsSpectatorMessageNonChat(Msg, true, N)))
+ 	if(bFilterNonChatMessages && PRI.bIsSpectator && (IsMessageNonChat(Msg, true, N)))
  	{
  		return;
  	}
@@ -400,18 +407,18 @@ function Message(PlayerReplicationInfo PRI, coerce string Msg, name N)
  	}
 }  
 \end{lstlisting}
-shows the heuristics for dealing with non-spectating and spectating message senders for filtering (see \ref{itemz:consolefeatures}) the console displayable messages.  For instance, the first heuristic, line 3 is saying that if filtering of non-chat messages is desired (meaning censorship of server adds and whatnot) and if message sender is not spectating then the messages of category not belonging to `Say' or `TeamSay' are not printed, both in console and ``Public Chat'' pages.
+shows the heuristics for dealing with non-spectating and spectating clients for filtering (see \ref{itemz:consolefeatures}) the console displayable messages.  For instance, the first heuristic, line 10, is saying that if filtering of non-chat messages is desired (meaning censorship of server adds and whatnot) and if client is not spectating then the messages of category not belonging to `Say' or `TeamSay' (except belonging to spectator sent messages\footnote{The spectator sent messages are of the form ``spectatorname:hello'' and don't belong to `Say' or `TeamSay' category.}, which are also not belonging to `Say' or `TeamSay')  are not printed, both in console and ``Public Chat'' pages.
 
 \subsubsection{Message Classification}    
 Remember that during the duration of a game, we are bombarded with plethora of messages in raw from, ranging from game relevant events (for instance \ClassColor{CTFMessage} messages) to mutator sent messages (for instance ServerAdds messages).  Chat Diamond's complex\footnote{Just enough to capture the message differentiation trait.} algorithm then attempts to classify the messages into ``Chat'' and ``Non-Chat'' categories.
 
+The way categorization is done is by using the fact that there are two kinds of message senders relevant for our purposes
+\begin{itemize}
+\item Players
+\item Spectators
+\end{itemize}
+and both of them are \ClassColor{Pawn} objects. Table \ref{tab:messageform} present in APPENDIX \ref{append:messagingtables} shows the format of the messages.  The spectators' messages don't belong to `Say' or `TeamSay' categories and belong to `Event' (as MsgType).  For those `Event' types we just look for the `:' deliminator in the `Msg' to put the `Msg' in `Chat' category.
 
- In order to demonstrate that, let me show a UT messaging by a table\footnote{\label{foot:hudconsolediff} The ``messages'' for instance: `plushie was smacked down by Mental\_Instituitions's Rocket Launcher', are actually strings which can be seen in the line 117 of the \href{http://uncodex.ut-files.com/UT/v436/Source_botpack/deathmessageplus.html}{code}.  This also shows how some death messages can be suppressed in the console thus differing from HUD in the context of message display.}  \ref{tab:messageform} present in APPENDIX \ref{append:messagingtables}.
-
-The mapping to relevant arguments is like so in Table \ref{tab:messageform}.
-
-
-The tables need to be explained and pondered.
 
 \section{Native Coding}
 Chat Diamond is a native mod, meaning, a program invoking C++ functions.  At the time of writing, minor usage of the library 
@@ -545,8 +552,8 @@ Therefore I have organized the repository with the conforming hierarchical struc
     ]
   ]
   [System
-    [UnrealTournament.exe]
     [UCC.exe]
+    [UnrealTournament.exe]
   ]
 ]
 \end{forest}
@@ -900,18 +907,18 @@ is used for collecting the arguments of our uscript function \texttt{TestFunctio
 \end{tabcontainer}
 
 \begin{tabcontainer}
- \begin{tabularx}{\textwidth}{| X | X | X | X |}
+ \begin{tabularx}{\textwidth}{| X | X | X |}
  \hline
- \makecell{Console\\ Owner\\ State} & \makecell{Death\\ Messages}\footnote{A string rather.  See \ref{foot:hudconsolediff}}  & \makecell{Server\\ Announcements\footnote{Server adds?}} & \makecell{Talk \\ TeamTalk} \\ [0.5ex] 
+ \makecell{Console Owner\\ State} & \makecell{Message Sender\\ State} & \makecell{Message \\ Format} \\ [0.5ex] 
  \hline\hline
  
-\makecell{Multiplayer \\Spectator} & \makecell{MessageType:  \\ DeathMessage?\\ \\ PRI:  Local?} & \makecell{MessageType:\\ Event \\  \\ PRI: Local}  & \makecell{A. \\ MessageType:\\ Event  \\ PRI: Local \\ \\  B.\\ MessageType: \\ Event \\ PRI: local\\ \\ C. \\  MessageType: \\ Event \\ PRI: Local}\\
+\makecell{Multiplayer \\Spectator} & \makecell{Player\\ \\ Spectator \\ \\Self} & \makecell{hello \\  \\ spectatorname:hello \\ \\spectatorname:hello} \\
     \hline
 
-\makecell{Multiplayer\\ Player} & \makecell{Message Type: \\ Event \\ PRI: Local? } & \makecell{Message Type: \\ Event \\ PRI: None} & \makecell{A. \\ MessageType: \\ Say\\ PRI: Local\\ \\ B. \\ MessageType: \\ Say \\ PRI: SenderPRI \\ \\ C. \\ MessageType: \\ ? \\ PRI: ?}\\
+\makecell{Multiplayer\\ Player} & \makecell{Player \\ \\ Spectator \\ \\Self} & \makecell{hello \\ \\ spectatorname:hello \\ \\hello} \\
     \hline
   \end{tabularx}
-  \caption{Table of argument types.}
+  \caption{Table message formats.}
   \label{tab:messageform}
 \end{tabcontainer}
 
