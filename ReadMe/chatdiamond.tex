@@ -183,9 +183,9 @@ Chat Diamond provides ``real time way'' to configure various user configurable p
 tuning the RGB values  for background color of Public Chat window and Console window results in the relevant change in the background of Configure Window itself.   Allow me to provide 
 relevant details for configurations
 \begin{itemize}
-\item \emph{Background Color}: Set the RGB values to come up with a gradation color for backgound.  The setting can be instantaneously applied to Public Chats widow and Console window
+\item \emph{Background Color}: Set the RGB values to come up with a gradation color for background.  The setting can be instantaneously applied to Public Chats widow and Console window
 \item \emph{Chat Binding}: Click on the box and the key pressed next shall be assigned for opening Public Chats window.
-\item \emph{Animation Speed}: Real time adjustmet, by dragging the calibration slider, as per personal taste.
+\item \emph{Animation Speed}: Real time adjustment, by dragging the calibration slider, as per personal taste.
 \item \emph{Emo Size}: Real time adjustment for setting the size of emoji's and emotes simultaneously.
 \item \emph{Message Arrival Sound}: Check if you want telegram style sound to be played on message delivery.
 \item \emph{Open Chat At The End}: Check if you to open the chat window \ref{sec:chatwindow} when the match ends.
@@ -215,7 +215,7 @@ relevant details for configurations
 
 \subsection{About Window}
 
-This page \ref{fig:chatdiamond_about} shows the information about the invovled parties via scrolling credits. Basically, my way of saying thank you for the help I got through various formats of communications.
+This page \ref{fig:chatdiamond_about} shows the information about the involved parties via scrolling credits. Basically, my way of saying thank you for the help I got through various formats of communications.
 \begin{figure}
 \centering
 \includegraphics[width=0.6\textwidth]{img_about}
@@ -230,7 +230,7 @@ If you have suggestions for a cool feature that may require more page(s), feel f
 \section{Installation}
 Chat Diamond is developed and tested with UT99, \textbf{469c} and \textbf{469d client}.  Although the mod should work on previous versions, I take no pains for maintaining that code simply because I feel that we all should work towards pushing forward the community effort in driving the game (and UE 1) towards modern experience.  So by not supporting the code for earlier versions I am supporting the later versions.
 
-With that being written, feel free to send pull requests to \href{https://github.com/ravimohan1991/ChatDiamond/}{Chat Diamond} repository, even for earlier game versions.  Also, if possible, go through the \href{https://github.com/ravimohan1991/ChatDiamond/issues}{known issues}.
+With that being written, feel free to send pull requests to \href{https://github.com/ravimohan1991/ChatDiamond/}{Chat Diamond} repository, even for earlier game versions.
 
 Chat Diamond is essentially a console (and not meant for the server).  So for installation do the following
 \begin{itemize}
@@ -281,14 +281,14 @@ In this section I am presenting the history of Chat Diamond for general awarenes
     \item \href{https://github.com/ravimohan1991/ChatDiamond/wiki/Adding-an-Emote-in-Chat-Diamond}{Work flow} for users to add custom emos
   \fixed
     \item Chat Window text scaling
-    \item Emoji Window emojitext offset (\href{https://github.com/ravimohan1991/ChatDiamond/commit/69b7abbce0617ae1c2de0660379984852df9c76d}{69b7abbc})
+    \item Emoji Window emoji text offset (\href{https://github.com/ravimohan1991/ChatDiamond/commit/69b7abbce0617ae1c2de0660379984852df9c76d}{69b7abbc})
     \item Chat Window emo textures translucency (\href{https://github.com/ravimohan1991/ChatDiamond/commit/6e105d2cce5db1380c27df546e604d0f306eccd4}{6e105d2c})
     \item Emoji Window emo frames mouse hover detection (\href{https://github.com/ravimohan1991/ChatDiamond/commit/501e585250a6553ca95ca9b9d5e0ad25b1e645b5}{501e5852})
     \item Addressed several accessed none warnings in the function \href{https://github.com/ravimohan1991/ChatDiamond/blob/1dda53b01b493a2ef8be156966b3230758211254/Classes/CDUTChatTextTextureAnimEmoteArea.uc#L890}{LocateChatFaceTexture} by commit \href{https://github.com/ravimohan1991/ChatDiamond/commit/1dda53b01b493a2ef8be156966b3230758211254}{1dda53b0}
  \changed
     \item Using json format for chat metadata, instead of ``:'' deliminator which clashed with names
     \item Using linked lists with dynamic loaded textures to avoid loading each frame
-    \item Message history is non-truncable\footnote{Meaning no need to delete messages as they are dumped in .txt file which is reservior for virtually unlimited messages (for years to come).}. Number of last $x$ messages to be shown is configurable.
+    \item Message history is non-truncatable\footnote{Meaning no need to delete messages as they are dumped in .txt file which is reservoir for virtually unlimited messages (for years to come).}. Number of last $x$ messages to be shown is configurable.
     \item Using text file instead of ini for dumping chat metadata (\href{https://github.com/ravimohan1991/ChatDiamond/commit/f059be817532fa720804bd20f54a36e3c82ddb9d}{f059be81})
 \end{version}
 \shortversion{v=0.1.0-alpha, date=2022-12-25, changes=Initial alpha}
@@ -333,7 +333,7 @@ The basic premise of many cheats providing aim assist is to modify the HUD clien
 
 If the notion of ``cheat-anticheat'' interplay exists in the UT standards, then that simply doesn't fit with the tenant we began with.  We don't want to be sending request to server administrators for specifically whitelisting Chat Diamond which will be reverted by cold silent treatment to say the most and some naggy jibber jabber about the unknown-ness of Chat Diamond, especially when the mod is not that popular.
 
-So with this thinking in mind, the better option would be to replace the client console, which I haven't seen any decent anti-cheat prohibiting. This not only gets the client out of hook for sending whitelisting requests but also provides a powerful mechanism to mould the console, specifically for generic needs (see the concept of \emph{filters})\footnote{Althought some servers may prohibit the use of custom consoles.  For that you may have to specifically send the whitelist request. You may want to report the relevant console class, which, for Chat Diamond, should be ``ChatDiamond.CDUTConsole''.}.
+So with this thinking in mind, the better option would be to replace the client console, which I haven't seen any decent anti-cheat prohibiting. This not only gets the client out of hook for sending whitelisting requests but also provides a powerful mechanism to mould the console, specifically for generic needs (see the concept of \emph{filters})\footnote{Although some servers may prohibit the use of custom consoles.  For that you may have to specifically send the whitelist request. You may want to report the relevant console class, which, for Chat Diamond, should be ``ChatDiamond.CDUTConsole''.}.
 
 \subsection{A Minor PhD On Console Messages}
 
@@ -373,9 +373,9 @@ It is clear that both the console and HUD should receive same messages with no d
 \label{fig:chatdiamond_console_hud}
 \end{figure}
 
-Please note that Chat Diamond's console is not much different from that of default UT99, visually.  The changes are how Chat Diamond interprets the raw messages thrown and utilizes them in a constructive way, for instance, putting up for the display in ``Public Chats'' page\footnote{\label{foot:hudconsolediff} The ``messages'' for instance: `plushie was smaked down by Mental\_Instituitions's Rocket Launcher', are actually strings which can be seen in the line 117 of the \href{http://uncodex.ut-files.com/UT/v436/Source_botpack/deathmessageplus.html}{code}.  This also shows how some deathmessages can be suppressed in the console thus differing from HUD.}.
+Please note that Chat Diamond's console is not much different from that of default UT99, visually.  The changes are how Chat Diamond interprets the raw messages thrown and utilizes them in a constructive way, for instance, putting up for the display in ``Public Chats'' page\footnote{\label{foot:hudconsolediff} The ``messages'' for instance: `plushie was smacked down by Mental\_Instituitions's Rocket Launcher', are actually strings which can be seen in the line 117 of the \href{http://uncodex.ut-files.com/UT/v436/Source_botpack/deathmessageplus.html}{code}.  This also shows how some deathmessages can be suppressed in the console thus differing from HUD.}.
 
-We begin the study with the \href{https://github.com/ravimohan1991/ChatDiamond/blob/b27b03b444078e1fe206bd1687278fd84f9d4823/Classes/CDUTConsole.uc#L57C44-L57C44}{code} which is a function that gets called whenever a console printable message is receieved by the client.  A look at the snippet\footnote{For getting to know the `N' in function Messge(), we refer to the snippet \ref{section:utmessaging}.} 
+We begin the study with the \href{https://github.com/ravimohan1991/ChatDiamond/blob/b27b03b444078e1fe206bd1687278fd84f9d4823/Classes/CDUTConsole.uc#L57C44-L57C44}{code} which is a function that gets called whenever a console printable message is received by the client.  A look at the snippet\footnote{For getting to know the `N' in function Message(), we refer to the snippet \ref{section:utmessaging}.} 
 
 \begin{lstlisting}[frame=single]
 function Message(PlayerReplicationInfo PRI, coerce string Msg, name N)
@@ -421,7 +421,7 @@ and both of them are \ClassColor{Pawn} objects. Table \ref{tab:messageform} pres
 
 
 \section{Native Coding}
-Chat Diamond is a native mod, meaning, a program invoking C++ functions.  At the time of writing, the folowing C++ libraries are being utilized
+Chat Diamond is a native mod, meaning, a program invoking C++ functions.  At the time of writing, the following C++ libraries are being utilized
 \begin{itemize}
 \item \href{https://en.cppreference.com/w/cpp/regex}{regular expressions}
   \item \href{https://github.com/nlohmann/json}{C++ json}
@@ -575,7 +575,7 @@ The \FolderColor{Core} is the directory containing ``header-only'' library eleme
 \item Such libraries, which are prebuilt and whose implementation is hidden with only headers (the API) visible, are known as ``\texttt{Interface}'' libraries in CMake's scope.  \FolderColor{Engine} is another example of directory containing such \texttt{Interface} library.  
 Also both of the \FolderColor{Engine} and \FolderColor{Core} directories contain the directories \FolderColor{Inc}, \FolderColor{Src}, and \FolderColor{Lib} sub directories. 
 \item From research, \FileColor{Core.lib} and \FileColor{Engine.lib}, which are static libraries, seem to be the ``basic necessities'' for linking with a native mod. 
-\item In the hierarchy, I am only showing the top level \FileColor{CmakeLists.txt}.  If you are familiar with the build utility, you can comprehend the presence of one each inside \FolderColor{ChatDiamond}, \FolderColor{Core}, and \FolderColor{Engine} directories.
+\item In the hierarchy, I am only showing the top level \FileColor{CMakeLists.txt}.  If you are familiar with the build utility, you can comprehend the presence of one each inside \FolderColor{ChatDiamond}, \FolderColor{Core}, and \FolderColor{Engine} directories.
 \item The project hierarchy is invariant for Linux and Windows (and hopefully, for MacOS).
 \end{itemize}  
 
@@ -731,7 +731,7 @@ Align structure or class members on 4-byte boundaries, or on their natural align
 #endif
 \end{lstlisting}
 
-Thanks to stackoverflow \href{https://stackoverflow.com/questions/3318410/pragma-pack-effect}{discussion}.  I don't quite yet know the relevance to uscript, all I can think is maybe this is UT99's convention 
+Thanks to stack overflow \href{https://stackoverflow.com/questions/3318410/pragma-pack-effect}{discussion}.  I don't quite yet know the relevance to uscript, all I can think is maybe this is UT99's convention 
 of dealing with the electronics of 1999 or something.  Also anth (2022) has justification like \href{https://github.com/ravimohan1991/ChatDiamond/blob/f7950b2591b93a54600459ec58d7ddf57fe9218d/UTNativeEssentials/Core/Inc/UnBuild.h#L154-L155}{so}.
 
 Lines 5 to 7 are the instructions that seem redundant for our purposes because we haven't used or don't need the macro for printing the log in my foreseeable way.
@@ -760,7 +760,7 @@ where \texttt{FFrame} is the data structure defined like \href{https://github.co
 the train of C++ logic runs
 
 \begin{itemize}
-\item The \texttt{UObject::ProcessEvent} is the entry point for unrealscript code, see the \texttt{UFUnction} \href{https://github.com/ravimohan1991/ChatDiamond/blob/5592fef2b13305e441c1dd2b09dde7dd52ff2d83/UTNativeEssentials/Core/Inc/UnClass.h#L379}{code} for instance, where the C++ routine sets a top-level 
+\item The \texttt{UObject::ProcessEvent} is the entry point for unrealscript code, see the \texttt{UFunction} \href{https://github.com/ravimohan1991/ChatDiamond/blob/5592fef2b13305e441c1dd2b09dde7dd52ff2d83/UTNativeEssentials/Core/Inc/UnClass.h#L379}{code} for instance, where the C++ routine sets a top-level 
 \texttt{FFrame}.  Of course, the implementation of \texttt{ProcessEvent} is hidden as of now.
 \item The \texttt{ProcessEvent} then sets up stack for uscript function parameters and local variables.
 \item The function parameters are then initialized by copying values from \texttt{void* Params} buffer to the top level
@@ -882,7 +882,7 @@ Most parts have been explained in comments.  I shall focus on the following
 #define P_GET_STR(var)                FString var;                         Stack.Step( Stack.Object, &var    );
 #define P_GET_INT(var)                INT   var=0;                         Stack.Step( Stack.Object, &var    );
 \end{lstlisting}
-is used for collecting the arguments of our uscript function \texttt{TestFunction(string S, int I)} and order is indespensible.
+is used for collecting the arguments of our uscript function \texttt{TestFunction(string S, int I)} and order is indispensable.
 \item \texttt{P\_FINISH} is defined like so
 
 \lstset{language=C++}
@@ -897,7 +897,19 @@ is used for collecting the arguments of our uscript function \texttt{TestFunctio
 \section{Messaging Tables}
 \label{append:messagingtables}
 
-Here we present a table \ref{tab:messageform}  of ``Chat'' and ``Non-Chat'' categories for reference purpose.
+\begin{tabcontainer}
+ \begin{tabularx}{\textwidth}{| X | X | X | X |}
+ \hline
+ \makecell{Console\\ Owner\\ State} & \makecell{Death\\ Messages}\footnote{A string rather.  See \ref{foot:hudconsolediff}}  & \makecell{Server\\ Announcements\footnote{Server adds?}} & \makecell{Talk \\ TeamTalk} \\ [0.5ex] 
+ \hline\hline
+ 
+\makecell{Multiplayer \\Spectator} & \makecell{\color{red}{plushie was}\\ \color{red}{smacked down}\\ \color{red}{by MI's}\\ \color{red}{Rocket Launcher}} & \makecell{Type !cg to\\ visit combogib\\ grapple server}  & \makecell{A: Self Sent- \\RN\footnote{Receiver's (who is spectator) Name}:Hola\\  \\ B. By Player-\\ RN:SN\footnote{Sender's name, who is a player.}:Hola \\ \\ C. By spectator\footnote{A different spectator}\\ SN:Hola}\\
+
+\hline
+  \end{tabularx}
+  \caption{Table of Messages.}
+  \label{tab:messform}
+\end{tabcontainer}
 
 \begin{tabcontainer}
  \begin{tabularx}{\textwidth}{| X | X | X |}
