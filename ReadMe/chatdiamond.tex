@@ -877,6 +877,26 @@ IMPLEMENT_FUNCTION(ACDDiscordActor, -1, execTestFunction);
 Most parts have been explained in comments.  I shall focus on the following
 
 \begin{itemize}
+\item \texttt{guard} is defined like \href{https://github.com/ravimohan1991/ChatDiamond/blob/4d218e50b6ac9a57d7404ede8f4e333e080d8600/UTNativeEssentials/Core/Inc/UnFile.h#L211}{so}
+\lstset{language=C++}
+\begin{lstlisting}[frame=single]
+# define guard(func)			
+{
+	static const TCHAR __FUNC_NAME__[]=TEXT(#func); 
+	try
+	{
+\end{lstlisting}
+\item \texttt{unguard} is defined like \href{https://github.com/ravimohan1991/ChatDiamond/blob/4d218e50b6ac9a57d7404ede8f4e333e080d8600/UTNativeEssentials/Core/Inc/UnFile.h#L212}{so}
+\lstset{language=C++}
+\begin{lstlisting}[frame=single]
+	}
+	catch(TCHAR*Err){throw Err;}catch(...)
+	{
+		appUnwindf(TEXT("%s"),__FUNC_NAME__); 
+		throw;
+	}
+}
+\end{lstlisting}
 \item \texttt{P\_GET\_STR} is defined like \href{https://github.com/ravimohan1991/ChatDiamond/blob/5592fef2b13305e441c1dd2b09dde7dd52ff2d83/UTNativeEssentials/Core/Inc/UnScript.h#L63}{so}
 \lstset{language=C++}
 \begin{lstlisting}[frame=single]
