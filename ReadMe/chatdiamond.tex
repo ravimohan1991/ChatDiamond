@@ -880,23 +880,65 @@ Most parts have been explained in comments.  I shall focus on the following
 \item \texttt{guard} is defined like \href{https://github.com/ravimohan1991/ChatDiamond/blob/4d218e50b6ac9a57d7404ede8f4e333e080d8600/UTNativeEssentials/Core/Inc/UnFile.h#L211}{so}
 \lstset{language=C++}
 \begin{lstlisting}[frame=single]
-# define guard(func)			
+#define guard(func)			
 {
 	static const TCHAR __FUNC_NAME__[]=TEXT(#func); 
 	try
 	{
 \end{lstlisting}
+Please note that we have schemetically displayed (written) the code for clarity.  The actual ``\#define'' code would either require newline `\textbackslash' or would be a single line definition.        
 \item \texttt{unguard} is defined like \href{https://github.com/ravimohan1991/ChatDiamond/blob/4d218e50b6ac9a57d7404ede8f4e333e080d8600/UTNativeEssentials/Core/Inc/UnFile.h#L212}{so}
 \lstset{language=C++}
 \begin{lstlisting}[frame=single]
 	}
-	catch(TCHAR*Err){throw Err;}catch(...)
+	catch(TCHAR* Err)
+ 	{
+ 		throw Err;
+	}
+	catch(...)
 	{
 		appUnwindf(TEXT("%s"),__FUNC_NAME__); 
 		throw;
 	}
 }
 \end{lstlisting}
+%\lstset{language=C++}
+%\begin{lstlisting}[frame=single]
+%	}
+%	catch(TCHAR* Err)
+% 	{
+% 		throw Err;
+%	}
+%	catch(...)
+%	{
+%		appUnwindf(TEXT("%s"),__FUNC_NAME__); 
+%		throw;
+%	}
+%}
+%\end{lstlisting}
+As evident, there are two catch clauses.  These clauses are what were supplied with the community patch SDK.  However, they require \texttt{DO\_GUARD} enabling to take effect.  Something we can consider for future releases.  For the moment, we are doing with manually written try-catch blocks.  For instance like \href{https://github.com/ravimohan1991/ChatDiamond/blob/36f05b148c3e28ebc69301ac9ef2696b11178de4/UTNativeEssentials/ChatDiamond/Src/ChatDiamondNative.cpp#L237-L244}{so}
+\lstset{language=C++}
+\begin{lstlisting}[frame=single]
+void ACDDiscordActor::execResetJsonContainer(FFrame& Stack, RESULT_DECL)
+{
+	guard(ACDDiscordActor::execResetJsonContainer);
+
+	P_FINISH;
+
+	try
+	{
+		JsonVariable.clear();
+	}
+	catch (std::exception& e)
+	{
+		GLog->Logf(TEXT("[Chat Diamond] exception %s"), e.what());//Log output and use printf format.
+	}
+
+	unguard
+}
+IMPLEMENT_FUNCTION(ACDDiscordActor, -1, execResetJsonContainer)
+\end{lstlisting}
+
 \item \texttt{P\_GET\_STR} is defined like \href{https://github.com/ravimohan1991/ChatDiamond/blob/5592fef2b13305e441c1dd2b09dde7dd52ff2d83/UTNativeEssentials/Core/Inc/UnScript.h#L63}{so}
 \lstset{language=C++}
 \begin{lstlisting}[frame=single]
@@ -904,12 +946,37 @@ Most parts have been explained in comments.  I shall focus on the following
 #define P_GET_INT(var)                INT   var=0;                         Stack.Step( Stack.Object, &var    );
 \end{lstlisting}
 is used for collecting the arguments of our uscript function \texttt{TestFunction(string S, int I)} and order is indispensable.
-\item \texttt{P\_FINISH} is defined like so
+\item \texttt{P\_FINISH} is defined like \href{https://github.com/ravimohan1991/ChatDiamond/blob/5592fef2b13305e441c1dd2b09dde7dd52ff2d83/UTNativeEssentials/Core/Inc/UnScript.h#L75}{so}
 
 \lstset{language=C++}
 \begin{lstlisting}[frame=single]
 #define P_FINISH                      Stack.Code++;
 \end{lstlisting}
+
+\item \texttt{IMPLEMENT\_FUNCTION} is defined like \href{https://github.com/ravimohan1991/ChatDiamond/blob/36f05b148c3e28ebc69301ac9ef2696b11178de4/UTNativeEssentials/Core/Inc/UnScript.h#L23-L37}{so}
+
+\lstset{language=C++}
+\begin{lstlisting}[frame=single]
+//
+// Registering a native function.
+//
+#ifdef _MSC_VER
+	#define IMPLEMENT_FUNCTION(cls,num,func) \
+		extern "C" { DLL_EXPORT Native int##cls##func = (Native)&cls::func; } \
+		static BYTE cls##func##Temp = GRegisterNative( num, int##cls##func );
+#elif __LINUX_X86__ || __LINUX_ARM__
+	#define IMPLEMENT_FUNCTION(cls,num,func) \
+		Native int##cls##func __asm__("int"#cls#func) = (Native)&cls::func;  \
+		static BYTE cls##func##Temp = GRegisterNative( num, int##cls##func );
+#elif MACOSX
+	#define IMPLEMENT_FUNCTION(cls,num,func) \
+		Native int##cls##func __asm__("_int"#cls#func) = (Native)&cls::func;  \
+		static BYTE cls##func##Temp = GRegisterNative( num, int##cls##func );
+#else
+#error Unsupported OS
+#endif
+\end{lstlisting}
+I don't know the implementation of \texttt{GRegisterNative}, which, from the name, suggests some internal registration mechanism for native function into a \href{https://github.com/ravimohan1991/ChatDiamond/blob/36f05b148c3e28ebc69301ac9ef2696b11178de4/UTNativeEssentials/Core/Inc/UnScript.h#L13-L18}{table}. 
 
 \end{itemize}
 
