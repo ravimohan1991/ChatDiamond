@@ -230,7 +230,7 @@ If you have suggestions for a cool feature that may require more page(s), feel f
 \section{Installation}
 Chat Diamond is developed and tested with UT99, \textbf{469c} and \textbf{469d client}.  Although the mod should work on previous versions, I take no pains for maintaining that code simply because I feel that we all should work towards pushing forward the community effort in driving the game (and UE 1) towards modern experience.  So by not supporting the code for earlier versions I am supporting the later versions.
 
-With that being written, feel free to send pull requests to \href{https://github.com/ravimohan1991/ChatDiamond/}{Chat Diamond} repository, even for earlier game versions.
+With that being written, feel free to send pull requests to \href{https://github.com/ravimohan1991/ChatDiamond/}{Chat Diamond} repository, even for earlier game versions.  For known issue(s) you may want to go to this \href{https://github.com/ravimohan1991/ChatDiamond/issues}{page}.
 
 Chat Diamond is essentially a console (and not meant for the server).  So for installation do the following
 \begin{itemize}
@@ -418,7 +418,7 @@ The way categorization is done is by using the fact that there are two kinds of 
 \item Players
 \item Spectators
 \end{itemize}
-and both of them are \ClassColor{Pawn} objects. Table \ref{tab:messageform} present in APPENDIX \ref{append:messagingtables} shows the format of the messages.  The spectators' messages don't belong to `Say' or `TeamSay' categories and belong to `Event' (as MsgType).  For those `Event' types we just look for the `:' deliminator in the `Msg' to put the `Msg' in `Chat' category.
+and both of them are \ClassColor{Pawn} objects. Table \ref{tab:messageform} present in APPENDIX \ref{append:messagingtables} shows the format of the messages.  The spectators' messages don't belong to `Say' or `TeamSay' categories and belong to `Event' (as MsgType).  For those `Event' types we just look for the `:' deliminator in the `Msg' to put the `Msg' in `Chat' category.  We further note that looking for single `:' deliminator may not be enough since the spectator's name may also contain `:' thus disrupting the original message.  A better way would be to first extract spectator name by repeatedly checking with the spectator list (PRIArray) and proceeding forward on finding appropriate match.  We leave that for the future development. 
 
 
 \section{Native Coding}
@@ -518,7 +518,7 @@ me wrong, the language is best for what it does, scripting mods for the game.  S
 limitation, especially with the new community patches.
 
 \subsection{Build System}
-I have been using combination of Wot Greal (unrealscript code) and Microsoft Visual Studio 2022 (C++ code) IDEs for developing Chat Diamond.  
+I have been using combination of Wot Greal (unrealscript code) and \href{https://www.qt.io/product/development-tools}{QT Creator} (Linux C++) along with Microsoft Visual Studio 2022 (Windows C++) IDEs for developing Chat Diamond.  
 Therefore I have organized the repository with the conforming hierarchical structure \ref{forest:project_hierar}.
 \begin{figure}
 \begin{forest}
@@ -660,7 +660,7 @@ target_include_directories(ChatDiamond
 target_compile_definitions(ChatDiamond PUBLIC ChatDiamond)
 \end{lstlisting}
 
-Line 3 declares the mod project name.  Then we specify all the .h files by collectively assembling them with the command \texttt{file} and labeling them \emph{CD\_HEADERS}.  Then we specify the library name via \texttt{add\_library} command in the first field, followed by the type (\texttt{SHARED} means dynamic library) followed by all the source (.cpp) files.  Then we mention headers so that they may appear nicely in the project.  For instance, in XCode the project ChatDiamond looks like
+Line 3 declares the mod project name.  Then we specify all the .h files by collectively assembling them with the command \texttt{file} and labeling them \emph{CD\_HEADERS}.  Then we specify the library name via \texttt{add\_library} command in the first field, followed by the type (\texttt{SHARED} means dynamic library) followed by all the source (.cpp) files.  Then we mention headers so that they may appear nicely in the project.  For instance, in XCode the project ChatDiamond looks like figure \ref{fig:chatdiamond_xcode}.
 \begin{figure}
 \centering
 \includegraphics[width=0.9\textwidth]{chatdiamond_xcode}
@@ -985,19 +985,19 @@ I don't know the implementation of \texttt{GRegisterNative}, which, from the nam
 \section{Messaging Tables}
 \label{append:messagingtables}
 
-\begin{tabcontainer}
- \begin{tabularx}{\textwidth}{| X | X | X | X |}
- \hline
- \makecell{Console\\ Owner\\ State} & \makecell{Death\\ Messages}\footnote{A string rather.  See \ref{foot:hudconsolediff}}  & \makecell{Server\\ Announcements\footnote{Server adds?}} & \makecell{Talk \\ TeamTalk} \\ [0.5ex] 
- \hline\hline
+%\begin{tabcontainer}
+% \begin{tabularx}{\textwidth}{| X | X | X | X |}
+% \hline
+% \makecell{Console\\ Owner\\ State} & \makecell{Death\\ Messages}\footnote{A string rather.  See \ref{foot:hudconsolediff}}  & \makecell{Server\\ Announcements\footnote{Server adds?}} & \makecell{Talk \\ TeamTalk} \\ [0.5ex] 
+% \hline\hline
  
-\makecell{Multiplayer \\Spectator} & \makecell{\color{red}{plushie was}\\ \color{red}{smacked down}\\ \color{red}{by MI's}\\ \color{red}{Rocket Launcher}} & \makecell{Type !cg to\\ visit combogib\\ grapple server}  & \makecell{A: Self Sent- \\RN\footnote{Receiver's (who is spectator) Name}:Hola\\  \\ B. By Player-\\ RN:SN\footnote{Sender's name, who is a player.}:Hola \\ \\ C. By spectator\footnote{A different spectator}\\ SN:Hola}\\
+%\makecell{Multiplayer \\Spectator} & \makecell{\color{red}{plushie was}\\ \color{red}{smacked down}\\ \color{red}{by MI's}\\ \color{red}{Rocket Launcher}} & \makecell{Type !cg to\\ visit combogib\\ grapple server}  & \makecell{A: Self Sent- \\RN\footnote{Receiver's (who is spectator) Name}:Hola\\  \\ B. By Player-\\ RN:SN\footnote{Sender's name, who is a player.}:Hola \\ \\ C. By spectator\footnote{A different spectator}\\ SN:Hola}\\
 
-\hline
-  \end{tabularx}
-  \caption{Table of Messages.}
-  \label{tab:messform}
-\end{tabcontainer}
+%\hline
+%  \end{tabularx}
+%  \caption{Table of Messages.}
+%  \label{tab:messform}
+%\end{tabcontainer}
 
 \begin{tabcontainer}
  \begin{tabularx}{\textwidth}{| X | X | X |}
